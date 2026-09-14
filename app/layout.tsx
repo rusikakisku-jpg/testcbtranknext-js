@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import CookieConsent from "./components/CookieConsent";
@@ -100,6 +101,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </div>
+        <BottomNav />
         <CookieConsent />
       </body>
     </html>

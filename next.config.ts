@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/calculator',
+        destination: '/answerkey',
+        permanent: true,
+      },
+      {
         source: '/index.php',
         destination: '/',
         permanent: true,
