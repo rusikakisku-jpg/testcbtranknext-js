@@ -209,6 +209,7 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
         initialLocationType={exam.location_type_id}
         initialLocations={exam.location_id}
         initialDescription={exam.description || ''}
+        initialCustomFields={exam.custom_fields}
         sidebar={
           <AnswerkeySidebar
             currentSlug={slug}

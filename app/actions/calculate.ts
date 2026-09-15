@@ -197,6 +197,7 @@ export async function fetchLiveRankAction(params: {
   totalMarks: number;
   userId?: string;
   url?: string;
+  subType?: string;
 }) {
   const normMarks = Number(params.totalMarks) || 0;
   let cleanExamId = (params.examId || '').trim();
@@ -211,10 +212,12 @@ export async function fetchLiveRankAction(params: {
   const cleanGender = (params.gender || '').trim().toLowerCase();
   const cleanDate = (params.examDate || '').trim();
   const cleanTime = (params.examTime || '').trim();
+  const cleanSubType = (params.subType || '').trim();
 
   // 1. ⚡ ULTRA-FAST DIRECT SQL COUNT (Reduces DB Row Reads by 99%)
   try {
-    const liveQueryUrl = `${BACKEND_BASE}/live_rank?exam_id=${encodeURIComponent(cleanExamId)}&exam_slug=${encodeURIComponent(cleanSlug)}&total_marks=${normMarks}&category=${encodeURIComponent(cleanCategory)}&gender=${encodeURIComponent(cleanGender)}&exam_date=${encodeURIComponent(cleanDate)}&exam_time=${encodeURIComponent(cleanTime)}&user_id=${encodeURIComponent(params.userId || '')}&url=${encodeURIComponent(params.url || '')}`;
+    const subTypeQuery = cleanSubType ? `&sub_type=${encodeURIComponent(cleanSubType)}` : '';
+    const liveQueryUrl = `${BACKEND_BASE}/live_rank?exam_id=${encodeURIComponent(cleanExamId)}&exam_slug=${encodeURIComponent(cleanSlug)}&total_marks=${normMarks}&category=${encodeURIComponent(cleanCategory)}&gender=${encodeURIComponent(cleanGender)}&exam_date=${encodeURIComponent(cleanDate)}&exam_time=${encodeURIComponent(cleanTime)}&user_id=${encodeURIComponent(params.userId || '')}&url=${encodeURIComponent(params.url || '')}${subTypeQuery}`;
     const aggRes = await fetch(liveQueryUrl, {
       method: 'GET',
       headers: {
@@ -387,7 +390,31 @@ export async function fetchLiveRankAction(params: {
       totalGender = Math.max(genderRank, isExistingInGender ? genderCandidates.length : (genderCandidates.length + 1));
     }
 
-    // 5. Percentile Score
+    // 5. Dynamic SubType / Trade Rank (Strictly within the same sub_type)
+    let subTypeRank: number | undefined = undefined;
+    let totalSubType: number | undefined = undefined;
+    if (cleanSubType) {
+      const subTypeCandidates = examCandidates.filter((r: any) => (r.sub_type || '').trim().toLowerCase() === cleanSubType.toLowerCase());
+      const isExistingInSubType = subTypeCandidates.some((r: any) => {
+        if (params.userId && r.user_id && String(r.user_id).trim().toLowerCase() === String(params.userId).trim().toLowerCase()) return true;
+        if (params.url && r.url && String(r.url).trim().toLowerCase() === String(params.url).trim().toLowerCase()) return true;
+        return false;
+      });
+
+      if (subTypeCandidates.length > 0) {
+        const higherSubType = subTypeCandidates.filter((r: any) => {
+          if (params.userId && r.user_id && String(r.user_id).trim().toLowerCase() === String(params.userId).trim().toLowerCase()) return false;
+          return (Number(r.total_marks) || 0) > (normMarks + 0.0001);
+        }).length;
+        subTypeRank = higherSubType + 1;
+        totalSubType = Math.max(subTypeRank, isExistingInSubType ? subTypeCandidates.length : (subTypeCandidates.length + 1));
+      } else {
+        subTypeRank = 1;
+        totalSubType = 1;
+      }
+    }
+
+    // 6. Percentile Score
     let percentile = 100.0;
     if (totalShift > 1) {
       percentile = Math.min(99.9, Math.max(1.0, Number((((totalShift - higherShift) / totalShift) * 100).toFixed(2))));
@@ -404,6 +431,9 @@ export async function fetchLiveRankAction(params: {
         totalCategory,
         genderRank,
         totalGender,
+        subTypeRank,
+        totalSubType,
+        subType: cleanSubType || undefined,
         percentile
       }
     };

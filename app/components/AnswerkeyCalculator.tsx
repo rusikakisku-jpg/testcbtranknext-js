@@ -5,6 +5,46 @@ import { useRouter } from 'next/navigation';
 import { processAnswerKeyAction, logUserRankAction, logValidUrlAction, fetchLiveRankAction } from '../actions/calculate';
 import { cbtSave, cbtGet, cbtRemove, cbtSaveString, cbtGetString, STORAGE_KEYS } from '../utils/storage';
 import { trackEvent } from './GoogleAnalytics';
+import { CustomField } from '../data/exams';
+
+function parseCustomFieldsData(raw: any): CustomField[] {
+  if (!raw) return [];
+  let parsed = raw;
+  if (typeof raw === 'string') {
+    const s = raw.trim();
+    if (!s || s === '[]' || s === '{}' || s === 'null') return [];
+    try {
+      parsed = JSON.parse(s);
+    } catch (e) {
+      return [];
+    }
+  }
+  if (!Array.isArray(parsed)) return [];
+
+  return parsed
+    .filter((f: any) => f && typeof f === 'object' && (f.id || f.name) && (f.label || f.title))
+    .map((f: any) => ({
+      id: String(f.id || f.name).trim(),
+      label: String(f.label || f.title).trim(),
+      type: (f.type === 'number' || f.type === 'text' || f.type === 'select') ? f.type : 'select',
+      options: Array.isArray(f.options) ? f.options : [],
+      placeholder: f.placeholder ? String(f.placeholder) : undefined,
+      required: Boolean(f.required),
+      depends_on: f.depends_on && typeof f.depends_on === 'object' ? f.depends_on : undefined,
+    }));
+}
+
+function normalizeOption(opt: any): { value: string; label: string } {
+  if (typeof opt === 'string') {
+    return { value: opt, label: opt };
+  }
+  if (opt && typeof opt === 'object') {
+    const val = String(opt.value ?? opt.label ?? '');
+    const lbl = String(opt.label ?? opt.value ?? '');
+    return { value: val, label: lbl };
+  }
+  return { value: '', label: '' };
+}
 
 const DEFAULT_RRB_ZONES = [
   "Ahmedabad", "Ajmer", "Prayagraj (Allahabad)", "Bengaluru (Bangalore)", "Bhopal", 
@@ -249,6 +289,7 @@ interface AnswerkeyCalculatorProps {
   initialLocationType?: string;
   initialLocations?: string[] | string;
   initialDescription?: string;
+  initialCustomFields?: CustomField[] | string;
 }
 
 export default function AnswerkeyCalculator({
@@ -261,6 +302,7 @@ export default function AnswerkeyCalculator({
   initialLocationType,
   initialLocations,
   initialDescription = '',
+  initialCustomFields,
 }: AnswerkeyCalculatorProps) {
   const router = useRouter();
 
@@ -269,6 +311,8 @@ export default function AnswerkeyCalculator({
   const [bannerTitle, setBannerTitle] = useState(defaultBannerTitle);
   const [bannerSub, setBannerSub] = useState('Paste your official answer key URL and add your exam details.');
   const [customDescription, setCustomDescription] = useState<string>(initialDescription || '');
+  const [customFields, setCustomFields] = useState<CustomField[]>(() => parseCustomFieldsData(initialCustomFields));
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, string>>({});
   const [locations, setLocations] = useState<string[]>(initialParsed.list);
   const [locationLabel, setLocationLabel] = useState(initialParsed.label);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -287,6 +331,12 @@ export default function AnswerkeyCalculator({
       setCustomDescription(initialDescription || '');
     }
   }, [initialDescription]);
+
+  useEffect(() => {
+    if (initialCustomFields !== undefined) {
+      setCustomFields(parseCustomFieldsData(initialCustomFields));
+    }
+  }, [initialCustomFields]);
 
   const [formData, setFormData] = useState({
     ans_key_url: '',
@@ -326,6 +376,10 @@ export default function AnswerkeyCalculator({
       setCustomDescription(String(examObj.description));
     }
 
+    if (examObj.custom_fields !== undefined && examObj.custom_fields !== null) {
+      setCustomFields(parseCustomFieldsData(examObj.custom_fields));
+    }
+
     // Save default exam marking scheme if provided
     if (examObj.marks_right !== undefined) {
       cbtSaveString(STORAGE_KEYS.MARKS_RIGHT, String(examObj.marks_right));
@@ -344,6 +398,8 @@ export default function AnswerkeyCalculator({
       setLocations(DEFAULT_STATES);
       setLocationLabel('State / UT');
       setCustomDescription('');
+      setCustomFields([]);
+      setCustomFieldValues({});
       return;
     }
 
@@ -385,6 +441,24 @@ export default function AnswerkeyCalculator({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [examSlug, initialMarksRight, initialMarksWrong, initialLocationType, initialLocations]);
 
+  function isCustomFieldVisible(field: CustomField): boolean {
+    if (!field.depends_on) return true;
+    const parentVal = (customFieldValues[field.depends_on.field] || '').trim().toLowerCase();
+    if (Array.isArray(field.depends_on.value)) {
+      return field.depends_on.value.some(v => String(v).trim().toLowerCase() === parentVal);
+    }
+    return String(field.depends_on.value).trim().toLowerCase() === parentVal;
+  }
+
+  const visibleCustomFields = customFields.filter(isCustomFieldVisible);
+
+  function handleCustomFieldChange(fieldId: string, val: string) {
+    setCustomFieldValues(prev => ({
+      ...prev,
+      [fieldId]: val
+    }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -395,6 +469,18 @@ export default function AnswerkeyCalculator({
       showToast('Please fill all required fields (URL, Category, Gender, State / UT).');
       return;
     }
+
+    for (const field of visibleCustomFields) {
+      if (field.required) {
+        const val = (customFieldValues[field.id] || '').trim();
+        if (!val) {
+          showToast(`Please ${field.type === 'select' ? 'select' : 'enter'} ${field.label}.`);
+          return;
+        }
+      }
+    }
+
+    const derivedSubType = (customFieldValues['sub_type'] || customFieldValues['trade'] || customFieldValues['branch'] || customFieldValues['stream'] || customFieldValues['paper'] || '').trim();
 
     if (!/^https?:\/\//i.test(urlVal)) urlVal = 'https://' + urlVal;
     try {
@@ -504,7 +590,9 @@ export default function AnswerkeyCalculator({
         location: state || '',
         gender: gender || '',
         category: category || '',
-        domain: domainHost
+        domain: domainHost,
+        sub_type: derivedSubType,
+        custom_data: Object.keys(customFieldValues).length > 0 ? customFieldValues : undefined
       };
 
       try {
@@ -536,7 +624,8 @@ export default function AnswerkeyCalculator({
         gender: gender || '',
         totalMarks: rawScoreVal,
         userId: userRoll,
-        url: urlVal
+        url: urlVal,
+        subType: derivedSubType
       };
 
       try {
@@ -585,6 +674,8 @@ export default function AnswerkeyCalculator({
         marks_wrong: marksWrong,
         exam_slug: examSlug || 'general',
         exam_id: examPaperCode,
+        sub_type: derivedSubType,
+        custom_data: customFieldValues
       });
       cbtSave(STORAGE_KEYS.RESULT_DATA, {
         ...parsedResult,
@@ -596,6 +687,10 @@ export default function AnswerkeyCalculator({
         totalShift: liveRankObj?.totalShift || (shiftRank <= 1 ? 1 : shiftRank),
         totalCategory: liveRankObj?.totalCategory || (categoryRank <= 1 ? 1 : categoryRank),
         totalGender: liveRankObj?.totalGender || (genderRank <= 1 ? 1 : genderRank),
+        subTypeRank: liveRankObj?.subTypeRank,
+        totalSubType: liveRankObj?.totalSubType,
+        subType: derivedSubType || liveRankObj?.subType || '',
+        custom_data: customFieldValues,
         liveRank: liveRankObj,
       });
       cbtSaveString(STORAGE_KEYS.SHOW_TG_POPUP, 'true');
@@ -743,6 +838,62 @@ export default function AnswerkeyCalculator({
                   </select>
                 </div>
               </div>
+
+              {/* Dynamic Exam Custom Fields (e.g. Trade / Branch, CCAA Qualified?, NAC %, etc.) */}
+              {visibleCustomFields.length > 0 && (
+                <div className="custom-fields-container" style={{ marginBottom: '16px' }}>
+                  <div className={visibleCustomFields.length > 1 ? "form-grid" : ""}>
+                    {visibleCustomFields.map((field) => (
+                      <div key={field.id} className="ak-form-group">
+                        <label htmlFor={`custom_${field.id}`}>
+                          {field.label} {field.required && <span className="star">*</span>}
+                        </label>
+
+                        {field.type === 'select' ? (
+                          <select
+                            id={`custom_${field.id}`}
+                            className="ak-form-select"
+                            required={field.required}
+                            value={customFieldValues[field.id] || ''}
+                            onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
+                          >
+                            <option value="">Select {field.label}</option>
+                            {(field.options || []).map((opt, optIdx) => {
+                              const norm = normalizeOption(opt);
+                              return (
+                                <option key={norm.value || optIdx} value={norm.value}>
+                                  {norm.label}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        ) : field.type === 'number' ? (
+                          <input
+                            type="number"
+                            step="any"
+                            id={`custom_${field.id}`}
+                            className="ak-form-input"
+                            placeholder={field.placeholder || `Enter ${field.label}`}
+                            required={field.required}
+                            value={customFieldValues[field.id] || ''}
+                            onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
+                          />
+                        ) : (
+                          <input
+                            type="text"
+                            id={`custom_${field.id}`}
+                            className="ak-form-input"
+                            placeholder={field.placeholder || `Enter ${field.label}`}
+                            required={field.required}
+                            value={customFieldValues[field.id] || ''}
+                            onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* State / UT / Location */}
               <div className="ak-form-group">

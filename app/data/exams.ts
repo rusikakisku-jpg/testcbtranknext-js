@@ -1,3 +1,23 @@
+export interface CustomFieldOption {
+  value: string;
+  label?: string;
+}
+
+export interface CustomFieldCondition {
+  field: string;
+  value: string | string[];
+}
+
+export interface CustomField {
+  id: string;
+  label: string;
+  type?: 'select' | 'text' | 'number';
+  options?: Array<string | CustomFieldOption>;
+  placeholder?: string;
+  required?: boolean;
+  depends_on?: CustomFieldCondition;
+}
+
 export interface Exam {
   id?: number;
   slug: string;
@@ -11,6 +31,7 @@ export interface Exam {
   location_type_id?: string;
   location_id?: string[] | string;
   description?: string;
+  custom_fields?: CustomField[] | string;
 }
 
 export const ALL_EXAMS_FALLBACK: Exam[] = [

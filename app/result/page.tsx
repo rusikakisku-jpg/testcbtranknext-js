@@ -217,6 +217,11 @@ interface ResultData {
   shiftRank: number;
   categoryRank: number;
   genderRank?: number;
+  subTypeRank?: number;
+  totalSubType?: number;
+  subType?: string;
+  sub_type?: string;
+  custom_data?: Record<string, any>;
 }
 
 interface FormData {
@@ -232,6 +237,8 @@ interface FormData {
   marks_wrong?: number;
   exam_slug?: string;
   exam_id?: string;
+  sub_type?: string;
+  custom_data?: Record<string, any>;
 }
 
 const ENABLE_TELEGRAM_DIALOG = true;
@@ -489,6 +496,37 @@ export default function ResultPage() {
   }
   if (formData?.paper_language && !Array.from(existingKeySet).some(k => k.includes('language') || k.includes('medium'))) {
     displayRows.push({ label: 'Paper Language', value: formData.paper_language });
+  }
+
+  // Complement with dynamic custom fields (Trade / Branch, CCAA Qualified?, NAC %, etc.)
+  const customDataObj = (resultData as any)?.custom_data || (formData as any)?.custom_data;
+  if (customDataObj && typeof customDataObj === 'object') {
+    Object.entries(customDataObj).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && String(v).trim() !== '') {
+        const valStr = String(v).trim();
+        let fieldLabel = k
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, l => l.toUpperCase());
+
+        if (k === 'sub_type' || k === 'trade' || k === 'branch') fieldLabel = 'Trade / Branch';
+        if (k === 'ccaa_qualified') fieldLabel = 'CCAA Qualified';
+        if (k === 'nac_percentage') fieldLabel = 'NAC Percentage';
+
+        if (!Array.from(existingKeySet).some(item => item === fieldLabel.toLowerCase())) {
+          displayRows.push({
+            label: fieldLabel,
+            value: k === 'nac_percentage' && !valStr.endsWith('%') ? `${valStr}%` : valStr
+          });
+          existingKeySet.add(fieldLabel.toLowerCase());
+        }
+      }
+    });
+  } else if ((resultData as any)?.subType || (resultData as any)?.sub_type || formData?.sub_type) {
+    const rawSt = (resultData as any)?.subType || (resultData as any)?.sub_type || formData?.sub_type;
+    if (rawSt && !Array.from(existingKeySet).some(item => item.includes('trade') || item.includes('branch'))) {
+      displayRows.push({ label: 'Trade / Branch', value: String(rawSt) });
+      existingKeySet.add('trade / branch');
+    }
   }
 
   return (

@@ -37,6 +37,11 @@ interface ResultData {
   shiftRank: number;
   categoryRank: number;
   genderRank?: number;
+  subTypeRank?: number;
+  totalSubType?: number;
+  subType?: string;
+  sub_type?: string;
+  custom_data?: Record<string, any>;
 }
 
 interface FormData {
@@ -52,6 +57,8 @@ interface FormData {
   marks_wrong?: number;
   exam_slug?: string;
   exam_id?: string;
+  sub_type?: string;
+  custom_data?: Record<string, any>;
 }
 
 export default function RankPage() {
@@ -69,6 +76,9 @@ export default function RankPage() {
     totalCategory: number;
     genderRank?: number;
     totalGender?: number;
+    subTypeRank?: number;
+    totalSubType?: number;
+    subType?: string;
     percentile: number;
   } | null>(null);
   const [loadingRank, setLoadingRank] = useState(true);
@@ -143,6 +153,8 @@ export default function RankPage() {
         }
       }
 
+      const candidateSubType = (result as any).subType || (result as any).sub_type || form?.sub_type || (result as any)?.custom_data?.sub_type || '';
+
       fetchLiveRankAction({
         examId: officialExamId,
         examSlug: (result as any).exam_slug || (result as any).slug || form?.exam_slug || '',
@@ -152,7 +164,8 @@ export default function RankPage() {
         gender: effGender,
         totalMarks: rawScore,
         userId: rNum,
-        url: ansUrl
+        url: ansUrl,
+        subType: candidateSubType
       }).then(res => {
         if (res && res.success && res.data) {
           setLiveRank(res.data);
@@ -167,6 +180,9 @@ export default function RankPage() {
               totalCategory: res.data.totalCategory,
               genderRank: res.data.genderRank,
               totalGender: res.data.totalGender,
+              subTypeRank: res.data.subTypeRank,
+              totalSubType: res.data.totalSubType,
+              subType: res.data.subType || candidateSubType,
               liveRank: res.data
             });
           } catch (e) {}
@@ -193,6 +209,10 @@ export default function RankPage() {
   const authGenderRow = resultData.infoRows?.find(r => /gender|sex/i.test(r.label));
   const rawGender = (resultData as any).gender || authGenderRow?.value || formData?.gender || '';
   const effectiveGender = rawGender ? (rawGender.charAt(0).toUpperCase() + rawGender.slice(1).toLowerCase()) : '';
+
+  const effectiveSubType = liveRank?.subType || (resultData as any).subType || (resultData as any).sub_type || formData?.sub_type || (resultData as any)?.custom_data?.sub_type || '';
+  const subTypeRank = liveRank?.subTypeRank || resultData.subTypeRank;
+  const totalSubType = liveRank?.totalSubType || resultData.totalSubType;
 
   const overallRank = liveRank?.overallRank || resultData.overallRank || 1;
   const totalOverall = liveRank?.totalOverall || (resultData as any).totalOverall || (overallRank <= 1 ? 1 : overallRank);
@@ -270,6 +290,7 @@ export default function RankPage() {
                   {effectiveCommunity && <div><strong>Category:</strong> {effectiveCommunity}</div>}
                   {effectiveGender && <div><strong>Gender:</strong> {effectiveGender}</div>}
                   {formData?.state && <div><strong>State:</strong> {formData.state}</div>}
+                  {effectiveSubType && <div><strong>Trade / Stream:</strong> <span style={{ color: '#0044cc', fontWeight: 800 }}>{effectiveSubType}</span></div>}
                 </div>
               </div>
 
@@ -369,7 +390,7 @@ export default function RankPage() {
                   Live rank breakdown calculated among participating candidates for this exam.
                 </p>
 
-                {/* 4 Metric Live Rank Cards */}
+                {/* Live Rank Cards */}
                 <div className="live-rank-grid">
                   <div className="rank-metric-card card-overall">
                     <span className="rank-card-label">🥇 Overall Rank</span>
@@ -420,6 +441,23 @@ export default function RankPage() {
                       </span>
                     )}
                   </div>
+
+                  {Boolean(subTypeRank && totalSubType) && (
+                    <div className="rank-metric-card card-trade" style={{ background: '#faf5ff', border: '1px solid #d8b4fe' }}>
+                      <span className="rank-card-label" style={{ color: '#7e22ce' }}>🔧 Trade / Paper Rank</span>
+                      <div className="rank-card-value rank-val-trade" style={{ color: '#6b21a8' }}>
+                        {loadingRank && !liveRank ? '...' : `#${subTypeRank}`}
+                        <span className="rank-card-total">
+                          {' / '}{totalSubType}
+                        </span>
+                      </div>
+                      {effectiveSubType && (
+                        <span className="rank-subtag rank-subtag-trade" style={{ background: '#f3e8ff', color: '#6b21a8', border: '1px solid #e9d5ff' }}>
+                          {effectiveSubType}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div>
