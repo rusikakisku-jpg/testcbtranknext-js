@@ -14,13 +14,11 @@ interface ExamFaqSectionProps {
 }
 
 export default function ExamFaqSection({ formattedTitle, faqs, style }: ExamFaqSectionProps) {
-  // All FAQ items closed by default, expand only on click
-  const [openIndices, setOpenIndices] = useState<number[]>([]);
+  // Single FAQ item open at a time; expanding one collapses any other currently open item
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
-    setOpenIndices((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
+    setOpenIndex((prev) => (prev === index ? null : index));
   };
 
   return (
@@ -212,7 +210,7 @@ export default function ExamFaqSection({ formattedTitle, faqs, style }: ExamFaqS
         {/* Accordion List with 1-Click Toggle and + / - Icons */}
         <div className="cbtrank-faq-body">
           {faqs.map((faq, index) => {
-            const isOpen = openIndices.includes(index);
+            const isOpen = openIndex === index;
             return (
               <div
                 key={index}

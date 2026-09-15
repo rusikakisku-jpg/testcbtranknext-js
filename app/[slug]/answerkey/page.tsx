@@ -111,7 +111,7 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
     },
     {
       q: `How can I copy my official response sheet URL?`,
-      a: `Open your response sheet on the official candidate portal (DigiALM / TCS iON), tap your browser's address bar, copy the full URL, and paste it directly into the calculator URL box above.`
+      a: `Open your response sheet on the official candidate exam portal, tap your browser's address bar, copy the full URL, and paste it directly into the calculator URL box above.`
     }
   ];
 
@@ -256,7 +256,7 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
               </div>
               <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
                 <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>Response Format</span>
-                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>TCS iON / DigiALM</p>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>CBT Response Sheet</p>
               </div>
             </div>
           </div>

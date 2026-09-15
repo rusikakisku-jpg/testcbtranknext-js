@@ -8,11 +8,11 @@ import { fetchBlogsFromCloudflareD1, FALLBACK_BLOG_POSTS, BlogPost } from '../da
 
 export const metadata: Metadata = {
   title: 'CBT Rank Answer Key Calculator & Rank Predictor',
-  description: 'Calculate your marks, shift rank, and category rank instantly with CBTRank\'s official Answer Key Calculator. Works with all DigiALM and TCS iON response sheets.',
+  description: 'Calculate your marks, shift rank, and category rank instantly with CBTRank\'s official Answer Key Calculator. Supports all major Central and State CBT exam response sheets.',
   keywords: [
     'Answer Key Calculator',
     'CBT marks calculator',
-    'DigiALM answer key score',
+    'CBT answer key score',
     'SSC answer key calculator',
     'RRB answer key calculator',
     'rank predictor'
@@ -37,11 +37,11 @@ export const metadata: Metadata = {
 const UNIVERSAL_FAQS = [
   {
     q: 'How does the Universal Answer Key Calculator work?',
-    a: 'Simply paste your official response sheet URL (DigiALM / TCS iON) into the calculator input. Our system parses each question, matches your marked response with official answer keys, and calculates your total positive marks, negative marks, and net score.'
+    a: 'Simply paste your official response sheet / answer key URL into the calculator input. Our system parses each question, matches your marked response with official answer keys, and calculates your total positive marks, negative marks, and net score.'
   },
   {
     q: 'Which exam links can be checked here?',
-    a: 'You can check answer keys from SSC (CGL, CHSL, MTS, GD, JE, CPO), Railway RRB (NTPC, Group D, ALP, Technician), and any state government recruitment exams hosted on TCS iON or DigiALM platforms.'
+    a: 'You can calculate marks for almost all Central and State Government CBT (Computer Based Test) examinations across India, including Railway RRB (NTPC, Group D, ALP, Technician), SSC (CGL, CHSL, MTS, GD, JE, CPO), State PSCs, Subordinate Services Selection Boards, Police, Defence recruitments, and all other Central and State CBT mode exams.'
   },
   {
     q: 'How do I copy my response sheet link on mobile?',

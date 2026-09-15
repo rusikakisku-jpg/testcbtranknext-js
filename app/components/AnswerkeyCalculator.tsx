@@ -842,131 +842,218 @@ export default function AnswerkeyCalculator({
             </p>
           </div>
 
-          {/* Card 2: Popular Exams Grid */}
-          <div className="info-card" style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: '18px', padding: '24px 22px', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', margin: '0 0 8px 0' }}>
-              🏆 Popular Competitive Exams Supported on CBTRank
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '0 0 16px 0' }}>
-              Access automated score calculation and answer key analysis for top national and state examinations:
+          {/* Card 2: Popular CBT Exams Supported (Compact & Clean) */}
+          <div className="info-card" style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: '18px', padding: '20px 22px', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.02rem', fontWeight: 900, color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🏆</span> Supported CBT Exams on CBTRank
+              </h3>
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563eb', background: '#eff6ff', border: '1px solid #bfdbfe', padding: '3px 10px', borderRadius: '999px' }}>
+                Central &amp; State CBT Mode
+              </span>
+            </div>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 14px 0' }}>
+              Fast automated score calculation and shift ranking for all major Computer-Based Tests:
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>🚆</span>
+                <div>
+                  <strong style={{ fontSize: '0.84rem', color: '#0f172a', display: 'block', marginBottom: '2px' }}>Railway (RRB)</strong>
+                  <span style={{ fontSize: '0.76rem', color: '#64748b', lineHeight: 1.4 }}>RRB NTPC, ALP, Group D, Technician, JE, etc.</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>🏛️</span>
+                <div>
+                  <strong style={{ fontSize: '0.84rem', color: '#0f172a', display: 'block', marginBottom: '2px' }}>Staff Selection (SSC)</strong>
+                  <span style={{ fontSize: '0.76rem', color: '#64748b', lineHeight: 1.4 }}>SSC CGL, CHSL, MTS, GD, CPO, Steno, etc.</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>📋</span>
+                <div>
+                  <strong style={{ fontSize: '0.84rem', color: '#0f172a', display: 'block', marginBottom: '2px' }}>State PSC &amp; Police</strong>
+                  <span style={{ fontSize: '0.76rem', color: '#64748b', lineHeight: 1.4 }}>UP, Bihar, Odisha, Rajasthan, MP Exams, etc.</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>🛡️</span>
+                <div>
+                  <strong style={{ fontSize: '0.84rem', color: '#0f172a', display: 'block', marginBottom: '2px' }}>Central &amp; State CBTs</strong>
+                  <span style={{ fontSize: '0.76rem', color: '#64748b', lineHeight: 1.4 }}>Defence, Education/TET, Technical Exams, etc.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Step-by-Step Guide - Best Modern UI */}
+          <div className="info-card" style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: '18px', padding: '24px 22px', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '6px' }}>
+              <h3 id="info-how-to-title" style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>📋</span> How to Check Answer Key &amp; Calculate Your Marks on CBTRank
+              </h3>
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#059669', background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '3px 10px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></span> 4 Simple Steps
+              </span>
+            </div>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 18px 0' }}>
+              Follow these simple steps to calculate your exact marks, accuracy percentage, and shift rankings:
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
               
-              {/* Railway Box */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #0284c7', borderRadius: '12px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0369a1', marginBottom: '6px' }}>
-                  🚆 Railway Recruitment (RRB)
+              {/* Step 1 */}
+              <div
+                className="calc-step-card"
+                style={{
+                  background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+                  border: '1.5px solid #e2e8f0',
+                  borderTop: '3px solid #2563eb',
+                  borderRadius: '14px',
+                  padding: '16px 14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
+                  position: 'relative',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.78rem' }}>
+                    01
+                  </span>
+                  <span style={{ fontSize: '1.25rem' }}>🔗</span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.55 }}>
-                  RRB NTPC (UG/Grad), RRB ALP, RRB Technician, RRB Group D, RRB JE, RPF SI &amp; Constable.
-                </div>
-              </div>
-
-              {/* SSC Box */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #2563eb', borderRadius: '12px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#1d4ed8', marginBottom: '6px' }}>
-                  🏛️ Staff Selection Commission (SSC)
-                </div>
-                <div style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.55 }}>
-                  SSC CGL, SSC CHSL, SSC MTS, SSC GD Constable, SSC CPO SI, SSC Stenographer, Selection Posts.
-                </div>
-              </div>
-
-              {/* Banking Box */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #059669', borderRadius: '12px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#047857', marginBottom: '6px' }}>
-                  🏦 Banking &amp; Financial Boards
-                </div>
-                <div style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.55 }}>
-                  IBPS PO &amp; Clerk, SBI PO &amp; Clerk, IBPS RRB Scale I &amp; Assistant, RBI Assistant, SEBI &amp; NABARD.
-                </div>
-              </div>
-
-              {/* Teaching Box */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #7c3aed', borderRadius: '12px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#6d28d9', marginBottom: '6px' }}>
-                  🎓 Teaching &amp; Education Boards
-                </div>
-                <div style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.55 }}>
-                  CTET, State TETs (UPTET, REET, BTET), DSSSB PRT/TGT/PGT, KVS, NVS, EMRS exams.
+                <div>
+                  <strong style={{ fontSize: '0.86rem', color: '#0f172a', display: 'block', marginBottom: '4px' }}>
+                    Copy Response Link
+                  </strong>
+                  <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                    Open your exam portal, view your question paper / answer key, and copy the complete URL from your browser address bar.
+                  </p>
                 </div>
               </div>
 
-              {/* State PSC Box */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #d97706', borderRadius: '12px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#b45309', marginBottom: '6px' }}>
-                  📋 State PSC &amp; Subordinate Boards
+              {/* Step 2 */}
+              <div
+                className="calc-step-card"
+                style={{
+                  background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+                  border: '1.5px solid #e2e8f0',
+                  borderTop: '3px solid #0284c7',
+                  borderRadius: '14px',
+                  padding: '16px 14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
+                  position: 'relative',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#f0f9ff', color: '#0284c7', border: '1px solid #bae6fd', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.78rem' }}>
+                    02
+                  </span>
+                  <span style={{ fontSize: '1.25rem' }}>📥</span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.55 }}>
-                  UPPSC, BPSC, MPPSC, RPSC, WBCS, APPSC, TSPSC, UPSSSC, OSSSC &amp; State Police Recruitments.
+                <div>
+                  <strong style={{ fontSize: '0.86rem', color: '#0f172a', display: 'block', marginBottom: '4px' }}>
+                    Paste URL Above
+                  </strong>
+                  <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                    Paste the copied link into the <strong>&ldquo;Answer Key URL&rdquo;</strong> input field in our calculator above.
+                  </p>
                 </div>
               </div>
 
-              {/* Defence Box */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderLeft: '4px solid #dc2626', borderRadius: '12px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#b91c1c', marginBottom: '6px' }}>
-                  🛡️ Defence &amp; Police Services
+              {/* Step 3 */}
+              <div
+                className="calc-step-card"
+                style={{
+                  background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+                  border: '1.5px solid #e2e8f0',
+                  borderTop: '3px solid #7c3aed',
+                  borderRadius: '14px',
+                  padding: '16px 14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
+                  position: 'relative',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.78rem' }}>
+                    03
+                  </span>
+                  <span style={{ fontSize: '1.25rem' }}>⚙️</span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.55 }}>
-                  NDA, CDS, AFCAT, Indian Navy, Indian Army Agniveer, State Police Sub-Inspector &amp; Constables.
+                <div>
+                  <strong style={{ fontSize: '0.86rem', color: '#0f172a', display: 'block', marginBottom: '4px' }}>
+                    Select Details
+                  </strong>
+                  <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                    Choose your applicable <strong>Category</strong> (UR/OBC/EWS/SC/ST), <strong>Gender</strong>, and <strong>State / Zone</strong>.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div
+                className="calc-step-card"
+                style={{
+                  background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+                  border: '1.5px solid #e2e8f0',
+                  borderTop: '3px solid #059669',
+                  borderRadius: '14px',
+                  padding: '16px 14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
+                  position: 'relative',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#ecfdf5', color: '#059669', border: '1px solid #a7f3d0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.78rem' }}>
+                    04
+                  </span>
+                  <span style={{ fontSize: '1.25rem' }}>🎯</span>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '0.86rem', color: '#0f172a', display: 'block', marginBottom: '4px' }}>
+                    View Instant Report
+                  </strong>
+                  <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                    Click <strong>&ldquo;Calculate Marks &amp; Rank&rdquo;</strong> to instantly view your verified score, negative marks, and rank analysis.
+                  </p>
                 </div>
               </div>
 
             </div>
-          </div>
 
-          {/* Card 3: Step-by-Step Guide */}
-          <div className="info-card" style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: '18px', padding: '24px 22px', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
-            <h3 id="info-how-to-title" style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', margin: '0 0 8px 0' }}>
-              📋 How to Check Answer Key &amp; Calculate Your Marks on CBTRank
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '0 0 16px 0' }}>
-              Follow these simple steps to calculate your exact marks, accuracy percentage, and shift rankings:
-            </p>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-              
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#2563eb', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>1</span>
-                  <strong style={{ fontSize: '0.82rem', color: '#0f172a' }}>Copy Response Link</strong>
-                </div>
-                <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
-                  Open your official exam candidate portal and copy the response sheet / answer key URL from your browser address bar.
-                </p>
-              </div>
-
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#2563eb', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>2</span>
-                  <strong style={{ fontSize: '0.82rem', color: '#0f172a' }}>Paste URL Above</strong>
-                </div>
-                <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
-                  Paste the copied link into the <strong>&ldquo;Answer Key URL&rdquo;</strong> input field in our calculator above.
-                </p>
-              </div>
-
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#2563eb', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>3</span>
-                  <strong style={{ fontSize: '0.82rem', color: '#0f172a' }}>Select Details</strong>
-                </div>
-                <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
-                  Choose your applicable <strong>Category</strong> (UR/OBC/EWS/SC/ST), <strong>Gender</strong>, and <strong>State / UT</strong>.
-                </p>
-              </div>
-
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ width: '26px', height: '26px', borderRadius: '50%', background: '#059669', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem' }}>4</span>
-                  <strong style={{ fontSize: '0.82rem', color: '#0f172a' }}>View Instant Report</strong>
-                </div>
-                <p style={{ fontSize: '0.76rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
-                  Click <strong>&ldquo;Calculate Marks &amp; Rank&rdquo;</strong> to instantly view your verified score, negative marks, and rank analysis.
-                </p>
-              </div>
-
+            {/* Micro Quick-Tip Bar */}
+            <div
+              style={{
+                marginTop: '16px',
+                padding: '10px 14px',
+                background: '#f8fafc',
+                border: '1px dashed #cbd5e1',
+                borderRadius: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <span style={{ fontSize: '1rem' }}>💡</span>
+              <span style={{ fontSize: '0.76rem', color: '#475569', lineHeight: 1.45 }}>
+                <strong style={{ color: '#0f172a' }}>Quick Tip:</strong> Make sure to copy the full link from your browser address bar when your official candidate response sheet is open on your screen.
+              </span>
             </div>
           </div>
 
