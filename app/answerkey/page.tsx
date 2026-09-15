@@ -3,7 +3,8 @@ export const runtime = 'edge';
 import type { Metadata } from 'next';
 import AnswerkeyCalculator from '../components/AnswerkeyCalculator';
 import ExamFaqSection from '../components/ExamFaqSection';
-import RelatedExamsSection from '../components/RelatedExamsSection';
+import AnswerkeySidebar from '../components/AnswerkeySidebar';
+import { fetchBlogsFromCloudflareD1, FALLBACK_BLOG_POSTS, BlogPost } from '../data/blogs';
 
 export const metadata: Metadata = {
   title: 'CBT Rank Answer Key Calculator & Rank Predictor',
@@ -80,7 +81,20 @@ const faqSchema = {
   })),
 };
 
-export default function AnswerkeyPage() {
+export default async function AnswerkeyPage() {
+  let allPosts: BlogPost[] = [];
+  try {
+    allPosts = await fetchBlogsFromCloudflareD1();
+  } catch (e) {
+    allPosts = FALLBACK_BLOG_POSTS;
+  }
+  if (!Array.isArray(allPosts) || allPosts.length === 0) {
+    allPosts = FALLBACK_BLOG_POSTS;
+  }
+
+  const recentPosts = allPosts.slice(0, 5);
+  const popularPosts = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
+
   return (
     <>
       <script
@@ -94,14 +108,19 @@ export default function AnswerkeyPage() {
 
       <AnswerkeyCalculator
         sidebar={
-          <RelatedExamsSection
+          <AnswerkeySidebar
             currentSlug=""
-            isSidebar={true}
-            showUniversalCta={false}
+            recentPosts={recentPosts}
+            popularPosts={popularPosts}
           />
         }
-      />
-      <ExamFaqSection formattedTitle="CBT Exams" faqs={UNIVERSAL_FAQS} />
+      >
+        <ExamFaqSection
+          formattedTitle="CBT Exams"
+          faqs={UNIVERSAL_FAQS}
+          style={{ width: '100%', maxWidth: '100%', margin: '24px 0 0', padding: 0 }}
+        />
+      </AnswerkeyCalculator>
     </>
   );
 }

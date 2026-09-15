@@ -10,9 +10,10 @@ interface FaqItem {
 interface ExamFaqSectionProps {
   formattedTitle: string;
   faqs: FaqItem[];
+  style?: React.CSSProperties;
 }
 
-export default function ExamFaqSection({ formattedTitle, faqs }: ExamFaqSectionProps) {
+export default function ExamFaqSection({ formattedTitle, faqs, style }: ExamFaqSectionProps) {
   // All FAQ items closed by default, expand only on click
   const [openIndices, setOpenIndices] = useState<number[]>([]);
 
@@ -23,7 +24,7 @@ export default function ExamFaqSection({ formattedTitle, faqs }: ExamFaqSectionP
   };
 
   return (
-    <section className="cbtrank-faq-section" style={{ maxWidth: '860px', margin: '40px auto 60px', padding: '0 16px' }}>
+    <section className="cbtrank-faq-section" style={{ maxWidth: '860px', margin: '40px auto 60px', padding: '0 16px', ...style }}>
       <style>{`
         .cbtrank-faq-wrapper {
           background: #ffffff;

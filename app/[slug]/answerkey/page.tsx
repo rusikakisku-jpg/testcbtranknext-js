@@ -4,8 +4,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import AnswerkeyCalculator from '../../components/AnswerkeyCalculator';
 import ExamFaqSection from '../../components/ExamFaqSection';
-import RelatedExamsSection from '../../components/RelatedExamsSection';
+import AnswerkeySidebar from '../../components/AnswerkeySidebar';
 import { getExamBySlug, Exam } from '../../data/exams';
+import { fetchBlogsFromCloudflareD1, FALLBACK_BLOG_POSTS, BlogPost } from '../../data/blogs';
 
 // Next.js 15: params is a Promise
 interface PageProps {
@@ -114,6 +115,19 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
     }
   ];
 
+  let allPosts: BlogPost[] = [];
+  try {
+    allPosts = await fetchBlogsFromCloudflareD1();
+  } catch (e) {
+    allPosts = FALLBACK_BLOG_POSTS;
+  }
+  if (!Array.isArray(allPosts) || allPosts.length === 0) {
+    allPosts = FALLBACK_BLOG_POSTS;
+  }
+
+  const recentPosts = allPosts.slice(0, 5);
+  const popularPosts = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
+
   // 1. WebApplication Schema
   const webAppSchema = {
     '@context': 'https://schema.org',
@@ -193,63 +207,67 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
         initialLocationType={exam.location_type_id}
         initialLocations={exam.location_id}
         sidebar={
-          <RelatedExamsSection
+          <AnswerkeySidebar
             currentSlug={slug}
-            isSidebar={true}
-            showUniversalCta={false}
+            recentPosts={recentPosts}
+            popularPosts={popularPosts}
           />
         }
-      />
-
-      {/* Dynamic Exam Overview & Marking Scheme Details */}
-      <div style={{ maxWidth: '860px', margin: '24px auto 0', padding: '0 16px' }}>
-        <div
-          style={{
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 4px 12px rgba(15, 23, 42, 0.03)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <span style={{ fontSize: '1.2rem' }}>📋</span>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-              {examTitle} - Marking Scheme &amp; Details
-            </h2>
-          </div>
-          <p style={{ fontSize: '0.86rem', color: '#475569', lineHeight: 1.6, margin: '0 0 16px 0' }}>
-            Use this automated rank predictor tool to evaluate your performance in the {examTitle}. The score evaluation strictly adheres to official recruitment notification guidelines.
-          </p>
-
+      >
+        {/* Dynamic Exam Overview & Marking Scheme Details */}
+        <div style={{ width: '100%', maxWidth: '100%', margin: '0', padding: 0 }}>
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-              gap: '12px',
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: '16px',
+              padding: '24px',
+              boxShadow: '0 4px 12px rgba(15, 23, 42, 0.03)',
             }}
           >
-            <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#16a34a', textTransform: 'uppercase' }}>Correct Mark</span>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>+{marksRight} Mark</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <span style={{ fontSize: '1.2rem' }}>📋</span>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                {examTitle} - Marking Scheme &amp; Details
+              </h2>
             </div>
-            <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase' }}>Negative Marking</span>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>-{marksWrong} Mark</p>
-            </div>
-            <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase' }}>Conducting Scope</span>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>{locationText}</p>
-            </div>
-            <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>Response Format</span>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>TCS iON / DigiALM</p>
+            <p style={{ fontSize: '0.86rem', color: '#475569', lineHeight: 1.6, margin: '0 0 16px 0' }}>
+              Use this automated rank predictor tool to evaluate your performance in the {examTitle}. The score evaluation strictly adheres to official recruitment notification guidelines.
+            </p>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '12px',
+              }}
+            >
+              <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#16a34a', textTransform: 'uppercase' }}>Correct Mark</span>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>+{marksRight} Mark</p>
+              </div>
+              <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase' }}>Negative Marking</span>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>-{marksWrong} Mark</p>
+              </div>
+              <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase' }}>Conducting Scope</span>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>{locationText}</p>
+              </div>
+              <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#7c3aed', textTransform: 'uppercase' }}>Response Format</span>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: '4px 0 0' }}>TCS iON / DigiALM</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <ExamFaqSection formattedTitle={examTitle} faqs={faqs} />
+        <ExamFaqSection
+          formattedTitle={examTitle}
+          faqs={faqs}
+          style={{ width: '100%', maxWidth: '100%', margin: '24px 0 0', padding: 0 }}
+        />
+      </AnswerkeyCalculator>
     </>
   );
 }
