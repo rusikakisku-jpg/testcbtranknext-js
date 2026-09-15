@@ -1,27 +1,55 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
 
-  const isHomeActive = pathname === '/';
+  // Eagerly prefetch all bottom nav tabs on mount so page payloads are cached instantly in memory
+  useEffect(() => {
+    try {
+      router.prefetch('/');
+      router.prefetch('/answerkey');
+      router.prefetch('/blog');
+    } catch {
+      // router.prefetch safety fallback
+    }
+  }, [router]);
+
+  // When route transition finishes, sync optimistic path back with actual pathname
+  useEffect(() => {
+    setOptimisticPath(null);
+  }, [pathname]);
+
+  const currentPath = optimisticPath ?? pathname;
+
+  const isHomeActive = currentPath === '/';
   const isCalculatorActive =
-    pathname === '/answerkey' ||
-    pathname.startsWith('/answerkey/') ||
-    pathname.endsWith('/answerkey') ||
-    pathname.startsWith('/calculator');
-  const isBlogActive = pathname === '/blog' || pathname.startsWith('/blog/');
+    currentPath === '/answerkey' ||
+    currentPath.startsWith('/answerkey/') ||
+    currentPath.endsWith('/answerkey') ||
+    currentPath.startsWith('/calculator');
+  const isBlogActive = currentPath === '/blog' || currentPath.startsWith('/blog/');
+
+  const handleTabPress = (path: string) => {
+    setOptimisticPath(path);
+  };
 
   return (
     <nav className="bottom-nav" aria-label="Mobile Navigation Menu">
       {/* 1. Home Tab */}
       <Link
         href="/"
+        prefetch={true}
         className={`bottom-nav-tab${isHomeActive ? ' active' : ''}`}
         aria-label="Home"
         aria-current={isHomeActive ? 'page' : undefined}
+        onClick={() => handleTabPress('/')}
+        onTouchStart={() => handleTabPress('/')}
       >
         <div className="bottom-nav-icon-box">
           {isHomeActive ? (
@@ -55,9 +83,12 @@ export default function BottomNav() {
       {/* 2. Calculator Tab */}
       <Link
         href="/answerkey"
+        prefetch={true}
         className={`bottom-nav-tab${isCalculatorActive ? ' active' : ''}`}
         aria-label="Calculator"
         aria-current={isCalculatorActive ? 'page' : undefined}
+        onClick={() => handleTabPress('/answerkey')}
+        onTouchStart={() => handleTabPress('/answerkey')}
       >
         <div className="bottom-nav-icon-box">
           <svg
@@ -86,9 +117,12 @@ export default function BottomNav() {
       {/* 3. Blog Tab */}
       <Link
         href="/blog"
+        prefetch={true}
         className={`bottom-nav-tab${isBlogActive ? ' active' : ''}`}
         aria-label="Blog"
         aria-current={isBlogActive ? 'page' : undefined}
+        onClick={() => handleTabPress('/blog')}
+        onTouchStart={() => handleTabPress('/blog')}
       >
         <div className="bottom-nav-icon-box">
           {isBlogActive ? (

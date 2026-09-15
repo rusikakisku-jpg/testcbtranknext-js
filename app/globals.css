@@ -4355,6 +4355,7 @@ footer {
     padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)) 12px;
     height: calc(58px + env(safe-area-inset-bottom, 0px));
     user-select: none;
+    touch-action: manipulation;
   }
 
   .bottom-nav-tab {
@@ -4370,12 +4371,15 @@ footer {
     text-decoration: none;
     background: transparent !important;
     gap: 3px;
-    transition: color 0.2s ease;
+    transition: color 0.08s ease;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
   }
 
   .bottom-nav-tab:active {
-    opacity: 0.75;
+    opacity: 0.7;
+    transform: scale(0.96);
   }
 
   .bottom-nav-icon-box {
@@ -4393,7 +4397,7 @@ footer {
     width: 22px;
     height: 22px;
     color: #64748b;
-    transition: color 0.2s ease;
+    transition: color 0.08s ease;
   }
 
   .bottom-nav-label {
@@ -4403,7 +4407,7 @@ footer {
     line-height: 1.15;
     color: #64748b;
     white-space: nowrap;
-    transition: color 0.2s ease, font-weight 0.2s ease;
+    transition: color 0.08s ease, font-weight 0.08s ease;
   }
 
   /* Active State: ONLY icon color and text color change to primary Blue */
