@@ -4439,3 +4439,110 @@ footer {
   }
 }
 
+/* ============================================================
+   CUSTOM EXAM HTML DESCRIPTION ARTICLE STYLES
+   ============================================================ */
+.exam-custom-article {
+  font-size: 0.94rem;
+  line-height: 1.75;
+  color: #334155;
+  word-break: break-word;
+}
+
+.exam-custom-article h1,
+.exam-custom-article h2,
+.exam-custom-article h3,
+.exam-custom-article h4,
+.exam-custom-article h5,
+.exam-custom-article h6 {
+  color: #0f172a;
+  font-weight: 800;
+  margin-top: 1.4em;
+  margin-bottom: 0.6em;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+.exam-custom-article h1 { font-size: 1.4rem; }
+.exam-custom-article h2 { font-size: 1.25rem; }
+.exam-custom-article h3 { font-size: 1.1rem; }
+.exam-custom-article h4 { font-size: 1rem; }
+
+.exam-custom-article p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.exam-custom-article ul,
+.exam-custom-article ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.2em;
+}
+
+.exam-custom-article li {
+  margin-bottom: 0.5em;
+  line-height: 1.65;
+}
+
+.exam-custom-article a {
+  color: #0044cc;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.exam-custom-article a:hover {
+  color: #003399;
+}
+
+.exam-custom-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.4em 0;
+  overflow-x: auto;
+  display: block;
+}
+
+.exam-custom-article th,
+.exam-custom-article td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.86rem;
+}
+
+.exam-custom-article th {
+  background: #f8fafc;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.exam-custom-article img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 1.2em 0;
+}
+
+.exam-custom-article blockquote {
+  border-left: 4px solid #0044cc;
+  background: #eff6ff;
+  padding: 12px 18px;
+  border-radius: 0 12px 12px 0;
+  margin: 1.2em 0;
+  color: #1e3a8a;
+  font-style: italic;
+}
+
+.exam-custom-article hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 1.8em 0;
+}
+
+.exam-custom-article iframe {
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 1em 0;
+}
+

@@ -190,10 +190,12 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {(!exam.description || !exam.description.trim()) && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
@@ -206,6 +208,7 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
         initialMarksWrong={exam.marks_wrong}
         initialLocationType={exam.location_type_id}
         initialLocations={exam.location_id}
+        initialDescription={exam.description || ''}
         sidebar={
           <AnswerkeySidebar
             currentSlug={slug}
@@ -262,11 +265,13 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
           </div>
         </div>
 
-        <ExamFaqSection
-          formattedTitle={examTitle}
-          faqs={faqs}
-          style={{ width: '100%', maxWidth: '100%', margin: '24px 0 0', padding: 0 }}
-        />
+        {(!exam.description || !exam.description.trim()) && (
+          <ExamFaqSection
+            formattedTitle={examTitle}
+            faqs={faqs}
+            style={{ width: '100%', maxWidth: '100%', margin: '24px 0 0', padding: 0 }}
+          />
+        )}
       </AnswerkeyCalculator>
     </>
   );

@@ -248,6 +248,7 @@ interface AnswerkeyCalculatorProps {
   initialMarksWrong?: number | string;
   initialLocationType?: string;
   initialLocations?: string[] | string;
+  initialDescription?: string;
 }
 
 export default function AnswerkeyCalculator({
@@ -259,6 +260,7 @@ export default function AnswerkeyCalculator({
   initialMarksWrong,
   initialLocationType,
   initialLocations,
+  initialDescription = '',
 }: AnswerkeyCalculatorProps) {
   const router = useRouter();
 
@@ -266,6 +268,7 @@ export default function AnswerkeyCalculator({
   const defaultBannerTitle = initialTitle || formatExamSlugTitle(examSlug);
   const [bannerTitle, setBannerTitle] = useState(defaultBannerTitle);
   const [bannerSub, setBannerSub] = useState('Paste your official answer key URL and add your exam details.');
+  const [customDescription, setCustomDescription] = useState<string>(initialDescription || '');
   const [locations, setLocations] = useState<string[]>(initialParsed.list);
   const [locationLabel, setLocationLabel] = useState(initialParsed.label);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -278,6 +281,12 @@ export default function AnswerkeyCalculator({
   const [btnText, setBtnText] = useState('Calculate Marks & Rank');
   const [progressStep, setProgressStep] = useState(0); // 0=idle 1=fetching 2=parsing 3=ranking 4=saving
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (initialDescription !== undefined) {
+      setCustomDescription(initialDescription || '');
+    }
+  }, [initialDescription]);
 
   const [formData, setFormData] = useState({
     ans_key_url: '',
@@ -313,6 +322,10 @@ export default function AnswerkeyCalculator({
     setLocations(parsed.list);
     setLocationLoading(false);
 
+    if (examObj.description !== undefined && examObj.description !== null) {
+      setCustomDescription(String(examObj.description));
+    }
+
     // Save default exam marking scheme if provided
     if (examObj.marks_right !== undefined) {
       cbtSaveString(STORAGE_KEYS.MARKS_RIGHT, String(examObj.marks_right));
@@ -330,6 +343,7 @@ export default function AnswerkeyCalculator({
       cbtRemove(STORAGE_KEYS.ACTIVE_EXAM);
       setLocations(DEFAULT_STATES);
       setLocationLabel('State / UT');
+      setCustomDescription('');
       return;
     }
 
@@ -596,6 +610,8 @@ export default function AnswerkeyCalculator({
     router.push('/result');
   }
 
+  const hasCustomDescription = Boolean(customDescription && customDescription.trim().length > 0);
+
   return (
     <main>
       <div className="answerkey-main">
@@ -822,8 +838,30 @@ export default function AnswerkeyCalculator({
           </div>
         </div>
 
-        {/* Rich SEO & Informational Content Cards */}
-        <div className="details-wrapper" style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '22px' }}>
+        {/* Rich SEO & Informational Content Cards OR Custom Exam Description */}
+        {hasCustomDescription ? (
+          <div className="details-wrapper exam-custom-wrapper" style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '22px' }}>
+            <div
+              className="info-card exam-custom-article"
+              style={{
+                background: '#ffffff',
+                border: '1.5px solid #e2e8f0',
+                borderRadius: '18px',
+                padding: '24px 22px',
+                boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)',
+              }}
+              dangerouslySetInnerHTML={{ __html: customDescription }}
+            />
+
+            {/* Legal Disclaimer */}
+            <div className="info-card" style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '14px', padding: '16px 18px' }}>
+              <p style={{ fontSize: '0.76rem', color: '#64748b', margin: 0, lineHeight: 1.6, textAlign: 'center' }}>
+                <strong>⚖️ Disclaimer:</strong> CBTRank is an independent educational score estimation and rank analysis utility created to help candidates calculate indicative scores. CBTRank is not associated with, affiliated with, or endorsed by any government department, board, or examination authority. Official final results, normalized marks, cut-offs, and merit lists are published exclusively by the respective recruitment boards.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="details-wrapper" style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '22px' }}>
           
           {/* Card 1: Hero Welcome & Overview */}
           <div className="info-card" style={{ background: '#ffffff', border: '1.5px solid #e2e8f0', borderRadius: '18px', padding: '24px 22px', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
@@ -1174,6 +1212,7 @@ export default function AnswerkeyCalculator({
           </div>
 
         </div>
+      )}
 
         {/* Custom Page Children (e.g. ExamFaqSection or Exam Details) */}
         {children}
