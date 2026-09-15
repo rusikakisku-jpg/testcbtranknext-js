@@ -4334,28 +4334,35 @@ footer {
 }
 
 @media (max-width: 768px) {
-  /* Prevent content and footer from being covered by fixed bottom navigation */
+  /* Prevent page content and footer from being covered by floating bottom dock */
   body, .page-body {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .bottom-nav {
     display: flex;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    left: 14px;
+    right: 14px;
+    margin: 0 auto;
+    max-width: 390px;
     z-index: 1000;
     align-items: center;
     justify-content: space-around;
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(226, 232, 240, 0.85);
-    box-shadow: 0 -4px 20px -2px rgba(15, 23, 42, 0.08), 0 -1px 3px rgba(0, 0, 0, 0.04);
-    padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)) 12px;
-    height: calc(62px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.88);
+    border-radius: 22px;
+    box-shadow:
+      0 14px 34px -4px rgba(15, 23, 42, 0.12),
+      0 4px 12px -2px rgba(15, 23, 42, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    padding: 5px 8px;
+    height: 62px;
     user-select: none;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
   }
 
   .bottom-nav-item {
@@ -4366,13 +4373,13 @@ footer {
     flex: 1;
     min-width: 0;
     max-width: 120px;
-    padding: 5px 8px;
-    border-radius: 12px;
-    color: var(--text-muted, #64748b);
+    padding: 4px 6px;
+    border-radius: 14px;
+    color: #64748b;
     text-decoration: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    gap: 3px;
+    gap: 2px;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -4385,60 +4392,69 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
+    width: 44px;
     height: 28px;
-    border-radius: 10px;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .bottom-nav-icon {
     width: 22px;
     height: 22px;
-    transition: all 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
   }
 
   .bottom-nav-label {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: -0.2px;
+    letter-spacing: -0.15px;
     line-height: 1.2;
     transition: all 0.2s ease;
     white-space: nowrap;
+    color: #64748b;
   }
 
-  /* Active state */
+  /* Active State Highlights */
   .bottom-nav-item.active {
-    color: var(--primary, #0044cc);
+    color: #1d4ed8;
   }
 
   .bottom-nav-item.active .bottom-nav-icon-wrapper {
-    background: rgba(0, 68, 204, 0.1);
-    transform: translateY(-2px);
+    background: rgba(37, 99, 235, 0.1);
+    color: #1d4ed8;
+    transform: translateY(-1px);
   }
 
   .bottom-nav-item.active .bottom-nav-icon {
-    transform: scale(1.08);
+    transform: scale(1.06);
+    color: #1d4ed8;
   }
 
   .bottom-nav-item.active .bottom-nav-label {
-    font-weight: 700;
-    color: var(--primary, #0044cc);
+    font-weight: 750;
+    color: #1d4ed8;
   }
 
-  .bottom-nav-indicator {
-    position: absolute;
-    top: -6px;
-    width: 22px;
-    height: 3px;
-    border-radius: 0 0 4px 4px;
-    background: var(--primary, #0044cc);
-    box-shadow: 0 2px 6px rgba(0, 68, 204, 0.4);
-    animation: bottomNavIndicatorFadeIn 0.2s ease-out;
+  /* Micro Active Indicator Dot */
+  .bottom-nav-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #2563eb;
+    margin-top: 1px;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.7);
+    animation: bottomNavDotPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  @keyframes bottomNavIndicatorFadeIn {
-    from { transform: scaleX(0); opacity: 0; }
-    to { transform: scaleX(1); opacity: 1; }
+  @keyframes bottomNavDotPop {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
 
