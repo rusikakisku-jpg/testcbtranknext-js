@@ -406,8 +406,9 @@ export async function fetchLiveRankAction(params: {
           if (params.userId && r.user_id && String(r.user_id).trim().toLowerCase() === String(params.userId).trim().toLowerCase()) return false;
           return (Number(r.total_marks) || 0) > (normMarks + 0.0001);
         }).length;
-        subTypeRank = higherSubType + 1;
-        totalSubType = Math.max(subTypeRank, isExistingInSubType ? subTypeCandidates.length : (subTypeCandidates.length + 1));
+        const calculatedRank = higherSubType + 1;
+        subTypeRank = calculatedRank;
+        totalSubType = Math.max(calculatedRank, isExistingInSubType ? subTypeCandidates.length : (subTypeCandidates.length + 1));
       } else {
         subTypeRank = 1;
         totalSubType = 1;
