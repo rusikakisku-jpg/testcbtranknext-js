@@ -36,6 +36,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
@@ -4334,9 +4335,15 @@ footer {
 }
 
 @media (max-width: 768px) {
-  /* Prevent page content and footer from being covered by bottom navigation */
+  /* Eliminate white gap between footer and bottom navigation:
+     Remove bottom padding from body and .page-body so no white gap exists below footer.
+     Give footer internal bottom padding so its links and copyright are never covered by the bottom nav */
   body, .page-body {
-    padding-bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: 0 !important;
+  }
+
+  footer {
+    padding-bottom: calc(20px + 58px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .bottom-nav {
