@@ -284,20 +284,7 @@ export default function ResultPage() {
       const rawForm   = cbtGet<FormData>(STORAGE_KEYS.FORM_DATA);
 
       if (!rawResult) {
-        if (ENABLE_TELEGRAM_DIALOG) {
-          const lastPopupTime = localStorage.getItem('cbtrank_tg_popup_last_time');
-          const now = Date.now();
-          const twoMinutesMs = 2 * 60 * 1000;
-          const isCooldownElapsed = !lastPopupTime || (now - parseInt(lastPopupTime, 10)) > twoMinutesMs;
-          if (isCooldownElapsed) {
-            pendingRedirect.current = true;
-            setShowTelegramModal(true);
-          } else {
-            router.push('/');
-          }
-        } else {
-          router.push('/');
-        }
+        router.push('/');
         return;
       }
 
@@ -348,14 +335,6 @@ export default function ResultPage() {
         if (showFlag === 'true') {
           cbtRemove(STORAGE_KEYS.SHOW_TG_POPUP);
           setShowTelegramModal(true);
-        } else {
-          const lastPopupTime = localStorage.getItem('cbtrank_tg_popup_last_time');
-          const now = Date.now();
-          const twoMinutesMs = 2 * 60 * 1000;
-          const isCooldownElapsed = !lastPopupTime || (now - parseInt(lastPopupTime, 10)) > twoMinutesMs;
-          if (isCooldownElapsed) {
-            setShowTelegramModal(true);
-          }
         }
       }
     } catch (e) {

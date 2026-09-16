@@ -109,6 +109,18 @@ export default function ReviewAnswerkeyPage() {
     document.addEventListener('mozfullscreenchange', handleFsChange);
     document.addEventListener('MSFullscreenChange', handleFsChange);
 
+    // Automatically enter full screen on mobile view (<= 900px)
+    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+      setIsFullscreen(true);
+      document.body.classList.add('cbt-fullscreen-active');
+      try {
+        const elem = (fullscreenContainerRef.current || document.documentElement) as any;
+        if (elem && elem.requestFullscreen) {
+          elem.requestFullscreen().catch(() => {});
+        }
+      } catch (e) {}
+    }
+
     return () => {
       document.body.classList.remove('cbt-fullscreen-active');
       document.removeEventListener('fullscreenchange', handleFsChange);
@@ -331,8 +343,12 @@ export default function ReviewAnswerkeyPage() {
   function toggleFullscreen() {
     if (isFullscreen) {
       exitFullscreen();
+      setIsFullscreen(false);
+      document.body.classList.remove('cbt-fullscreen-active');
     } else {
       enterFullscreen();
+      setIsFullscreen(true);
+      document.body.classList.add('cbt-fullscreen-active');
     }
   }
 
@@ -343,6 +359,8 @@ export default function ReviewAnswerkeyPage() {
       setViewMode('CBT');
       if (!isFullscreen) {
         enterFullscreen();
+        setIsFullscreen(true);
+        document.body.classList.add('cbt-fullscreen-active');
       }
     }
   }
@@ -430,8 +448,25 @@ export default function ReviewAnswerkeyPage() {
         .palette-grid-scroll::-webkit-scrollbar-thumb:hover {
           background: #94a3b8;
         }
+        @keyframes slideInRight {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+        @media (max-width: 900px) {
+          .review-right-sidebar {
+            display: none !important;
+          }
+          .mobile-palette-toggle-btn {
+            display: inline-flex !important;
+          }
+        }
         @media (min-width: 901px) {
-          .mobile-palette-float-btn {
+          .mobile-palette-float-btn,
+          .mobile-palette-toggle-btn {
             display: none !important;
           }
         }
@@ -441,6 +476,22 @@ export default function ReviewAnswerkeyPage() {
           max-height: 100vh !important;
           margin: 0 !important;
           padding: 0 !important;
+        }
+        body.cbt-fullscreen-active .cbt-fullscreen-root {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          overflow: hidden !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          box-sizing: border-box !important;
+          z-index: 9999 !important;
+          background-color: #ffffff !important;
         }
         body.cbt-fullscreen-active #navbar,
         body.cbt-fullscreen-active header.navbar,
@@ -613,59 +664,89 @@ export default function ReviewAnswerkeyPage() {
 
 
               {/* Dynamic Section Selector Tabs (Shown in List View, hidden in CBT mode & print) */}
-              {viewMode !== 'CBT' && resultData.sections && resultData.sections.length > 1 && (
+              {viewMode !== 'CBT' && (
                 <div className="no-print" style={{
                   display: 'flex',
                   flexWrap: 'wrap',
-                  gap: '6px',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '8px',
                   marginBottom: '14px',
                   padding: isFullscreen ? '0 16px' : 0,
                   flexShrink: 0
                 }}>
-                  <button
-                    type="button"
-                    onClick={(e) => handleSecTabChange('ALL', e)}
-                    style={{
-                      padding: '5px 12px',
-                      borderRadius: '10px',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      whiteSpace: 'nowrap',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      border: activeSecTab === 'ALL' ? '1px solid #4338ca' : '1px solid #e2e8f0',
-                      background: activeSecTab === 'ALL' ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : '#f8fafc',
-                      color: activeSecTab === 'ALL' ? '#ffffff' : '#475569',
-                      boxShadow: activeSecTab === 'ALL' ? '0 2px 8px rgba(99, 102, 241, 0.3)' : 'none'
-                    }}
-                  >
-                    All Sections ({allQuestions.length})
-                  </button>
-                  {resultData.sections.map(sec => {
-                    const isActive = activeSecTab === sec.name;
-                    return (
-                      <button
-                        key={sec.name}
-                        type="button"
-                        onClick={(e) => handleSecTabChange(sec.name, e)}
-                        style={{
-                          padding: '5px 12px',
-                          borderRadius: '10px',
-                          fontSize: '0.72rem',
-                          fontWeight: 800,
-                          whiteSpace: 'nowrap',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          border: isActive ? '1px solid #4338ca' : '1px solid #e2e8f0',
-                          background: isActive ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : '#f8fafc',
-                          color: isActive ? '#ffffff' : '#475569',
-                          boxShadow: isActive ? '0 2px 8px rgba(99, 102, 241, 0.3)' : 'none'
-                        }}
-                      >
-                        {sec.name} ({sec.total})
-                      </button>
-                    );
-                  })}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={(e) => handleSecTabChange('ALL', e)}
+                      style={{
+                        padding: '5px 12px',
+                        borderRadius: '10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        whiteSpace: 'nowrap',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        border: activeSecTab === 'ALL' ? '1px solid #4338ca' : '1px solid #e2e8f0',
+                        background: activeSecTab === 'ALL' ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : '#f8fafc',
+                        color: activeSecTab === 'ALL' ? '#ffffff' : '#475569',
+                        boxShadow: activeSecTab === 'ALL' ? '0 2px 8px rgba(99, 102, 241, 0.3)' : 'none'
+                      }}
+                    >
+                      All Sections ({allQuestions.length})
+                    </button>
+                    {resultData.sections && resultData.sections.length > 1 && resultData.sections.map(sec => {
+                      const isActive = activeSecTab === sec.name;
+                      return (
+                        <button
+                          key={sec.name}
+                          type="button"
+                          onClick={(e) => handleSecTabChange(sec.name, e)}
+                          style={{
+                            padding: '5px 12px',
+                            borderRadius: '10px',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            whiteSpace: 'nowrap',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            border: isActive ? '1px solid #4338ca' : '1px solid #e2e8f0',
+                            background: isActive ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' : '#f8fafc',
+                            color: isActive ? '#ffffff' : '#475569',
+                            boxShadow: isActive ? '0 2px 8px rgba(99, 102, 241, 0.3)' : 'none'
+                          }}
+                        >
+                          {sec.name} ({sec.total})
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setShowMobilePalette(true)}
+                      className="mobile-palette-toggle-btn"
+                      title="Open Question Palette"
+                      style={{
+                        display: 'none',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        border: '1px solid #003366',
+                        background: '#004080',
+                        color: '#ffffff',
+                        boxShadow: '0 2px 6px rgba(0, 64, 128, 0.25)'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.85rem' }}>☰</span>
+                      <span>Palette ({allQuestions.length})</span>
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -748,8 +829,33 @@ export default function ReviewAnswerkeyPage() {
                       })}
                     </div>
 
-                    {/* Right: Fullscreen Toggle Button */}
+                    {/* Right: Mobile Palette Menu Button & Fullscreen Toggle Button */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={() => setShowMobilePalette(true)}
+                        className="mobile-palette-toggle-btn"
+                        title="Open Question Palette Menu"
+                        style={{
+                          display: 'none',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '5px 12px',
+                          borderRadius: '4px',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          border: '1px solid #003366',
+                          background: '#004080',
+                          color: '#ffffff',
+                          boxShadow: '0 1px 3px rgba(0, 64, 128, 0.25)',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <span style={{ fontSize: '0.85rem' }}>☰</span>
+                        <span>Palette ({allQuestions.length})</span>
+                      </button>
+
                       <button
                         type="button"
                         onClick={toggleFullscreen}
@@ -1716,8 +1822,8 @@ export default function ReviewAnswerkeyPage() {
           onClick={() => setShowMobilePalette(true)}
           style={{
             position: 'fixed',
-            bottom: '22px',
-            right: '20px',
+            bottom: viewMode === 'CBT' ? '70px' : '22px',
+            right: '18px',
             zIndex: 999,
             display: 'flex',
             alignItems: 'center',
@@ -1725,15 +1831,16 @@ export default function ReviewAnswerkeyPage() {
             background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
             color: '#ffffff',
             border: 'none',
-            padding: '11px 18px',
+            padding: '10px 16px',
             borderRadius: '999px',
             boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
             fontWeight: 800,
-            fontSize: '0.82rem',
+            fontSize: '0.8rem',
             cursor: 'pointer'
           }}
         >
-          <span>🎯 Question Palette</span>
+          <span style={{ fontSize: '0.9rem' }}>☰</span>
+          <span>Palette</span>
           <span style={{
             background: '#ffffff',
             color: '#1d4ed8',
@@ -1747,7 +1854,7 @@ export default function ReviewAnswerkeyPage() {
         </button>
       )}
 
-      {/* Mobile Question Palette Bottom Drawer / Modal */}
+      {/* Mobile Question Palette Slide-in Sidebar Drawer */}
       {showMobilePalette && (
         <div
           className="no-print"
@@ -1757,51 +1864,72 @@ export default function ReviewAnswerkeyPage() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(15, 23, 42, 0.6)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 1000,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(3px)',
+            zIndex: 99999,
             display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center'
+            justifyContent: 'flex-end',
+            alignItems: 'stretch'
           }}
           onClick={() => setShowMobilePalette(false)}
         >
           <div
             style={{
               background: '#ffffff',
-              width: '100%',
-              maxWidth: '560px',
-              borderTopLeftRadius: '22px',
-              borderTopRightRadius: '22px',
-              padding: '20px 18px',
-              maxHeight: '82vh',
+              width: '85vw',
+              maxWidth: '340px',
+              height: '100%',
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '0 -10px 30px rgba(0,0,0,0.25)',
-              boxSizing: 'border-box'
+              boxShadow: '-6px 0 25px rgba(0,0,0,0.3)',
+              boxSizing: 'border-box',
+              animation: 'slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              overflow: 'hidden'
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>🎯</span>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 900, color: '#0f172a' }}>
+            {/* Header: Candidate Info & Close Button */}
+            <div style={{
+              background: 'linear-gradient(90deg, #003366 0%, #004b87 100%)',
+              color: '#ffffff',
+              padding: '12px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexShrink: 0
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                <div style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '4px',
+                  background: '#ffffff',
+                  color: '#003366',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.1rem',
+                  fontWeight: 900,
+                  flexShrink: 0
+                }}>
+                  👤
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {candidateName}
+                  </div>
+                  <div style={{ fontSize: '0.68rem', color: '#cbd5e1' }}>
                     Question Palette
-                  </h3>
-                  <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
-                    Tap any question to jump directly
-                  </span>
+                  </div>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowMobilePalette(false)}
                 style={{
-                  background: '#f1f5f9',
+                  background: 'rgba(255, 255, 255, 0.18)',
                   border: 'none',
-                  color: '#475569',
+                  color: '#ffffff',
                   width: '32px',
                   height: '32px',
                   borderRadius: '50%',
@@ -1810,24 +1938,26 @@ export default function ReviewAnswerkeyPage() {
                   justifyContent: 'center',
                   cursor: 'pointer',
                   fontWeight: 900,
-                  fontSize: '0.95rem'
+                  fontSize: '1rem',
+                  flexShrink: 0,
+                  transition: 'background 0.15s ease'
                 }}
+                title="Close Palette"
               >
                 ✕
               </button>
             </div>
 
-            {/* Mobile Marking Scheme Badge */}
+            {/* Marking Scheme Badge */}
             <div style={{
+              padding: '7px 12px',
+              background: '#f8fafc',
+              borderBottom: '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '10px',
-              padding: '4px 8px',
-              background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              borderRadius: '6px',
-              fontSize: '0.72rem'
+              fontSize: '0.72rem',
+              flexShrink: 0
             }}>
               <span style={{ color: '#475569', fontWeight: 800 }}>Marking Scheme:</span>
               <span style={{ fontWeight: 800, color: '#0f172a' }}>
@@ -1835,84 +1965,101 @@ export default function ReviewAnswerkeyPage() {
               </span>
             </div>
 
-            {/* Legend */}
+            {/* Interactive Status Filters */}
             <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '6px',
-              marginBottom: '12px',
               padding: '8px 10px',
-              background: '#f8fafc',
-              borderRadius: '6px',
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              textAlign: 'center',
-              border: '1px solid #e2e8f0'
+              background: '#ffffff',
+              borderBottom: '1px solid #e2e8f0',
+              flexShrink: 0
             }}>
-              <div
-                onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Correct' ? 'ALL' : 'Correct', e)}
-                style={{
-                  color: '#166534',
-                  cursor: 'pointer',
-                  padding: '3px 2px',
-                  borderRadius: '4px',
-                  background: activeStatusFilter === 'Correct' ? '#dcfce7' : 'transparent',
-                  border: activeStatusFilter === 'Correct' ? '1px solid #16a34a' : '1px solid transparent'
-                }}
-              >
-                🟢 {pillCorrectCount}
-              </div>
-              <div
-                onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Wrong' ? 'ALL' : 'Wrong', e)}
-                style={{
-                  color: '#991b1b',
-                  cursor: 'pointer',
-                  padding: '3px 2px',
-                  borderRadius: '4px',
-                  background: activeStatusFilter === 'Wrong' ? '#fee2e2' : 'transparent',
-                  border: activeStatusFilter === 'Wrong' ? '1px solid #dc2626' : '1px solid transparent'
-                }}
-              >
-                🔴 {pillWrongCount}
-              </div>
-              <div
-                onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Unattempted' ? 'ALL' : 'Unattempted', e)}
-                style={{
-                  color: '#475569',
-                  cursor: 'pointer',
-                  padding: '3px 2px',
-                  borderRadius: '4px',
-                  background: activeStatusFilter === 'Unattempted' ? '#f1f5f9' : 'transparent',
-                  border: activeStatusFilter === 'Unattempted' ? '1px solid #94a3b8' : '1px solid transparent'
-                }}
-              >
-                ⚪ {pillUnattemptedCount}
-              </div>
-              {pillBonusCount > 0 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: pillBonusCount > 0 ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
+                gap: '5px',
+                fontSize: '0.7rem',
+                fontWeight: 800,
+                textAlign: 'center'
+              }}>
                 <div
-                  onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Discarded' ? 'ALL' : 'Discarded', e)}
+                  onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Correct' ? 'ALL' : 'Correct', e)}
                   style={{
-                    color: '#6b21a8',
+                    color: '#166534',
                     cursor: 'pointer',
-                    padding: '3px 2px',
+                    padding: '4px 2px',
                     borderRadius: '4px',
-                    background: activeStatusFilter === 'Discarded' ? '#f3e8ff' : 'transparent',
-                    border: activeStatusFilter === 'Discarded' ? '1px solid #9333ea' : '1px solid transparent'
+                    background: activeStatusFilter === 'Correct' ? '#dcfce7' : '#f0fdf4',
+                    border: activeStatusFilter === 'Correct' ? '1.5px solid #16a34a' : '1px solid #bbf7d0'
                   }}
                 >
-                  🟣 {pillBonusCount}
+                  🟢 {pillCorrectCount}
                 </div>
-              )}
+                <div
+                  onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Wrong' ? 'ALL' : 'Wrong', e)}
+                  style={{
+                    color: '#991b1b',
+                    cursor: 'pointer',
+                    padding: '4px 2px',
+                    borderRadius: '4px',
+                    background: activeStatusFilter === 'Wrong' ? '#fee2e2' : '#fef2f2',
+                    border: activeStatusFilter === 'Wrong' ? '1.5px solid #dc2626' : '1px solid #fecaca'
+                  }}
+                >
+                  🔴 {pillWrongCount}
+                </div>
+                <div
+                  onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Unattempted' ? 'ALL' : 'Unattempted', e)}
+                  style={{
+                    color: '#475569',
+                    cursor: 'pointer',
+                    padding: '4px 2px',
+                    borderRadius: '4px',
+                    background: activeStatusFilter === 'Unattempted' ? '#e2e8f0' : '#f8fafc',
+                    border: activeStatusFilter === 'Unattempted' ? '1.5px solid #94a3b8' : '1px solid #e2e8f0'
+                  }}
+                >
+                  ⚪ {pillUnattemptedCount}
+                </div>
+                {pillBonusCount > 0 && (
+                  <div
+                    onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Discarded' ? 'ALL' : 'Discarded', e)}
+                    style={{
+                      color: '#6b21a8',
+                      cursor: 'pointer',
+                      padding: '4px 2px',
+                      borderRadius: '4px',
+                      background: activeStatusFilter === 'Discarded' ? '#f3e8ff' : '#faf5ff',
+                      border: activeStatusFilter === 'Discarded' ? '1.5px solid #9333ea' : '1px solid #e9d5ff'
+                    }}
+                  >
+                    🟣 {pillBonusCount}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Grid */}
+            {/* Section Header */}
+            <div style={{
+              background: '#004080',
+              color: '#ffffff',
+              padding: '6px 12px',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.03em',
+              flexShrink: 0
+            }}>
+              SECTION : {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
+            </div>
+
+            {/* Number Grid */}
             <div className="palette-grid-scroll" style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(42px, 1fr))',
-              gap: '8px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(38px, 1fr))',
+              alignContent: 'start',
+              gap: '6px',
               overflowY: 'auto',
               flex: 1,
-              padding: '4px'
+              padding: '10px 12px'
             }}>
               {filteredQuestions.length > 0 ? (
                 filteredQuestions.map(q => {
@@ -1956,8 +2103,8 @@ export default function ReviewAnswerkeyPage() {
                         color: color,
                         padding: 0,
                         transition: 'all 0.15s ease',
-                        transform: isActiveCbtQ ? 'scale(1.12)' : 'none',
-                        boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 10px rgba(0, 64, 128, 0.4)' : 'none',
+                        transform: isActiveCbtQ ? 'scale(1.08)' : 'none',
+                        boxShadow: isActiveCbtQ ? '0 0 0 2.5px #fbbf24, 0 3px 8px rgba(0, 64, 128, 0.35)' : 'none',
                         zIndex: isActiveCbtQ ? 2 : 1,
                         position: 'relative'
                       }}
@@ -1967,11 +2114,85 @@ export default function ReviewAnswerkeyPage() {
                   );
                 })
               ) : (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '16px 8px', fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>
-                  No questions in this filter
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px 8px', fontSize: '0.74rem', color: '#64748b', fontWeight: 600 }}>
+                  No questions match this filter
                 </div>
               )}
             </div>
+
+            {/* Bottom Actions inside Sidebar */}
+            <div style={{
+              background: '#f8fafc',
+              borderTop: '1px solid #e2e8f0',
+              padding: '10px 12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              flexShrink: 0
+            }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleToggleCbtMode();
+                    setShowMobilePalette(false);
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '8px',
+                    borderRadius: '6px',
+                    border: '1px solid #004080',
+                    background: '#ffffff',
+                    color: '#004080',
+                    fontWeight: 800,
+                    fontSize: '0.74rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {viewMode === 'CBT' ? '📋 List View' : '🖥️ CBT View'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowMobilePalette(false)}
+                  style={{
+                    flex: 1,
+                    padding: '8px',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#475569',
+                    fontWeight: 800,
+                    fontSize: '0.74rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ✕ Close
+                </button>
+              </div>
+
+              {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
+                <Link
+                  href="/rank"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    color: '#ffffff',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    textDecoration: 'none'
+                  }}
+                >
+                  🏆 View Your Rank
+                </Link>
+              )}
+            </div>
+
           </div>
         </div>
       )}
