@@ -86,6 +86,7 @@ export default function ReviewAnswerkeyPage() {
   const [wrongVal, setWrongVal] = useState(0.25);
   const [activeSecTab, setActiveSecTab] = useState('ALL');
   const [activeStatusFilter, setActiveStatusFilter] = useState('ALL');
+  const [showMobilePalette, setShowMobilePalette] = useState(false);
 
   useEffect(() => {
     try {
@@ -158,6 +159,37 @@ export default function ReviewAnswerkeyPage() {
     });
   }
 
+  function jumpToQuestion(qNo: number) {
+    if (!resultData) return;
+    const questions = resultData.questionsSummary || [];
+    const targetQ = questions.find(q => q.q_no === qNo);
+    if (targetQ) {
+      if (activeSecTab !== 'ALL' && targetQ.section && targetQ.section.trim().toLowerCase() !== activeSecTab.trim().toLowerCase()) {
+        setActiveSecTab('ALL');
+      }
+      if (activeStatusFilter !== 'ALL') {
+        const isBonus = targetQ.status === 'Discarded' || targetQ.status === 'Bonus' || targetQ.right_option === 'Benefit to All';
+        if (activeStatusFilter === 'Discarded' ? !isBonus : targetQ.status !== activeStatusFilter) {
+          setActiveStatusFilter('ALL');
+        }
+      }
+    }
+
+    setShowMobilePalette(false);
+
+    setTimeout(() => {
+      const el = document.getElementById(`q-card-${qNo}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.style.transition = 'all 0.3s ease';
+        el.style.boxShadow = '0 0 0 3.5px #2563eb, 0 8px 24px rgba(37, 99, 235, 0.25)';
+        setTimeout(() => {
+          if (el) el.style.boxShadow = '';
+        }, 1800);
+      }
+    }, 100);
+  }
+
   if (!resultData) {
     return null;
   }
@@ -222,6 +254,25 @@ export default function ReviewAnswerkeyPage() {
           max-width: 100% !important;
           overflow-x: auto !important;
           display: block !important;
+        }
+        .palette-grid-scroll::-webkit-scrollbar {
+          width: 5px;
+        }
+        .palette-grid-scroll::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 4px;
+        }
+        .palette-grid-scroll::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 4px;
+        }
+        .palette-grid-scroll::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+        @media (min-width: 901px) {
+          .mobile-palette-float-btn {
+            display: none !important;
+          }
         }
       `}</style>
       <div className="result-main" style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px' }}>
@@ -645,6 +696,143 @@ export default function ReviewAnswerkeyPage() {
             top: '20px'
           }}>
 
+            {/* Sidebar Card 0: 🎯 Question Palette */}
+            {allQuestions.length > 0 && (
+              <div className="sidebar-palette-card" style={{
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '18px',
+                padding: '16px',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)'
+              }}>
+                {/* Palette Header */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.85rem'
+                    }}>
+                      🎯
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '0.86rem', fontWeight: 900, color: '#0f172a', margin: 0, lineHeight: 1.2 }}>
+                        Question Palette
+                      </h3>
+                      <span style={{ fontSize: '0.68rem', color: '#64748b' }}>Jump to any question</span>
+                    </div>
+                  </div>
+                  <span style={{
+                    fontSize: '0.68rem',
+                    fontWeight: 800,
+                    background: '#eff6ff',
+                    color: '#1d4ed8',
+                    border: '1px solid #bfdbfe',
+                    padding: '2px 8px',
+                    borderRadius: '12px'
+                  }}>
+                    {allQuestions.length} Qs
+                  </span>
+                </div>
+
+                {/* Legend Grid */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '6px',
+                  marginBottom: '12px',
+                  padding: '8px 10px',
+                  background: '#f8fafc',
+                  borderRadius: '10px',
+                  fontSize: '0.68rem',
+                  fontWeight: 700
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#065f46' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                    <span>Correct: <strong>{totalRight}</strong></span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#991b1b' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
+                    <span>Wrong: <strong>{totalWrong}</strong></span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#475569' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#94a3b8', display: 'inline-block' }} />
+                    <span>Skip: <strong>{totalUnattempted}</strong></span>
+                  </div>
+                  {pillBonusCount > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#6b21a8' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#9333ea', display: 'inline-block' }} />
+                      <span>Bonus: <strong>{pillBonusCount}</strong></span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Number Grid */}
+                <div className="palette-grid-scroll" style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(36px, 1fr))',
+                  gap: '6px',
+                  maxHeight: '320px',
+                  overflowY: 'auto',
+                  padding: '2px 4px 6px 2px'
+                }}>
+                  {allQuestions.map(q => {
+                    const isCorrect = q.status === 'Correct';
+                    const isWrong = q.status === 'Wrong';
+                    const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
+                    let bg = '#f1f5f9';
+                    let border = '1.5px solid #cbd5e1';
+                    let color = '#475569';
+                    if (isCorrect) {
+                      bg = '#d1fae5';
+                      border = '1.5px solid #86efac';
+                      color = '#065f46';
+                    } else if (isWrong) {
+                      bg = '#fee2e2';
+                      border = '1.5px solid #fca5a5';
+                      color = '#991b1b';
+                    } else if (isBonus) {
+                      bg = '#f3e8ff';
+                      border = '1.5px solid #d8b4fe';
+                      color = '#6b21a8';
+                    }
+
+                    return (
+                      <button
+                        key={q.q_no}
+                        type="button"
+                        onClick={() => jumpToQuestion(q.q_no)}
+                        title={`Q.${q.q_no} [${q.section}] - ${q.status}`}
+                        style={{
+                          aspectRatio: '1',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '8px',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          border: border,
+                          background: bg,
+                          color: color,
+                          padding: 0,
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        {q.q_no}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Sidebar Card 1: 👤 User Information Profile with Integrated View Your Rank Button */}
             <div className="sidebar-profile-card" style={{
               background: '#ffffff',
@@ -795,6 +983,193 @@ export default function ReviewAnswerkeyPage() {
         </div>
 
       </div>
+
+      {/* Mobile Floating Question Palette Button (Only on screens <= 900px) */}
+      {allQuestions.length > 0 && (
+        <button
+          type="button"
+          className="mobile-palette-float-btn no-print"
+          onClick={() => setShowMobilePalette(true)}
+          style={{
+            position: 'fixed',
+            bottom: '22px',
+            right: '20px',
+            zIndex: 999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+            color: '#ffffff',
+            border: 'none',
+            padding: '11px 18px',
+            borderRadius: '999px',
+            boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
+            fontWeight: 800,
+            fontSize: '0.82rem',
+            cursor: 'pointer'
+          }}
+        >
+          <span>🎯 Question Palette</span>
+          <span style={{
+            background: '#ffffff',
+            color: '#1d4ed8',
+            padding: '2px 8px',
+            borderRadius: '12px',
+            fontSize: '0.72rem',
+            fontWeight: 900
+          }}>
+            {allQuestions.length}
+          </span>
+        </button>
+      )}
+
+      {/* Mobile Question Palette Bottom Drawer / Modal */}
+      {showMobilePalette && (
+        <div
+          className="no-print"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center'
+          }}
+          onClick={() => setShowMobilePalette(false)}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              width: '100%',
+              maxWidth: '560px',
+              borderTopLeftRadius: '22px',
+              borderTopRightRadius: '22px',
+              padding: '20px 18px',
+              maxHeight: '82vh',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 -10px 30px rgba(0,0,0,0.25)',
+              boxSizing: 'border-box'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.2rem' }}>🎯</span>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 900, color: '#0f172a' }}>
+                    Question Palette
+                  </h3>
+                  <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                    Tap any question to jump directly
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMobilePalette(false)}
+                style={{
+                  background: '#f1f5f9',
+                  border: 'none',
+                  color: '#475569',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontWeight: 900,
+                  fontSize: '0.95rem'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Legend */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '6px',
+              marginBottom: '12px',
+              padding: '8px 10px',
+              background: '#f8fafc',
+              borderRadius: '10px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              textAlign: 'center'
+            }}>
+              <div style={{ color: '#065f46' }}>🟢 {totalRight}</div>
+              <div style={{ color: '#991b1b' }}>🔴 {totalWrong}</div>
+              <div style={{ color: '#475569' }}>⚪ {totalUnattempted}</div>
+              <div style={{ color: '#6b21a8' }}>🟣 {pillBonusCount}</div>
+            </div>
+
+            {/* Grid */}
+            <div className="palette-grid-scroll" style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(42px, 1fr))',
+              gap: '8px',
+              overflowY: 'auto',
+              flex: 1,
+              padding: '4px'
+            }}>
+              {allQuestions.map(q => {
+                const isCorrect = q.status === 'Correct';
+                const isWrong = q.status === 'Wrong';
+                const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
+                let bg = '#f1f5f9';
+                let border = '1.5px solid #cbd5e1';
+                let color = '#475569';
+                if (isCorrect) {
+                  bg = '#d1fae5';
+                  border = '1.5px solid #86efac';
+                  color = '#065f46';
+                } else if (isWrong) {
+                  bg = '#fee2e2';
+                  border = '1.5px solid #fca5a5';
+                  color = '#991b1b';
+                } else if (isBonus) {
+                  bg = '#f3e8ff';
+                  border = '1.5px solid #d8b4fe';
+                  color = '#6b21a8';
+                }
+
+                return (
+                  <button
+                    key={q.q_no}
+                    type="button"
+                    onClick={() => jumpToQuestion(q.q_no)}
+                    style={{
+                      aspectRatio: '1',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '10px',
+                      fontSize: '0.84rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      border: border,
+                      background: bg,
+                      color: color,
+                      padding: 0
+                    }}
+                  >
+                    {q.q_no}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
