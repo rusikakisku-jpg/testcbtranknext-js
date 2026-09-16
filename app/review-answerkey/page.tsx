@@ -888,17 +888,14 @@ export default function ReviewAnswerkeyPage() {
                         </div>
                       </div>
 
-                      {/* Question Content & DigiALM Question Status Box */}
+                      {/* Question Content */}
                       <div style={{
                         padding: '18px 20px',
-                        display: 'flex',
-                        gap: '20px',
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        alignItems: 'flex-start'
+                        width: '100%',
+                        boxSizing: 'border-box'
                       }}>
-                        {/* Left Main: Question Stem & Options */}
-                        <div style={{ flex: '1 1 500px', minWidth: '280px' }}>
+                        {/* Question Stem & Options */}
+                        <div style={{ width: '100%' }}>
                           {/* Question Text / Image / HTML */}
                           <div style={{
                             fontSize: '0.92rem',
@@ -1023,87 +1020,6 @@ export default function ReviewAnswerkeyPage() {
                               })}
                             </div>
                           )}
-                        </div>
-
-                        {/* Right: The Famous DigiALM Official Question Information Table */}
-                        <div style={{
-                          flex: '0 0 240px',
-                          maxWidth: '100%',
-                          background: '#f8fafc',
-                          border: '1.5px solid #cbd5e1',
-                          borderRadius: '6px',
-                          overflow: 'hidden',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-                        }}>
-                          <div style={{
-                            background: '#e2e8f0',
-                            borderBottom: '1.5px solid #cbd5e1',
-                            padding: '7px 12px',
-                            fontSize: '0.74rem',
-                            fontWeight: 800,
-                            color: '#004080'
-                          }}>
-                            DigiALM Question Details
-                          </div>
-                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
-                            <tbody>
-                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Question ID :</td>
-                                <td style={{ padding: '6px 10px', fontWeight: 800, color: '#0f172a', textAlign: 'right' }}>{activeCbtQuestion.q_no}</td>
-                              </tr>
-                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Status :</td>
-                                <td style={{
-                                  padding: '6px 10px',
-                                  fontWeight: 800,
-                                  textAlign: 'right',
-                                  color: activeCbtQuestion.status === 'Unattempted' ? '#94a3b8' : '#16a34a'
-                                }}>
-                                  {activeCbtQuestion.status === 'Unattempted' ? 'Not Answered' : 'Answered'}
-                                </td>
-                              </tr>
-                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Chosen Option :</td>
-                                <td style={{ padding: '6px 10px', fontWeight: 800, color: '#0f172a', textAlign: 'right' }}>
-                                  {activeCbtQuestion.chosen_option ? activeCbtQuestion.chosen_option : '--'}
-                                </td>
-                              </tr>
-                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Given Key :</td>
-                                <td style={{ padding: '6px 10px', fontWeight: 800, color: '#16a34a', textAlign: 'right' }}>
-                                  {activeCbtQuestion.right_option ? activeCbtQuestion.right_option : 'Benefit to All'}
-                                </td>
-                              </tr>
-                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Evaluation :</td>
-                                <td style={{
-                                  padding: '6px 10px',
-                                  fontWeight: 900,
-                                  textAlign: 'right',
-                                  color: activeCbtQuestion.status === 'Correct' ? '#16a34a' :
-                                         activeCbtQuestion.status === 'Wrong' ? '#dc2626' :
-                                         activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? '#9333ea' : '#64748b'
-                                }}>
-                                  {activeCbtQuestion.status}
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Marks Awarded :</td>
-                                <td style={{
-                                  padding: '6px 10px',
-                                  fontWeight: 900,
-                                  textAlign: 'right',
-                                  color: activeCbtQuestion.status === 'Correct' ? '#16a34a' :
-                                         activeCbtQuestion.status === 'Wrong' ? '#dc2626' :
-                                         activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? '#9333ea' : '#64748b'
-                                }}>
-                                  {activeCbtQuestion.status === 'Correct' ? `+${rightVal}` :
-                                   activeCbtQuestion.status === 'Wrong' ? `-${wrongVal}` :
-                                   activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? `+${rightVal}` : '0.00'}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
                         </div>
                       </div>
 
