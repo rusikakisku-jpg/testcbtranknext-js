@@ -696,6 +696,22 @@ export default function RankPage() {
                       if (k === 'nac_percentage') label = 'NAC Percentage';
                       if (resultData.infoRows?.some(r => r.label.toLowerCase() === label.toLowerCase())) return null;
                       const valStr = String(v).trim();
+
+                      // 🛡️ Smart Deduplication against answersheet infoRows
+                      const isTradeField = (k === 'sub_type' || k === 'trade' || k === 'branch' || /trade|branch/i.test(label));
+                      const isDuplicate = resultData.infoRows?.some(r => {
+                        const rVal = (r.value || '').trim().toLowerCase();
+                        const tVal = valStr.toLowerCase();
+                        if (rVal === tVal) return true;
+                        if (isTradeField && /subject|paper|trade|branch|discipline|post/i.test(r.label)) {
+                          if (rVal.includes(tVal) && !/civil.*mechanical|mechanical.*electrical|civil.*electrical/i.test(rVal)) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      });
+                      if (isDuplicate) return null;
+
                       return (
                         <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
                           <span style={{ color: '#64748b', fontWeight: 600 }}>{label}:</span>
@@ -704,6 +720,19 @@ export default function RankPage() {
                       );
                     });
                   } else if (effectiveSubType && !resultData.infoRows?.some(r => /trade|branch|stream/i.test(r.label))) {
+                    const isDuplicateFallback = resultData.infoRows?.some(r => {
+                      const rVal = (r.value || '').trim().toLowerCase();
+                      const tVal = effectiveSubType.toLowerCase();
+                      if (rVal === tVal) return true;
+                      if (/subject|paper|trade|branch|discipline|post/i.test(r.label)) {
+                        if (rVal.includes(tVal) && !/civil.*mechanical|mechanical.*electrical|civil.*electrical/i.test(rVal)) {
+                          return true;
+                        }
+                      }
+                      return false;
+                    });
+                    if (isDuplicateFallback) return null;
+
                     return (
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
                         <span style={{ color: '#64748b', fontWeight: 600 }}>Trade / Branch:</span>
