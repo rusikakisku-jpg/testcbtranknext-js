@@ -902,10 +902,9 @@ export default function ReviewAnswerkeyPage() {
                         Show All Questions in {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({currentSecQuestions.length})
                       </button>
                     </div>
-                  ) : (
-                    activeCbtQuestion && (
-                      <>
-                        {/* Question Sub-Header Strip */}
+                  ) : activeCbtQuestion ? (
+                    <>
+                      {/* Question Sub-Header Strip */}
                       <div style={{
                         padding: '8px 18px',
                         background: '#f8fafc',
@@ -1179,7 +1178,7 @@ export default function ReviewAnswerkeyPage() {
                         </div>
                       </div>
                     </>
-                  )}
+                  ) : null}
                 </div>
               )}
 
