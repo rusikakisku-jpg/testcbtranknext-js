@@ -418,96 +418,7 @@ export default function ReviewAnswerkeyPage() {
                 </div>
               </div>
 
-              {/* View Mode Toggle & Download PDF Button Row (Hidden on Print) */}
-              <div className="no-print" style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                gap: '8px',
-                marginBottom: '14px',
-                borderBottom: '1px solid #f1f5f9',
-                paddingBottom: '12px'
-              }}>
-                {/* View Mode Toggle & Download PDF Button */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  {allQuestions.length > 0 && (
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', background: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                      <button
-                        type="button"
-                        onClick={() => setViewMode('CBT')}
-                        title="Switch to Real DigiALM / TCS iON CBT Interface"
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          padding: '4px 11px',
-                          borderRadius: '6px',
-                          fontSize: '0.7rem',
-                          fontWeight: 800,
-                          border: 'none',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          background: viewMode === 'CBT' ? 'linear-gradient(135deg, #004080 0%, #002b5c 100%)' : 'transparent',
-                          color: viewMode === 'CBT' ? '#ffffff' : '#475569',
-                          boxShadow: viewMode === 'CBT' ? '0 2px 6px rgba(0, 64, 128, 0.35)' : 'none'
-                        }}
-                      >
-                        <span>🖥️ DigiALM CBT</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setViewMode('LIST')}
-                        title="Switch to Full Question Paper List View"
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          padding: '4px 11px',
-                          borderRadius: '6px',
-                          fontSize: '0.7rem',
-                          fontWeight: 800,
-                          border: 'none',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          background: viewMode === 'LIST' ? 'linear-gradient(135deg, #004080 0%, #002b5c 100%)' : 'transparent',
-                          color: viewMode === 'LIST' ? '#ffffff' : '#475569',
-                          boxShadow: viewMode === 'LIST' ? '0 2px 6px rgba(0, 64, 128, 0.35)' : 'none'
-                        }}
-                      >
-                        <span>📋 Question Paper</span>
-                      </button>
-                    </div>
-                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => window.print()}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      background: '#ffffff',
-                      color: '#0f172a',
-                      border: '1.5px solid #cbd5e1',
-                      padding: '5px 12px',
-                      borderRadius: '14px',
-                      fontWeight: 800,
-                      fontSize: '0.72rem',
-                      cursor: 'pointer',
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                      transition: 'all 0.2s ease',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Download PDF
-                  </button>
-                </div>
-
-              </div>
 
               {/* Dynamic Section Selector Tabs (Shown only in List View, hidden in CBT mode & print) */}
               {viewMode !== 'CBT' && resultData.sections && resultData.sections.length > 1 && (
@@ -661,12 +572,7 @@ export default function ReviewAnswerkeyPage() {
                           })}
                         </div>
 
-                        {/* Right: DigiALM Question Meta Info */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.72rem', color: '#475569' }}>
-                          <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
-                            Marking: <strong style={{ color: '#16a34a' }}>+{rightVal}</strong> | <strong style={{ color: '#dc2626' }}>-{wrongVal}</strong>
-                          </span>
-                        </div>
+
                       </div>
 
                       {/* Question Sub-Header Strip */}
@@ -1154,17 +1060,37 @@ export default function ReviewAnswerkeyPage() {
                   </div>
                 </div>
 
-                {/* DigiALM 4-Grid Legend */}
+                {/* DigiALM 4-Grid Legend & Marking Scheme */}
                 <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '8px',
                   padding: '10px 12px',
                   background: '#f8fafc',
                   borderBottom: '1px solid #e2e8f0',
                   fontSize: '0.7rem',
                   fontWeight: 700
                 }}>
+                  {/* Marking Scheme */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '8px',
+                    padding: '4px 8px',
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: '5px',
+                    fontSize: '0.72rem'
+                  }}>
+                    <span style={{ color: '#475569', fontWeight: 800 }}>Marking Scheme:</span>
+                    <span style={{ fontWeight: 800, color: '#0f172a' }}>
+                      Marking: <strong style={{ color: '#16a34a' }}>+{rightVal}</strong> | <strong style={{ color: '#dc2626' }}>-{wrongVal}</strong>
+                    </span>
+                  </div>
+
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '8px'
+                  }}>
                   <div
                     onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Correct' ? 'ALL' : 'Correct', e)}
                     style={{
@@ -1251,6 +1177,7 @@ export default function ReviewAnswerkeyPage() {
                       <span>Marked for Review</span>
                     </div>
                   )}
+                  </div>
                 </div>
 
                 {/* DigiALM Section Ribbon Header */}
@@ -1362,20 +1289,29 @@ export default function ReviewAnswerkeyPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => window.print()}
+                    onClick={downloadPDF}
+                    disabled={isGeneratingPdf}
+                    title="Download high quality Printable PDF"
                     style={{
                       flex: 1,
                       padding: '6px',
                       borderRadius: '4px',
-                      border: '1px solid #cbd5e1',
+                      border: '1.5px solid #cbd5e1',
                       background: '#ffffff',
-                      color: '#334155',
+                      color: '#0f172a',
                       fontWeight: 800,
                       fontSize: '0.7rem',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px'
                     }}
                   >
-                    🖨️ Print
+                    <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download
                   </button>
                 </div>
               </div>
@@ -1549,6 +1485,24 @@ export default function ReviewAnswerkeyPage() {
               >
                 ✕
               </button>
+            </div>
+
+            {/* Mobile Marking Scheme Badge */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '10px',
+              padding: '4px 8px',
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '0.72rem'
+            }}>
+              <span style={{ color: '#475569', fontWeight: 800 }}>Marking Scheme:</span>
+              <span style={{ fontWeight: 800, color: '#0f172a' }}>
+                Marking: <strong style={{ color: '#16a34a' }}>+{rightVal}</strong> | <strong style={{ color: '#dc2626' }}>-{wrongVal}</strong>
+              </span>
             </div>
 
             {/* Legend */}
