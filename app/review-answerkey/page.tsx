@@ -1566,125 +1566,35 @@ export default function ReviewAnswerkeyPage() {
               </div>
             )}
 
-            {/* Sidebar Card 1: 👤 User Information Profile with Integrated View Your Rank Button */}
-            <div className="sidebar-profile-card" style={{
-              background: '#ffffff',
-              border: '1px solid #e2e8f0',
-              borderRadius: '18px',
-              padding: '16px',
-              boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
-                <div style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 900,
-                  fontSize: '0.9rem'
-                }}>
-                  👤
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '0.86rem', fontWeight: 900, color: '#0f172a', margin: 0, lineHeight: 1.2 }}>
-                    Candidate Profile
-                  </h3>
-                  <span style={{ fontSize: '0.7rem', color: '#64748b' }}>Response Sheet Details</span>
-                </div>
-              </div>
-
-              {/* Information Grid */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {resultData.infoRows && resultData.infoRows.length > 0 ? (
-                  resultData.infoRows.map((row, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '6px', fontSize: '0.76rem' }}>
-                      <span style={{ color: '#64748b', fontWeight: 600, flexShrink: 0, textTransform: 'capitalize' }}>
-                        {/community|caste|category/i.test(row.label) ? 'Community' : row.label}:
-                      </span>
-                      <strong style={{ color: '#0f172a', textAlign: 'right', wordBreak: 'break-word', fontFamily: /roll|registration|number|id/i.test(row.label) ? 'monospace' : 'inherit' }}>
-                        {row.value}
-                      </strong>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
-                      <span style={{ color: '#64748b', fontWeight: 600 }}>Name:</span>
-                      <strong style={{ color: '#0f172a' }}>{candidateName}</strong>
-                    </div>
-                    {rollNumber && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Roll No:</span>
-                        <strong style={{ color: '#0f172a', fontFamily: 'monospace' }}>{rollNumber}</strong>
-                      </div>
-                    )}
-                    {resultData.testDate && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Date:</span>
-                        <strong style={{ color: '#0f172a' }}>{resultData.testDate}</strong>
-                      </div>
-                    )}
-                    {resultData.testTime && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
-                        <span style={{ color: '#64748b', fontWeight: 600 }}>Time:</span>
-                        <strong style={{ color: '#0f172a' }}>{resultData.testTime}</strong>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {formData?.category && !resultData.infoRows?.some(r => /community|caste|category/i.test(r.label)) && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
-                    <span style={{ color: '#64748b', fontWeight: 600 }}>Category:</span>
-                    <strong style={{ color: '#0f172a' }}>{formData.category}</strong>
-                  </div>
-                )}
-                {formData?.state && !resultData.infoRows?.some(r => /state|zone|location/i.test(r.label)) && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
-                    <span style={{ color: '#64748b', fontWeight: 600 }}>State:</span>
-                    <strong style={{ color: '#0f172a' }}>{formData.state}</strong>
-                  </div>
-                )}
-              </div>
-
-              {/* Integrated View Your Rank Button directly below User Info */}
+            {/* Navigation Action Buttons: View Your Rank & Back to Scorecard */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
-                <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #f1f5f9' }}>
-                  <Link
-                    href="/rank"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                      color: '#ffffff',
-                      padding: '11px 16px',
-                      borderRadius: '12px',
-                      fontWeight: 800,
-                      fontSize: '0.85rem',
-                      textDecoration: 'none',
-                      boxShadow: '0 4px 12px rgba(5, 150, 105, 0.25)',
-                      textAlign: 'center',
-                      transition: 'all 0.2s ease'
-                    }}
-                  >
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    View Your Rank
-                  </Link>
-                </div>
+                <Link
+                  href="/rank"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                    color: '#ffffff',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    fontWeight: 800,
+                    fontSize: '0.86rem',
+                    textDecoration: 'none',
+                    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.25)',
+                    textAlign: 'center',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  View Your Rank
+                </Link>
               )}
 
-            </div>
-
-            {/* Sidebar Card 2: Back to Scorecard CTA */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <Link
                 href="/result"
                 style={{
