@@ -538,50 +538,50 @@ export default function ReviewAnswerkeyPage() {
                 {/* Right: View Mode Toggle & Download PDF Button */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   {allQuestions.length > 0 && (
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', background: '#f1f5f9', padding: '3px', borderRadius: '14px', border: '1px solid #cbd5e1' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', background: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       <button
                         type="button"
                         onClick={() => setViewMode('CBT')}
-                        title="Switch to Real Computer-Based Test (CBT) Interface"
+                        title="Switch to Real DigiALM / TCS iON CBT Interface"
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '5px',
                           padding: '4px 11px',
-                          borderRadius: '11px',
+                          borderRadius: '6px',
                           fontSize: '0.7rem',
                           fontWeight: 800,
                           border: 'none',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
-                          background: viewMode === 'CBT' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+                          background: viewMode === 'CBT' ? 'linear-gradient(135deg, #004080 0%, #002b5c 100%)' : 'transparent',
                           color: viewMode === 'CBT' ? '#ffffff' : '#475569',
-                          boxShadow: viewMode === 'CBT' ? '0 2px 6px rgba(37, 99, 235, 0.28)' : 'none'
+                          boxShadow: viewMode === 'CBT' ? '0 2px 6px rgba(0, 64, 128, 0.35)' : 'none'
                         }}
                       >
-                        <span>🖥️ CBT Mode</span>
+                        <span>🖥️ DigiALM CBT</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setViewMode('LIST')}
-                        title="Switch to Full Scrollable List View"
+                        title="Switch to Full Question Paper List View"
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '5px',
                           padding: '4px 11px',
-                          borderRadius: '11px',
+                          borderRadius: '6px',
                           fontSize: '0.7rem',
                           fontWeight: 800,
                           border: 'none',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
-                          background: viewMode === 'LIST' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+                          background: viewMode === 'LIST' ? 'linear-gradient(135deg, #004080 0%, #002b5c 100%)' : 'transparent',
                           color: viewMode === 'LIST' ? '#ffffff' : '#475569',
-                          boxShadow: viewMode === 'LIST' ? '0 2px 6px rgba(37, 99, 235, 0.28)' : 'none'
+                          boxShadow: viewMode === 'LIST' ? '0 2px 6px rgba(0, 64, 128, 0.35)' : 'none'
                         }}
                       >
-                        <span>📋 List View</span>
+                        <span>📋 Question Paper</span>
                       </button>
                     </div>
                   )}
@@ -700,67 +700,173 @@ export default function ReviewAnswerkeyPage() {
                       style={{
                         background: '#ffffff',
                         border: '1.5px solid #cbd5e1',
-                        borderRadius: '16px',
-                        boxShadow: '0 4px 20px rgba(15, 23, 42, 0.06)',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 20px rgba(0, 51, 102, 0.08)',
                         overflow: 'hidden',
                         display: 'flex',
                         flexDirection: 'column',
                         marginBottom: '16px'
                       }}
                     >
-                      {/* Top CBT Header Strip */}
+                      {/* DigiALM Master Navy Blue Header */}
                       <div style={{
-                        background: 'linear-gradient(to bottom, #f8fafc, #f1f5f9)',
-                        borderBottom: '1.5px solid #e2e8f0',
-                        padding: '12px 18px',
+                        background: 'linear-gradient(90deg, #003366 0%, #004b87 100%)',
+                        color: '#ffffff',
+                        padding: '10px 16px',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         flexWrap: 'wrap',
-                        gap: '10px'
+                        gap: '10px',
+                        borderBottom: '2px solid #002b55'
                       }}>
-                        {/* Left: Question No & Section */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                          <span style={{
-                            fontWeight: 900,
-                            fontSize: '0.92rem',
-                            color: '#1e3a8a',
-                            background: '#eff6ff',
-                            border: '1.5px solid #bfdbfe',
-                            padding: '4px 10px',
-                            borderRadius: '8px'
+                        <div>
+                          <div style={{ fontWeight: 900, fontSize: '0.96rem', letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ background: '#ffffff', color: '#003366', padding: '1px 6px', borderRadius: '3px', fontSize: '0.7rem', fontWeight: 900 }}>
+                              CBT
+                            </span>
+                            <span>{resultData.examName || resultData.headerBannerText || 'Computer Based Test Assessment'}</span>
+                          </div>
+                          <div style={{ fontSize: '0.68rem', opacity: 0.85, marginTop: '2px' }}>
+                            TCS iON / DigiALM Official Candidate Response Sheet Simulator
+                          </div>
+                        </div>
+
+                        {/* Candidate Profile Header Card */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          background: 'rgba(255, 255, 255, 0.1)',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255, 255, 255, 0.2)'
+                        }}>
+                          <div style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '4px',
+                            background: '#ffffff',
+                            color: '#003366',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.9rem',
+                            fontWeight: 900
                           }}>
+                            👤
+                          </div>
+                          <div style={{ fontSize: '0.72rem', lineHeight: 1.25 }}>
+                            <div style={{ fontWeight: 800 }}>{candidateName}</div>
+                            <div style={{ opacity: 0.9, fontSize: '0.66rem' }}>
+                              Roll: <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rollNumber || 'N/A'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* DigiALM Section Ribbon & Sub-Header */}
+                      <div style={{
+                        background: '#e9edf2',
+                        borderBottom: '2px solid #cbd5e1',
+                        padding: '8px 16px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '8px'
+                      }}>
+                        {/* Left: Dynamic Section Tabs in authentic DigiALM button style */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                          <button
+                            type="button"
+                            onClick={(e) => handleSecTabChange('ALL', e)}
+                            style={{
+                              padding: '5px 12px',
+                              borderRadius: '4px',
+                              fontSize: '0.74rem',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              border: activeSecTab === 'ALL' ? '1px solid #003366' : '1px solid #cbd5e1',
+                              background: activeSecTab === 'ALL' ? '#004080' : '#ffffff',
+                              color: activeSecTab === 'ALL' ? '#ffffff' : '#334155',
+                              boxShadow: activeSecTab === 'ALL' ? '0 2px 4px rgba(0, 64, 128, 0.25)' : 'none',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            All Sections {activeSecTab === 'ALL' ? '▾' : ''} ({allQuestions.length})
+                          </button>
+                          {resultData.sections && resultData.sections.map(sec => {
+                            const isActive = activeSecTab === sec.name;
+                            return (
+                              <button
+                                key={sec.name}
+                                type="button"
+                                onClick={(e) => handleSecTabChange(sec.name, e)}
+                                style={{
+                                  padding: '5px 12px',
+                                  borderRadius: '4px',
+                                  fontSize: '0.74rem',
+                                  fontWeight: 800,
+                                  cursor: 'pointer',
+                                  border: isActive ? '1px solid #003366' : '1px solid #cbd5e1',
+                                  background: isActive ? '#004080' : '#ffffff',
+                                  color: isActive ? '#ffffff' : '#334155',
+                                  boxShadow: isActive ? '0 2px 4px rgba(0, 64, 128, 0.25)' : 'none',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                {sec.name} {isActive ? '▾' : ''} ({sec.total})
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Right: DigiALM Question Meta Info */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.72rem', color: '#475569' }}>
+                          <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                            Type: MCQ
+                          </span>
+                          <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                            View in: English ▾
+                          </span>
+                          <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                            Marking: <strong style={{ color: '#16a34a' }}>+{rightVal}</strong> | <strong style={{ color: '#dc2626' }}>-{wrongVal}</strong>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Question Sub-Header Strip */}
+                      <div style={{
+                        padding: '8px 18px',
+                        background: '#f8fafc',
+                        borderBottom: '1.5px solid #e2e8f0',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '6px'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontWeight: 900, fontSize: '0.94rem', color: '#004080' }}>
                             Question No. {activeCbtQuestion.q_no}
                           </span>
                           {activeCbtQuestion.section && (
                             <span style={{
-                              fontSize: '0.72rem',
+                              fontSize: '0.7rem',
                               background: '#e2e8f0',
                               color: '#334155',
-                              padding: '3px 8px',
-                              borderRadius: '6px',
+                              padding: '2px 8px',
+                              borderRadius: '4px',
                               fontWeight: 700
                             }}>
                               {activeCbtQuestion.section}
                             </span>
                           )}
-                          <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>
-                            ({currentNavIdx + 1} of {cbtList.length})
-                          </span>
                         </div>
-
-                        {/* Right: Marking Scheme & Candidate Status */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                          <span style={{
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            background: '#f1f5f9',
-                            color: '#475569',
-                            padding: '3px 8px',
-                            borderRadius: '6px',
-                            border: '1px solid #e2e8f0'
-                          }}>
-                            Marks: <strong style={{ color: '#16a34a' }}>+{rightVal}</strong> / <strong style={{ color: '#dc2626' }}>-{wrongVal}</strong>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700 }}>
+                            Question {currentNavIdx + 1} of {cbtList.length}
                           </span>
                           {(() => {
                             const isCorrect = activeCbtQuestion.status === 'Correct';
@@ -768,270 +874,349 @@ export default function ReviewAnswerkeyPage() {
                             const isBonus = activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' || activeCbtQuestion.right_option === 'Benefit to All';
                             return (
                               <span style={{
-                                fontSize: '0.72rem',
-                                fontWeight: 900,
-                                padding: '3px 10px',
-                                borderRadius: '10px',
-                                background: isCorrect ? '#10b981' : isWrong ? '#ef4444' : isBonus ? '#9333ea' : '#64748b',
-                                color: '#ffffff',
-                                whiteSpace: 'nowrap'
+                                fontSize: '0.7rem',
+                                fontWeight: 800,
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                background: isCorrect ? '#16a34a' : isWrong ? '#dc2626' : isBonus ? '#9333ea' : '#94a3b8',
+                                color: '#ffffff'
                               }}>
-                                {isCorrect ? `✓ Correct (+${rightVal})` : isWrong ? `✗ Wrong (-${wrongVal})` : isBonus ? `★ Bonus (+${rightVal})` : '○ Unattempted (0.0)'}
+                                {isCorrect ? `Correct (+${rightVal})` : isWrong ? `Wrong (-${wrongVal})` : isBonus ? `Bonus (+${rightVal})` : 'Not Attempted'}
                               </span>
                             );
                           })()}
                         </div>
                       </div>
 
-                      {/* Question Stem Body */}
+                      {/* Question Content & DigiALM Question Status Box */}
                       <div style={{
-                        padding: '20px',
-                        borderBottom: '1px solid #f1f5f9'
+                        padding: '18px 20px',
+                        display: 'flex',
+                        gap: '20px',
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        alignItems: 'flex-start'
                       }}>
-                        <div style={{
-                          fontSize: '0.94rem',
-                          color: '#0f172a',
-                          fontWeight: 600,
-                          lineHeight: 1.6,
-                          wordBreak: 'break-word',
-                          overflowWrap: 'break-word',
-                          maxWidth: '100%',
-                          boxSizing: 'border-box'
-                        }}>
-                          {activeCbtQuestion.question_html ? (
-                            <div className="review-img-fluid" style={{ maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: activeCbtQuestion.question_html }} />
-                          ) : activeCbtQuestion.question_image ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={activeCbtQuestion.question_image} alt={`Question ${activeCbtQuestion.q_no}`} style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', display: 'block' }} />
-                          ) : (
-                            <div style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{activeCbtQuestion.question_text}</div>
+                        {/* Left Main: Question Stem & Options */}
+                        <div style={{ flex: '1 1 500px', minWidth: '280px' }}>
+                          {/* Question Text / Image / HTML */}
+                          <div style={{
+                            fontSize: '0.92rem',
+                            color: '#0f172a',
+                            fontWeight: 600,
+                            lineHeight: 1.6,
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
+                            marginBottom: '16px'
+                          }}>
+                            {activeCbtQuestion.question_html ? (
+                              <div className="review-img-fluid" style={{ maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: activeCbtQuestion.question_html }} />
+                            ) : activeCbtQuestion.question_image ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={activeCbtQuestion.question_image} alt={`Question ${activeCbtQuestion.q_no}`} style={{ maxWidth: '100%', height: 'auto', borderRadius: '6px', display: 'block' }} />
+                            ) : (
+                              <div style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{activeCbtQuestion.question_text}</div>
+                            )}
+                          </div>
+
+                          {/* Options List */}
+                          {activeCbtQuestion.options && activeCbtQuestion.options.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                Options / Choices:
+                              </div>
+                              {activeCbtQuestion.options.map(opt => {
+                                const isBonus = activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' || activeCbtQuestion.right_option === 'Benefit to All';
+                                const isOptRight = !isBonus && opt.is_correct;
+                                const chosenLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'][opt.option_no - 1] || '';
+                                const isOptChosen = (activeCbtQuestion.chosen_option_id && opt.option_id && activeCbtQuestion.chosen_option_id === opt.option_id) || 
+                                                   (activeCbtQuestion.chosen_option && String(activeCbtQuestion.chosen_option).trim().toLowerCase() === String(opt.option_no).trim().toLowerCase()) ||
+                                                   (activeCbtQuestion.chosen_option && chosenLetter && String(activeCbtQuestion.chosen_option).trim().toUpperCase() === chosenLetter);
+
+                                let bg = '#ffffff';
+                                let border = '1.5px solid #e2e8f0';
+                                let color = '#334155';
+                                let badgeText = '';
+
+                                if (!isBonus) {
+                                  if (isOptRight && isOptChosen) {
+                                    bg = '#ecfdf5';
+                                    border = '2px solid #16a34a';
+                                    color = '#14532d';
+                                    badgeText = '✔ Correct & Chosen by You';
+                                  } else if (isOptRight) {
+                                    bg = '#f0fdf4';
+                                    border = '2px solid #16a34a';
+                                    color = '#14532d';
+                                    badgeText = '✔ Official Correct Option';
+                                  } else if (isOptChosen) {
+                                    bg = '#fef2f2';
+                                    border = '2px solid #dc2626';
+                                    color = '#7f1d1d';
+                                    badgeText = '✖ Your Option (Incorrect)';
+                                  }
+                                }
+
+                                const cleanOptHtml = opt.option_html ? opt.option_html.replace(new RegExp(`^(\\s*(?:<[^>]+>\\s*)*)${opt.option_no}[\\.\\)]\\s*`, 'i'), '$1') : '';
+                                const cleanOptText = opt.option_text ? opt.option_text.replace(new RegExp(`^(\\s*)${opt.option_no}[\\.\\)]\\s*`, 'i'), '$1') : '';
+
+                                return (
+                                  <div
+                                    key={opt.option_no}
+                                    style={{
+                                      padding: '10px 14px',
+                                      borderRadius: '6px',
+                                      background: bg,
+                                      border: border,
+                                      color: color,
+                                      fontSize: '0.84rem',
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'flex-start',
+                                      width: '100%',
+                                      boxSizing: 'border-box',
+                                      overflow: 'hidden',
+                                      gap: '10px',
+                                      transition: 'all 0.15s ease'
+                                    }}
+                                  >
+                                    <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '8px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                                      {/* DigiALM Style Radio Button */}
+                                      <span style={{
+                                        width: '18px',
+                                        height: '18px',
+                                        borderRadius: '50%',
+                                        border: isOptChosen ? '5px solid #004080' : '2px solid #94a3b8',
+                                        background: '#ffffff',
+                                        flexShrink: 0,
+                                        marginTop: '2px',
+                                        display: 'inline-block'
+                                      }} />
+                                      <span style={{ fontWeight: 800, flexShrink: 0, marginTop: '1px' }}>{opt.option_no}.</span>
+                                      {cleanOptHtml ? (
+                                        <div className="review-img-fluid" style={{ flex: 1, minWidth: 0, maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: cleanOptHtml }} />
+                                      ) : opt.option_image ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={opt.option_image} alt={`Option ${opt.option_no}`} style={{ maxWidth: '100%', height: 'auto', maxHeight: '160px', objectFit: 'contain', display: 'block', borderRadius: '4px' }} />
+                                      ) : (
+                                        <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word', flex: 1, minWidth: 0, paddingTop: '1px' }}>{cleanOptText}</span>
+                                      )}
+                                    </div>
+                                    {badgeText && (
+                                      <span style={{
+                                        fontSize: '0.7rem',
+                                        fontWeight: 900,
+                                        padding: '2px 8px',
+                                        borderRadius: '4px',
+                                        background: isOptRight ? '#16a34a' : '#dc2626',
+                                        color: '#ffffff',
+                                        marginLeft: '6px',
+                                        whiteSpace: 'nowrap',
+                                        flexShrink: 0,
+                                        marginTop: '2px'
+                                      }}>
+                                        {badgeText}
+                                      </span>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
                           )}
                         </div>
-                      </div>
 
-                      {/* Options List */}
-                      {activeCbtQuestion.options && activeCbtQuestion.options.length > 0 && (
-                        <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
-                            Options:
-                          </div>
-                          {activeCbtQuestion.options.map(opt => {
-                            const isBonus = activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' || activeCbtQuestion.right_option === 'Benefit to All';
-                            const isOptRight = !isBonus && opt.is_correct;
-                            const chosenLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'][opt.option_no - 1] || '';
-                            const isOptChosen = (activeCbtQuestion.chosen_option_id && opt.option_id && activeCbtQuestion.chosen_option_id === opt.option_id) || 
-                                               (activeCbtQuestion.chosen_option && String(activeCbtQuestion.chosen_option).trim().toLowerCase() === String(opt.option_no).trim().toLowerCase()) ||
-                                               (activeCbtQuestion.chosen_option && chosenLetter && String(activeCbtQuestion.chosen_option).trim().toUpperCase() === chosenLetter);
-
-                            let bg = '#ffffff';
-                            let border = '1.5px solid #e2e8f0';
-                            let color = '#334155';
-                            let badgeText = '';
-
-                            if (!isBonus) {
-                              if (isOptRight && isOptChosen) {
-                                bg = '#d1fae5';
-                                border = '2px solid #10b981';
-                                color = '#065f46';
-                                badgeText = '✓ Correct & Marked by You';
-                              } else if (isOptRight) {
-                                bg = '#ecfdf5';
-                                border = '2px solid #10b981';
-                                color = '#065f46';
-                                badgeText = '✓ Official Correct Answer';
-                              } else if (isOptChosen) {
-                                bg = '#fef2f2';
-                                border = '2px solid #ef4444';
-                                color = '#991b1b';
-                                badgeText = '✗ Your Marked Answer';
-                              }
-                            }
-
-                            const cleanOptHtml = opt.option_html ? opt.option_html.replace(new RegExp(`^(\\s*(?:<[^>]+>\\s*)*)${opt.option_no}[\\.\\)]\\s*`, 'i'), '$1') : '';
-                            const cleanOptText = opt.option_text ? opt.option_text.replace(new RegExp(`^(\\s*)${opt.option_no}[\\.\\)]\\s*`, 'i'), '$1') : '';
-
-                            return (
-                              <div
-                                key={opt.option_no}
-                                style={{
-                                  padding: '10px 14px',
-                                  borderRadius: '10px',
-                                  background: bg,
-                                  border: border,
-                                  color: color,
-                                  fontSize: '0.84rem',
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'flex-start',
-                                  width: '100%',
-                                  boxSizing: 'border-box',
-                                  overflow: 'hidden',
-                                  gap: '10px',
-                                  transition: 'all 0.15s ease'
-                                }}
-                              >
-                                <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '8px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                                  <span style={{
-                                    width: '22px',
-                                    height: '22px',
-                                    borderRadius: '50%',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '0.72rem',
-                                    fontWeight: 900,
-                                    flexShrink: 0,
-                                    marginTop: '1px',
-                                    background: isOptChosen ? (isOptRight ? '#10b981' : '#ef4444') : (isOptRight ? '#10b981' : '#e2e8f0'),
-                                    color: isOptChosen || isOptRight ? '#ffffff' : '#475569'
-                                  }}>
-                                    {opt.option_no}
-                                  </span>
-                                  {cleanOptHtml ? (
-                                    <div className="review-img-fluid" style={{ flex: 1, minWidth: 0, maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: cleanOptHtml }} />
-                                  ) : opt.option_image ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={opt.option_image} alt={`Option ${opt.option_no}`} style={{ maxWidth: '100%', height: 'auto', maxHeight: '160px', objectFit: 'contain', display: 'block', borderRadius: '4px' }} />
-                                  ) : (
-                                    <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word', flex: 1, minWidth: 0, paddingTop: '1px' }}>{cleanOptText}</span>
-                                  )}
-                                </div>
-                                {badgeText && (
-                                  <span style={{
-                                    fontSize: '0.7rem',
-                                    fontWeight: 900,
-                                    padding: '2px 8px',
-                                    borderRadius: '6px',
-                                    background: isOptRight ? '#10b981' : '#ef4444',
-                                    color: '#ffffff',
-                                    marginLeft: '6px',
-                                    whiteSpace: 'nowrap',
-                                    flexShrink: 0,
-                                    marginTop: '2px'
-                                  }}>
-                                    {badgeText}
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      {/* CBT Exam Response Status Strip */}
-                      <div style={{
-                        margin: '0 20px 16px 20px',
-                        padding: '8px 14px',
-                        background: '#f8fafc',
-                        borderRadius: '8px',
-                        border: '1px solid #e2e8f0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: '8px',
-                        fontSize: '0.72rem',
-                        color: '#475569',
-                        fontWeight: 700
-                      }}>
-                        <div>
-                          <span>Your Response: </span>
-                          <strong style={{ color: activeCbtQuestion.chosen_option ? '#0f172a' : '#94a3b8' }}>
-                            {activeCbtQuestion.chosen_option ? `Option ${activeCbtQuestion.chosen_option}` : 'Not Attempted'}
-                          </strong>
-                        </div>
-                        <div>
-                          <span>Official Key: </span>
-                          <strong style={{ color: '#065f46' }}>
-                            {activeCbtQuestion.right_option ? `Option ${activeCbtQuestion.right_option}` : 'Benefit to All'}
-                          </strong>
-                        </div>
-                        <div>
-                          <span>Status: </span>
-                          <strong style={{
-                            color: activeCbtQuestion.status === 'Correct' ? '#16a34a' :
-                                   activeCbtQuestion.status === 'Wrong' ? '#dc2626' :
-                                   activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? '#9333ea' : '#64748b'
+                        {/* Right: The Famous DigiALM Official Question Information Table */}
+                        <div style={{
+                          flex: '0 0 240px',
+                          maxWidth: '100%',
+                          background: '#f8fafc',
+                          border: '1.5px solid #cbd5e1',
+                          borderRadius: '6px',
+                          overflow: 'hidden',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                        }}>
+                          <div style={{
+                            background: '#e2e8f0',
+                            borderBottom: '1.5px solid #cbd5e1',
+                            padding: '7px 12px',
+                            fontSize: '0.74rem',
+                            fontWeight: 800,
+                            color: '#004080'
                           }}>
-                            {activeCbtQuestion.status}
-                          </strong>
+                            DigiALM Question Details
+                          </div>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Question ID :</td>
+                                <td style={{ padding: '6px 10px', fontWeight: 800, color: '#0f172a', textAlign: 'right' }}>{activeCbtQuestion.q_no}</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Status :</td>
+                                <td style={{
+                                  padding: '6px 10px',
+                                  fontWeight: 800,
+                                  textAlign: 'right',
+                                  color: activeCbtQuestion.status === 'Unattempted' ? '#94a3b8' : '#16a34a'
+                                }}>
+                                  {activeCbtQuestion.status === 'Unattempted' ? 'Not Answered' : 'Answered'}
+                                </td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Chosen Option :</td>
+                                <td style={{ padding: '6px 10px', fontWeight: 800, color: '#0f172a', textAlign: 'right' }}>
+                                  {activeCbtQuestion.chosen_option ? activeCbtQuestion.chosen_option : '--'}
+                                </td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Given Key :</td>
+                                <td style={{ padding: '6px 10px', fontWeight: 800, color: '#16a34a', textAlign: 'right' }}>
+                                  {activeCbtQuestion.right_option ? activeCbtQuestion.right_option : 'Benefit to All'}
+                                </td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Evaluation :</td>
+                                <td style={{
+                                  padding: '6px 10px',
+                                  fontWeight: 900,
+                                  textAlign: 'right',
+                                  color: activeCbtQuestion.status === 'Correct' ? '#16a34a' :
+                                         activeCbtQuestion.status === 'Wrong' ? '#dc2626' :
+                                         activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? '#9333ea' : '#64748b'
+                                }}>
+                                  {activeCbtQuestion.status}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style={{ padding: '6px 10px', color: '#475569', fontWeight: 600 }}>Marks Awarded :</td>
+                                <td style={{
+                                  padding: '6px 10px',
+                                  fontWeight: 900,
+                                  textAlign: 'right',
+                                  color: activeCbtQuestion.status === 'Correct' ? '#16a34a' :
+                                         activeCbtQuestion.status === 'Wrong' ? '#dc2626' :
+                                         activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? '#9333ea' : '#64748b'
+                                }}>
+                                  {activeCbtQuestion.status === 'Correct' ? `+${rightVal}` :
+                                   activeCbtQuestion.status === 'Wrong' ? `-${wrongVal}` :
+                                   activeCbtQuestion.status === 'Discarded' || activeCbtQuestion.status === 'Bonus' ? `+${rightVal}` : '0.00'}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
 
-                      {/* CBT Navigation Toolbar (Bottom) */}
+                      {/* DigiALM Bottom Action Bar */}
                       <div style={{
-                        background: '#f8fafc',
-                        borderTop: '1.5px solid #e2e8f0',
-                        padding: '12px 18px',
+                        background: '#e9edf2',
+                        borderTop: '2px solid #cbd5e1',
+                        padding: '10px 18px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '10px',
                         flexWrap: 'wrap'
                       }}>
-                        <button
-                          type="button"
-                          disabled={currentNavIdx <= 0}
-                          onClick={() => {
-                            if (currentNavIdx > 0) {
-                              jumpToQuestion(cbtList[currentNavIdx - 1].q_no);
-                            }
-                          }}
-                          title="Previous Question (Left Arrow ◄)"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: '7px 16px',
-                            borderRadius: '10px',
-                            fontSize: '0.76rem',
-                            fontWeight: 800,
-                            border: '1.5px solid #cbd5e1',
-                            background: currentNavIdx <= 0 ? '#f1f5f9' : '#ffffff',
-                            color: currentNavIdx <= 0 ? '#94a3b8' : '#0f172a',
-                            cursor: currentNavIdx <= 0 ? 'not-allowed' : 'pointer',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <span>⬅️ Previous</span>
-                        </button>
+                        {/* Left: Question Paper & Clear Filter */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <button
+                            type="button"
+                            onClick={() => setViewMode('LIST')}
+                            title="View Full Question Paper List"
+                            style={{
+                              padding: '7px 14px',
+                              borderRadius: '4px',
+                              fontSize: '0.74rem',
+                              fontWeight: 700,
+                              border: '1px solid #4f46e5',
+                              background: '#4f46e5',
+                              color: '#ffffff',
+                              cursor: 'pointer',
+                              boxShadow: '0 1px 3px rgba(79, 70, 229, 0.25)'
+                            }}
+                          >
+                            📋 Question Paper
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleStatusFilterChange('ALL', e)}
+                            title="Reset status filters to see all questions"
+                            style={{
+                              padding: '7px 14px',
+                              borderRadius: '4px',
+                              fontSize: '0.74rem',
+                              fontWeight: 700,
+                              border: '1px solid #cbd5e1',
+                              background: '#ffffff',
+                              color: '#334155',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Clear Filter
+                          </button>
+                        </div>
 
+                        {/* Center: Question Counter */}
                         <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#0f172a' }}>
+                          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#004080' }}>
                             Question {currentNavIdx + 1} of {cbtList.length}
                           </div>
                           <div style={{ fontSize: '0.64rem', color: '#64748b' }}>
-                            Shortcut: Press ◄ / ► arrow keys
+                            (Keyboard: ◄ / ► arrow keys)
                           </div>
                         </div>
 
-                        <button
-                          type="button"
-                          disabled={currentNavIdx >= cbtList.length - 1}
-                          onClick={() => {
-                            if (currentNavIdx < cbtList.length - 1) {
-                              jumpToQuestion(cbtList[currentNavIdx + 1].q_no);
-                            }
-                          }}
-                          title="Next Question (Right Arrow ►)"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            padding: '7px 18px',
-                            borderRadius: '10px',
-                            fontSize: '0.76rem',
-                            fontWeight: 800,
-                            border: 'none',
-                            background: currentNavIdx >= cbtList.length - 1 ? '#94a3b8' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                            color: '#ffffff',
-                            cursor: currentNavIdx >= cbtList.length - 1 ? 'not-allowed' : 'pointer',
-                            boxShadow: currentNavIdx >= cbtList.length - 1 ? 'none' : '0 2px 8px rgba(37, 99, 235, 0.3)',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <span>Next ➡️</span>
-                        </button>
+                        {/* Right: Previous & Save and Next */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <button
+                            type="button"
+                            disabled={currentNavIdx <= 0}
+                            onClick={() => {
+                              if (currentNavIdx > 0) {
+                                jumpToQuestion(cbtList[currentNavIdx - 1].q_no);
+                              }
+                            }}
+                            title="Previous Question (◄ Left Arrow)"
+                            style={{
+                              padding: '7px 16px',
+                              borderRadius: '4px',
+                              fontSize: '0.76rem',
+                              fontWeight: 700,
+                              border: '1px solid #cbd5e1',
+                              background: currentNavIdx <= 0 ? '#f1f5f9' : '#ffffff',
+                              color: currentNavIdx <= 0 ? '#94a3b8' : '#0f172a',
+                              cursor: currentNavIdx <= 0 ? 'not-allowed' : 'pointer',
+                              boxShadow: currentNavIdx <= 0 ? 'none' : '0 1px 3px rgba(0,0,0,0.05)'
+                            }}
+                          >
+                            ◄ Previous
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={currentNavIdx >= cbtList.length - 1}
+                            onClick={() => {
+                              if (currentNavIdx < cbtList.length - 1) {
+                                jumpToQuestion(cbtList[currentNavIdx + 1].q_no);
+                              }
+                            }}
+                            title="Save & Next Question (► Right Arrow)"
+                            style={{
+                              padding: '7px 18px',
+                              borderRadius: '4px',
+                              fontSize: '0.76rem',
+                              fontWeight: 800,
+                              border: 'none',
+                              background: currentNavIdx >= cbtList.length - 1 ? '#94a3b8' : '#16a34a',
+                              color: '#ffffff',
+                              cursor: currentNavIdx >= cbtList.length - 1 ? 'not-allowed' : 'pointer',
+                              boxShadow: currentNavIdx >= cbtList.length - 1 ? 'none' : '0 2px 6px rgba(22, 163, 74, 0.3)'
+                            }}
+                          >
+                            Save & Next ►
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1177,81 +1362,99 @@ export default function ReviewAnswerkeyPage() {
             top: '20px'
           }}>
 
-            {/* Sidebar Card 0: 🎯 Question Palette */}
+            {/* Sidebar Card 0: 🎯 DigiALM Question Palette */}
             {allQuestions.length > 0 && (
               <div className="sidebar-palette-card" style={{
                 background: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '18px',
-                padding: '16px',
-                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)'
+                border: '1.5px solid #cbd5e1',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                boxShadow: '0 4px 16px rgba(0, 51, 102, 0.08)'
               }}>
-                {/* Palette Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                      color: '#ffffff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.85rem'
-                    }}>
-                      🎯
+                {/* Candidate Info Strip in Palette (Authentic DigiALM Top Right Card) */}
+                <div style={{
+                  background: 'linear-gradient(90deg, #003366 0%, #004b87 100%)',
+                  color: '#ffffff',
+                  padding: '10px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px'
+                }}>
+                  <div style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '4px',
+                    background: '#ffffff',
+                    color: '#003366',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.1rem',
+                    fontWeight: 900,
+                    flexShrink: 0
+                  }}>
+                    👤
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {candidateName}
                     </div>
-                    <div>
-                      <h3 style={{ fontSize: '0.86rem', fontWeight: 900, color: '#0f172a', margin: 0, lineHeight: 1.2 }}>
-                        Question Palette
-                      </h3>
-                      <span style={{ fontSize: '0.68rem', color: '#64748b' }}>Jump to any question</span>
+                    <div style={{ fontSize: '0.68rem', opacity: 0.85 }}>
+                      Roll: <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rollNumber || 'N/A'}</span>
                     </div>
                   </div>
-                  <span style={{
-                    fontSize: '0.68rem',
-                    fontWeight: 800,
-                    background: '#eff6ff',
-                    color: '#1d4ed8',
-                    border: '1px solid #bfdbfe',
-                    padding: '2px 8px',
-                    borderRadius: '12px'
-                  }}>
-                    {allQuestions.length} Qs
-                  </span>
                 </div>
 
-                {/* Legend Grid */}
+                {/* DigiALM 4-Grid Legend */}
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '6px',
-                  marginBottom: '12px',
-                  padding: '8px 10px',
+                  gap: '8px',
+                  padding: '10px 12px',
                   background: '#f8fafc',
-                  borderRadius: '10px',
-                  fontSize: '0.68rem',
+                  borderBottom: '1px solid #e2e8f0',
+                  fontSize: '0.7rem',
                   fontWeight: 700
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#065f46' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
-                    <span>Correct: <strong>{totalRight}</strong></span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#166534' }}>
+                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#16a34a', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                      {totalRight}
+                    </span>
+                    <span>Answered (Correct)</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#991b1b' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
-                    <span>Wrong: <strong>{totalWrong}</strong></span>
+                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#dc2626', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                      {totalWrong}
+                    </span>
+                    <span>Not Answered (Wrong)</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#475569' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#94a3b8', display: 'inline-block' }} />
-                    <span>Skip: <strong>{totalUnattempted}</strong></span>
+                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#94a3b8', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                      {totalUnattempted}
+                    </span>
+                    <span>Not Visited</span>
                   </div>
                   {pillBonusCount > 0 && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#6b21a8' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#9333ea', display: 'inline-block' }} />
-                      <span>Bonus: <strong>{pillBonusCount}</strong></span>
+                      <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#9333ea', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                        {pillBonusCount}
+                      </span>
+                      <span>Marked for Review</span>
                     </div>
                   )}
+                </div>
+
+                {/* DigiALM Section Ribbon Header */}
+                <div style={{
+                  background: '#004080',
+                  color: '#ffffff',
+                  padding: '6px 12px',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em'
+                }}>
+                  SECTION : {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab}
                 </div>
 
                 {/* Number Grid */}
@@ -1261,7 +1464,7 @@ export default function ReviewAnswerkeyPage() {
                   gap: '6px',
                   maxHeight: '320px',
                   overflowY: 'auto',
-                  padding: '2px 4px 6px 2px'
+                  padding: '10px 12px'
                 }}>
                   {allQuestions.map(q => {
                     const isCorrect = q.status === 'Correct';
@@ -1269,20 +1472,20 @@ export default function ReviewAnswerkeyPage() {
                     const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
                     const isActiveCbtQ = viewMode === 'CBT' && q.q_no === activeQNo;
                     let bg = '#f1f5f9';
-                    let border = '1.5px solid #cbd5e1';
+                    let border = '1px solid #cbd5e1';
                     let color = '#475569';
                     if (isCorrect) {
-                      bg = '#d1fae5';
-                      border = '1.5px solid #86efac';
-                      color = '#065f46';
+                      bg = '#16a34a';
+                      border = '1px solid #15803d';
+                      color = '#ffffff';
                     } else if (isWrong) {
-                      bg = '#fee2e2';
-                      border = '1.5px solid #fca5a5';
-                      color = '#991b1b';
+                      bg = '#dc2626';
+                      border = '1px solid #b91c1c';
+                      color = '#ffffff';
                     } else if (isBonus) {
-                      bg = '#f3e8ff';
-                      border = '1.5px solid #d8b4fe';
-                      color = '#6b21a8';
+                      bg = '#9333ea';
+                      border = '1px solid #7e22ce';
+                      color = '#ffffff';
                     }
 
                     return (
@@ -1296,17 +1499,17 @@ export default function ReviewAnswerkeyPage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          borderRadius: '8px',
+                          borderRadius: '4px',
                           fontSize: '0.72rem',
-                          fontWeight: isActiveCbtQ ? 900 : 800,
+                          fontWeight: isActiveCbtQ ? 900 : 700,
                           cursor: 'pointer',
-                          border: isActiveCbtQ ? '2px solid #1d4ed8' : border,
+                          border: isActiveCbtQ ? '2px solid #004080' : border,
                           background: bg,
                           color: color,
                           padding: 0,
                           transition: 'all 0.15s ease',
-                          transform: isActiveCbtQ ? 'scale(1.12)' : 'none',
-                          boxShadow: isActiveCbtQ ? '0 0 0 2.5px #2563eb, 0 4px 12px rgba(37, 99, 235, 0.4)' : 'none',
+                          transform: isActiveCbtQ ? 'scale(1.15)' : 'none',
+                          boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 12px rgba(0, 64, 128, 0.4)' : 'none',
                           zIndex: isActiveCbtQ ? 2 : 1,
                           position: 'relative'
                         }}
@@ -1315,6 +1518,50 @@ export default function ReviewAnswerkeyPage() {
                       </button>
                     );
                   })}
+                </div>
+
+                {/* Bottom Palette Action Buttons */}
+                <div style={{
+                  background: '#f8fafc',
+                  borderTop: '1px solid #e2e8f0',
+                  padding: '8px 12px',
+                  display: 'flex',
+                  gap: '8px'
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode(viewMode === 'CBT' ? 'LIST' : 'CBT')}
+                    style={{
+                      flex: 1,
+                      padding: '6px',
+                      borderRadius: '4px',
+                      border: '1px solid #004080',
+                      background: '#ffffff',
+                      color: '#004080',
+                      fontWeight: 800,
+                      fontSize: '0.7rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {viewMode === 'CBT' ? '📋 Question Paper' : '🖥️ DigiALM CBT'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    style={{
+                      flex: 1,
+                      padding: '6px',
+                      borderRadius: '4px',
+                      border: '1px solid #cbd5e1',
+                      background: '#ffffff',
+                      color: '#334155',
+                      fontWeight: 800,
+                      fontSize: '0.7rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🖨️ Print
+                  </button>
                 </div>
               </div>
             )}
@@ -1587,12 +1834,13 @@ export default function ReviewAnswerkeyPage() {
               marginBottom: '12px',
               padding: '8px 10px',
               background: '#f8fafc',
-              borderRadius: '10px',
+              borderRadius: '6px',
               fontSize: '0.72rem',
-              fontWeight: 700,
-              textAlign: 'center'
+              fontWeight: 800,
+              textAlign: 'center',
+              border: '1px solid #e2e8f0'
             }}>
-              <div style={{ color: '#065f46' }}>🟢 {totalRight}</div>
+              <div style={{ color: '#166534' }}>🟢 {totalRight}</div>
               <div style={{ color: '#991b1b' }}>🔴 {totalWrong}</div>
               <div style={{ color: '#475569' }}>⚪ {totalUnattempted}</div>
               <div style={{ color: '#6b21a8' }}>🟣 {pillBonusCount}</div>
@@ -1613,20 +1861,20 @@ export default function ReviewAnswerkeyPage() {
                 const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
                 const isActiveCbtQ = viewMode === 'CBT' && q.q_no === activeQNo;
                 let bg = '#f1f5f9';
-                let border = '1.5px solid #cbd5e1';
+                let border = '1px solid #cbd5e1';
                 let color = '#475569';
                 if (isCorrect) {
-                  bg = '#d1fae5';
-                  border = '1.5px solid #86efac';
-                  color = '#065f46';
+                  bg = '#16a34a';
+                  border = '1px solid #15803d';
+                  color = '#ffffff';
                 } else if (isWrong) {
-                  bg = '#fee2e2';
-                  border = '1.5px solid #fca5a5';
-                  color = '#991b1b';
+                  bg = '#dc2626';
+                  border = '1px solid #b91c1c';
+                  color = '#ffffff';
                 } else if (isBonus) {
-                  bg = '#f3e8ff';
-                  border = '1.5px solid #d8b4fe';
-                  color = '#6b21a8';
+                  bg = '#9333ea';
+                  border = '1px solid #7e22ce';
+                  color = '#ffffff';
                 }
 
                 return (
@@ -1639,17 +1887,17 @@ export default function ReviewAnswerkeyPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      borderRadius: '10px',
+                      borderRadius: '4px',
                       fontSize: '0.84rem',
-                      fontWeight: isActiveCbtQ ? 900 : 800,
+                      fontWeight: isActiveCbtQ ? 900 : 700,
                       cursor: 'pointer',
-                      border: isActiveCbtQ ? '2.5px solid #1d4ed8' : border,
+                      border: isActiveCbtQ ? '2px solid #004080' : border,
                       background: bg,
                       color: color,
                       padding: 0,
                       transition: 'all 0.15s ease',
-                      transform: isActiveCbtQ ? 'scale(1.1)' : 'none',
-                      boxShadow: isActiveCbtQ ? '0 0 0 2.5px #2563eb, 0 4px 10px rgba(37, 99, 235, 0.4)' : 'none',
+                      transform: isActiveCbtQ ? 'scale(1.12)' : 'none',
+                      boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 10px rgba(0, 64, 128, 0.4)' : 'none',
                       zIndex: isActiveCbtQ ? 2 : 1,
                       position: 'relative'
                     }}
