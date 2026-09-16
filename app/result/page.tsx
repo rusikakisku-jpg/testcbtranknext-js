@@ -498,69 +498,6 @@ export default function ResultPage() {
     displayRows.push({ label: 'Paper Language', value: formData.paper_language });
   }
 
-  // Complement with dynamic custom fields (Trade / Branch, CCAA Qualified?, NAC %, etc.)
-  const customDataObj = (resultData as any)?.custom_data || (formData as any)?.custom_data;
-  if (customDataObj && typeof customDataObj === 'object') {
-    Object.entries(customDataObj).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && String(v).trim() !== '') {
-        const valStr = String(v).trim();
-        let fieldLabel = k
-          .replace(/_/g, ' ')
-          .replace(/\b\w/g, l => l.toUpperCase());
-
-        if (k === 'sub_type' || k === 'trade' || k === 'branch') fieldLabel = 'Trade / Branch';
-        if (k === 'ccaa_qualified') fieldLabel = 'CCAA Qualified';
-        if (k === 'nac_percentage') fieldLabel = 'NAC Percentage';
-
-        // 🛡️ Smart Deduplication: If candidate's selected value (e.g. Electrical Engineering) is already specifically stated in answersheet rows (like Subject, Paper, Trade, Branch), avoid showing it twice
-        const isTradeBranchField = (k === 'sub_type' || k === 'trade' || k === 'branch' || /trade|branch|stream|discipline/i.test(fieldLabel));
-        const isDuplicateValue = displayRows.some(row => {
-          const rowVal = (row.value || '').trim().toLowerCase();
-          const targetVal = valStr.toLowerCase();
-          const rowLabel = (row.label || '').trim().toLowerCase();
-
-          if (rowVal === targetVal) return true;
-          if (isTradeBranchField && /subject|paper|trade|branch|discipline|stream|post/i.test(rowLabel)) {
-            if (rowVal.includes(targetVal)) {
-              // Ignore generic combined titles like "(Civil, Mechanical and Electrical)" where specific candidate branch isn't isolated
-              const mentionsMultipleCombinedBranches = /civil.*mechanical|mechanical.*electrical|civil.*electrical/i.test(rowVal);
-              if (!mentionsMultipleCombinedBranches) {
-                return true;
-              }
-            }
-          }
-          return false;
-        });
-
-        if (!Array.from(existingKeySet).some(item => item === fieldLabel.toLowerCase()) && !isDuplicateValue) {
-          displayRows.push({
-            label: fieldLabel,
-            value: k === 'nac_percentage' && !valStr.endsWith('%') ? `${valStr}%` : valStr
-          });
-          existingKeySet.add(fieldLabel.toLowerCase());
-        }
-      }
-    });
-  } else if ((resultData as any)?.subType || (resultData as any)?.sub_type || formData?.sub_type) {
-    const rawSt = String((resultData as any)?.subType || (resultData as any)?.sub_type || formData?.sub_type).trim();
-    const isDuplicateFallback = displayRows.some(row => {
-      const rowVal = (row.value || '').trim().toLowerCase();
-      const targetVal = rawSt.toLowerCase();
-      const rowLabel = (row.label || '').trim().toLowerCase();
-      if (rowVal === targetVal) return true;
-      if (/subject|paper|trade|branch|discipline|stream|post/i.test(rowLabel)) {
-        if (rowVal.includes(targetVal) && !/civil.*mechanical|mechanical.*electrical|civil.*electrical/i.test(rowVal)) {
-          return true;
-        }
-      }
-      return false;
-    });
-
-    if (rawSt && !Array.from(existingKeySet).some(item => item.includes('trade') || item.includes('branch')) && !isDuplicateFallback) {
-      displayRows.push({ label: 'Trade / Branch', value: rawSt });
-      existingKeySet.add('trade / branch');
-    }
-  }
 
   return (
     <>
