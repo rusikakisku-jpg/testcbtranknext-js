@@ -89,6 +89,26 @@ export default function ReviewAnswerkeyPage() {
   const [showMobilePalette, setShowMobilePalette] = useState(false);
   const [viewMode, setViewMode] = useState<'CBT' | 'LIST'>('CBT');
   const [activeQNo, setActiveQNo] = useState<number>(1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      const doc = document as any;
+      setIsFullscreen(Boolean(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement));
+    };
+
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+    document.addEventListener('mozfullscreenchange', handleFsChange);
+    document.addEventListener('MSFullscreenChange', handleFsChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange);
+      document.removeEventListener('mozfullscreenchange', handleFsChange);
+      document.removeEventListener('MSFullscreenChange', handleFsChange);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -262,6 +282,56 @@ export default function ReviewAnswerkeyPage() {
     }
   }
 
+  function enterFullscreen() {
+    try {
+      const elem = document.documentElement as any;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    } catch (e) {
+      console.warn('Fullscreen request failed:', e);
+    }
+  }
+
+  function exitFullscreen() {
+    try {
+      const doc = document as any;
+      if (doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement) {
+        if (doc.exitFullscreen) {
+          doc.exitFullscreen().catch(() => {});
+        } else if (doc.webkitExitFullscreen) {
+          doc.webkitExitFullscreen();
+        } else if (doc.msExitFullscreen) {
+          doc.msExitFullscreen();
+        }
+      }
+    } catch (e) {
+      console.warn('Exit fullscreen failed:', e);
+    }
+  }
+
+  function toggleFullscreen() {
+    if (isFullscreen) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
+  }
+
+  function handleToggleCbtMode() {
+    if (viewMode === 'CBT') {
+      setViewMode('LIST');
+      exitFullscreen();
+    } else {
+      setViewMode('CBT');
+      enterFullscreen();
+    }
+  }
+
   if (!resultData) {
     return null;
   }
@@ -351,7 +421,7 @@ export default function ReviewAnswerkeyPage() {
           }
         }
       `}</style>
-      <div className="result-main" style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px' }}>
+      <div className="result-main" style={{ maxWidth: isFullscreen ? '100%' : '1280px', margin: '0 auto', padding: isFullscreen ? '12px 24px' : '16px', transition: 'all 0.2s ease' }}>
 
         {/* 2-Column Responsive Layout with Right Sidebar */}
         <div style={{
@@ -572,6 +642,38 @@ export default function ReviewAnswerkeyPage() {
                           })}
                         </div>
 
+                        {/* Right: Fullscreen Toggle Button */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <button
+                            type="button"
+                            onClick={toggleFullscreen}
+                            title={isFullscreen ? "Exit Full Screen" : "Enter Full Screen CBT Mode"}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '5px 12px',
+                              borderRadius: '4px',
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              border: isFullscreen ? '1px solid #003366' : '1px solid #cbd5e1',
+                              background: isFullscreen ? '#004080' : '#ffffff',
+                              color: isFullscreen ? '#ffffff' : '#334155',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              {isFullscreen ? (
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
+                              ) : (
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                              )}
+                            </svg>
+                            <span>{isFullscreen ? '🗗 Exit Full Screen' : '⛶ Full Screen'}</span>
+                          </button>
+                        </div>
 
                       </div>
 
@@ -1272,7 +1374,8 @@ export default function ReviewAnswerkeyPage() {
                 }}>
                   <button
                     type="button"
-                    onClick={() => setViewMode(viewMode === 'CBT' ? 'LIST' : 'CBT')}
+                    onClick={handleToggleCbtMode}
+                    title={viewMode === 'CBT' ? "Switch to Full Question Paper List" : "Open in Full Screen CBT Mode"}
                     style={{
                       flex: 1,
                       padding: '6px',
@@ -1285,7 +1388,7 @@ export default function ReviewAnswerkeyPage() {
                       cursor: 'pointer'
                     }}
                   >
-                    {viewMode === 'CBT' ? '📋 Question Paper' : '🖥️ DigiALM CBT'}
+                    {viewMode === 'CBT' ? '📋 Question Paper' : '🖥️ CBT Mode'}
                   </button>
                   <button
                     type="button"
