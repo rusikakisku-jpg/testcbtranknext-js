@@ -615,8 +615,8 @@ export default function ReviewAnswerkeyPage() {
 
               </div>
 
-              {/* Dynamic Section Selector Tabs (Hidden on Print) */}
-              {resultData.sections && resultData.sections.length > 1 && (
+              {/* Dynamic Section Selector Tabs (Shown only in List View, hidden in CBT mode & print) */}
+              {viewMode !== 'CBT' && resultData.sections && resultData.sections.length > 1 && (
                 <div className="no-print" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
                   <button
                     type="button"
