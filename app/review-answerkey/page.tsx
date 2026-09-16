@@ -485,39 +485,37 @@ export default function ReviewAnswerkeyPage() {
             {/* Question Breakdown & Header Container */}
             <div ref={breakdownRef} id="question-breakdown-section" style={{ padding: '18px 16px', borderRadius: '18px', background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
               
-              {/* Exam Logo / Title Banner (Centered & Full Width Display, hidden in fullscreen) */}
-              {!isFullscreen && (
-                <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9', textAlign: 'center' }}>
-                  {resultData.headerImgUrl ? (
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={resultData.headerImgUrl}
-                        alt="Exam Header Logo"
-                        className="exam-logo"
-                        style={{
-                          width: '100%',
-                          maxWidth: '100%',
-                          maxHeight: '120px',
-                          objectFit: 'contain',
-                          display: 'block',
-                          margin: '0 auto'
-                        }}
-                      />
-                    </div>
-                  ) : resultData.headerBannerText ? (
+              {/* Exam Logo / Title Banner (Centered & Full Width Display) */}
+              <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9', textAlign: 'center' }}>
+                {resultData.headerImgUrl ? (
+                  <div style={{ width: '100%', textAlign: 'center' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={resultData.headerImgUrl}
+                      alt="Exam Header Logo"
+                      className="exam-logo"
+                      style={{
+                        width: '100%',
+                        maxWidth: '100%',
+                        maxHeight: '120px',
+                        objectFit: 'contain',
+                        display: 'block',
+                        margin: '0 auto'
+                      }}
+                    />
+                  </div>
+                ) : resultData.headerBannerText ? (
+                  <h1 className="exam-name-title" style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', textAlign: 'center' }}>
+                    {resultData.headerBannerText}
+                  </h1>
+                ) : (
+                  resultData.examName && (
                     <h1 className="exam-name-title" style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', textAlign: 'center' }}>
-                      {resultData.headerBannerText}
+                      {resultData.examName}
                     </h1>
-                  ) : (
-                    resultData.examName && (
-                      <h1 className="exam-name-title" style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', textAlign: 'center' }}>
-                        {resultData.examName}
-                      </h1>
-                    )
-                  )}
-                </div>
-              )}
+                  )
+                )}
+              </div>
 
               {/* Candidate Info Summary Header (Visible at Top on Mobile & Print, hidden in fullscreen) */}
               {!isFullscreen && (
