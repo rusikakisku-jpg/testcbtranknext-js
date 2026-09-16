@@ -109,16 +109,10 @@ export default function ReviewAnswerkeyPage() {
     document.addEventListener('mozfullscreenchange', handleFsChange);
     document.addEventListener('MSFullscreenChange', handleFsChange);
 
-    // Automatically enter full screen on mobile view (<= 900px)
+    // Automatically enter App-Style full screen on mobile view (<= 900px)
     if (typeof window !== 'undefined' && window.innerWidth <= 900) {
       setIsFullscreen(true);
       document.body.classList.add('cbt-fullscreen-active');
-      try {
-        const elem = (fullscreenContainerRef.current || document.documentElement) as any;
-        if (elem && elem.requestFullscreen) {
-          elem.requestFullscreen().catch(() => {});
-        }
-      } catch (e) {}
     }
 
     return () => {
@@ -346,7 +340,9 @@ export default function ReviewAnswerkeyPage() {
       setIsFullscreen(false);
       document.body.classList.remove('cbt-fullscreen-active');
     } else {
-      enterFullscreen();
+      if (typeof window !== 'undefined' && window.innerWidth > 900) {
+        enterFullscreen();
+      }
       setIsFullscreen(true);
       document.body.classList.add('cbt-fullscreen-active');
     }
@@ -358,7 +354,9 @@ export default function ReviewAnswerkeyPage() {
     } else {
       setViewMode('CBT');
       if (!isFullscreen) {
-        enterFullscreen();
+        if (typeof window !== 'undefined' && window.innerWidth > 900) {
+          enterFullscreen();
+        }
         setIsFullscreen(true);
         document.body.classList.add('cbt-fullscreen-active');
       }
@@ -470,10 +468,15 @@ export default function ReviewAnswerkeyPage() {
             display: none !important;
           }
         }
+        .section-tabs-scroll::-webkit-scrollbar {
+          display: none;
+        }
         body.cbt-fullscreen-active {
           overflow: hidden !important;
           height: 100vh !important;
+          height: 100dvh !important;
           max-height: 100vh !important;
+          max-height: 100dvh !important;
           margin: 0 !important;
           padding: 0 !important;
         }
@@ -485,7 +488,9 @@ export default function ReviewAnswerkeyPage() {
           bottom: 0 !important;
           width: 100vw !important;
           height: 100vh !important;
+          height: 100dvh !important;
           max-height: 100vh !important;
+          max-height: 100dvh !important;
           overflow: hidden !important;
           padding: 0 !important;
           margin: 0 !important;
@@ -667,15 +672,28 @@ export default function ReviewAnswerkeyPage() {
               {viewMode !== 'CBT' && (
                 <div className="no-print" style={{
                   display: 'flex',
-                  flexWrap: 'wrap',
+                  flexWrap: 'nowrap',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   gap: '8px',
                   marginBottom: '14px',
                   padding: isFullscreen ? '0 16px' : 0,
-                  flexShrink: 0
+                  flexShrink: 0,
+                  width: '100%',
+                  boxSizing: 'border-box'
                 }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                  <div className="section-tabs-scroll" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    overflowX: 'auto',
+                    flexWrap: 'nowrap',
+                    flex: '1 1 auto',
+                    minWidth: 0,
+                    scrollbarWidth: 'none',
+                    WebkitOverflowScrolling: 'touch',
+                    paddingBottom: '2px'
+                  }}>
                     <button
                       type="button"
                       onClick={(e) => handleSecTabChange('ALL', e)}
@@ -685,6 +703,7 @@ export default function ReviewAnswerkeyPage() {
                         fontSize: '0.72rem',
                         fontWeight: 800,
                         whiteSpace: 'nowrap',
+                        flexShrink: 0,
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
                         border: activeSecTab === 'ALL' ? '1px solid #4338ca' : '1px solid #e2e8f0',
@@ -708,6 +727,7 @@ export default function ReviewAnswerkeyPage() {
                             fontSize: '0.72rem',
                             fontWeight: 800,
                             whiteSpace: 'nowrap',
+                            flexShrink: 0,
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
                             border: isActive ? '1px solid #4338ca' : '1px solid #e2e8f0',
@@ -722,7 +742,7 @@ export default function ReviewAnswerkeyPage() {
                     })}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                     <button
                       type="button"
                       onClick={() => setShowMobilePalette(true)}
@@ -779,12 +799,25 @@ export default function ReviewAnswerkeyPage() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    flexWrap: 'wrap',
+                    flexWrap: 'nowrap',
                     gap: '8px',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    width: '100%',
+                    boxSizing: 'border-box'
                   }}>
-                    {/* Left: Dynamic Section Tabs in authentic DigiALM button style */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                    {/* Left: Dynamic Section Tabs in authentic DigiALM button style with horizontal scroll */}
+                    <div className="section-tabs-scroll" style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      overflowX: 'auto',
+                      flexWrap: 'nowrap',
+                      flex: '1 1 auto',
+                      minWidth: 0,
+                      scrollbarWidth: 'none',
+                      WebkitOverflowScrolling: 'touch',
+                      paddingBottom: '2px'
+                    }}>
                       <button
                         type="button"
                         onClick={(e) => handleSecTabChange('ALL', e)}
@@ -794,6 +827,8 @@ export default function ReviewAnswerkeyPage() {
                           fontSize: '0.74rem',
                           fontWeight: 800,
                           cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                          flexShrink: 0,
                           border: activeSecTab === 'ALL' ? '1px solid #003366' : '1px solid #cbd5e1',
                           background: activeSecTab === 'ALL' ? '#004080' : '#ffffff',
                           color: activeSecTab === 'ALL' ? '#ffffff' : '#334155',
@@ -816,6 +851,8 @@ export default function ReviewAnswerkeyPage() {
                               fontSize: '0.74rem',
                               fontWeight: 800,
                               cursor: 'pointer',
+                              whiteSpace: 'nowrap',
+                              flexShrink: 0,
                               border: isActive ? '1px solid #003366' : '1px solid #cbd5e1',
                               background: isActive ? '#004080' : '#ffffff',
                               color: isActive ? '#ffffff' : '#334155',
@@ -830,7 +867,7 @@ export default function ReviewAnswerkeyPage() {
                     </div>
 
                     {/* Right: Mobile Palette Menu Button & Fullscreen Toggle Button */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                       <button
                         type="button"
                         onClick={() => setShowMobilePalette(true)}
