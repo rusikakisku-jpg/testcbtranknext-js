@@ -775,8 +775,9 @@ export default function AnswerkeyCalculator({
                 </div>
               )}
 
-              {/* Category & Horizontal Category */}
+              {/* Form Options Grid (Category, Horizontal, Gender, Paper Language, Custom Fields & State/UT) */}
               <div className="form-grid">
+                {/* 1. Category */}
                 <div className="ak-form-group">
                   <label htmlFor="category">Category <span className="star">*</span></label>
                   <select id="category" className="ak-form-select" required
@@ -791,6 +792,7 @@ export default function AnswerkeyCalculator({
                   </select>
                 </div>
 
+                {/* 2. Horizontal Category */}
                 <div className="ak-form-group">
                   <label htmlFor="horizontal_category">Horizontal Category</label>
                   <select id="horizontal_category" className="ak-form-select"
@@ -804,10 +806,8 @@ export default function AnswerkeyCalculator({
                     <option value="other-pwd">Other PWD</option>
                   </select>
                 </div>
-              </div>
 
-              {/* Gender & Paper Language */}
-              <div className="form-grid">
+                {/* 3. Gender */}
                 <div className="ak-form-group">
                   <label htmlFor="gender">Gender <span className="star">*</span></label>
                   <select id="gender" className="ak-form-select" required
@@ -819,6 +819,7 @@ export default function AnswerkeyCalculator({
                   </select>
                 </div>
 
+                {/* 4. Paper Language */}
                 <div className="ak-form-group">
                   <label htmlFor="paper_language">Paper Language</label>
                   <select id="paper_language" className="ak-form-select"
@@ -837,82 +838,79 @@ export default function AnswerkeyCalculator({
                     )}
                   </select>
                 </div>
-              </div>
 
-              {/* Dynamic Exam Custom Fields (e.g. Trade / Branch, CCAA Qualified?, NAC %, etc.) */}
-              {visibleCustomFields.length > 0 && (
-                <div className="custom-fields-container" style={{ marginBottom: '16px' }}>
-                  <div className={visibleCustomFields.length > 1 ? "form-grid" : ""}>
-                    {visibleCustomFields.map((field) => (
-                      <div key={field.id} className="ak-form-group">
-                        <label htmlFor={`custom_${field.id}`}>
-                          {field.label} {field.required && <span className="star">*</span>}
-                        </label>
+                {/* 5. Dynamic Exam Custom Fields (e.g. Trade / Branch, CCAA Qualified?, NAC %, etc.) */}
+                {visibleCustomFields.map((field) => (
+                  <div key={field.id} className="ak-form-group">
+                    <label htmlFor={`custom_${field.id}`}>
+                      {field.label} {field.required && <span className="star">*</span>}
+                    </label>
 
-                        {field.type === 'select' ? (
-                          <select
-                            id={`custom_${field.id}`}
-                            className="ak-form-select"
-                            required={field.required}
-                            value={customFieldValues[field.id] || ''}
-                            onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
-                          >
-                            <option value="">Select {field.label}</option>
-                            {(field.options || []).map((opt, optIdx) => {
-                              const norm = normalizeOption(opt);
-                              return (
-                                <option key={norm.value || optIdx} value={norm.value}>
-                                  {norm.label}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        ) : field.type === 'number' ? (
-                          <input
-                            type="number"
-                            step="any"
-                            id={`custom_${field.id}`}
-                            className="ak-form-input"
-                            placeholder={field.placeholder || `Enter ${field.label}`}
-                            required={field.required}
-                            value={customFieldValues[field.id] || ''}
-                            onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            id={`custom_${field.id}`}
-                            className="ak-form-input"
-                            placeholder={field.placeholder || `Enter ${field.label}`}
-                            required={field.required}
-                            value={customFieldValues[field.id] || ''}
-                            onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
-                          />
-                        )}
-                      </div>
-                    ))}
+                    {field.type === 'select' ? (
+                      <select
+                        id={`custom_${field.id}`}
+                        className="ak-form-select"
+                        required={field.required}
+                        value={customFieldValues[field.id] || ''}
+                        onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
+                      >
+                        <option value="">Select {field.label}</option>
+                        {(field.options || []).map((opt, optIdx) => {
+                          const norm = normalizeOption(opt);
+                          return (
+                            <option key={norm.value || optIdx} value={norm.value}>
+                              {norm.label}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    ) : field.type === 'number' ? (
+                      <input
+                        type="number"
+                        step="any"
+                        id={`custom_${field.id}`}
+                        className="ak-form-input"
+                        placeholder={field.placeholder || `Enter ${field.label}`}
+                        required={field.required}
+                        value={customFieldValues[field.id] || ''}
+                        onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        id={`custom_${field.id}`}
+                        className="ak-form-input"
+                        placeholder={field.placeholder || `Enter ${field.label}`}
+                        required={field.required}
+                        value={customFieldValues[field.id] || ''}
+                        onChange={(e) => handleCustomFieldChange(field.id, e.target.value)}
+                      />
+                    )}
                   </div>
-                </div>
-              )}
+                ))}
 
-              {/* State / UT / Location */}
-              <div className="ak-form-group">
-                <label htmlFor="state">{locationLabel} <span className="star">*</span></label>
-                <select id="state" className="ak-form-select" required
-                  value={formData.state}
-                  disabled={locationLoading}
-                  onChange={e => setFormData(prev => ({ ...prev, state: e.target.value }))}>
-                  {locationLoading ? (
-                    <option value="">Loading {locationLabel}...</option>
-                  ) : (
-                    <>
-                      <option value="">Select {locationLabel}</option>
-                      {locations.map(loc => (
-                        <option key={loc} value={loc}>{loc}</option>
-                      ))}
-                    </>
-                  )}
-                </select>
+                {/* 6. State / UT / Location (Spans full width if odd item, or shares 2nd column if even item) */}
+                <div
+                  className="ak-form-group"
+                  style={visibleCustomFields.length % 2 === 0 ? { gridColumn: 'span 2 / span 2' } : undefined}
+                >
+                  <label htmlFor="state">{locationLabel} <span className="star">*</span></label>
+                  <select id="state" className="ak-form-select" required
+                    value={formData.state}
+                    disabled={locationLoading}
+                    onChange={e => setFormData(prev => ({ ...prev, state: e.target.value }))}>
+                    {locationLoading ? (
+                      <option value="">Loading {locationLabel}...</option>
+                    ) : (
+                      <>
+                        <option value="">Select {locationLabel}</option>
+                        {locations.map(loc => (
+                          <option key={loc} value={loc}>{loc}</option>
+                        ))}
+                      </>
+                    )}
+                  </select>
+                </div>
               </div>
 
               {/* Consent */}
