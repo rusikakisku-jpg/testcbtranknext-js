@@ -339,10 +339,11 @@ export default function ReviewAnswerkeyPage() {
   function handleToggleCbtMode() {
     if (viewMode === 'CBT') {
       setViewMode('LIST');
-      exitFullscreen();
     } else {
       setViewMode('CBT');
-      enterFullscreen();
+      if (!isFullscreen) {
+        enterFullscreen();
+      }
     }
   }
 
@@ -599,9 +600,87 @@ export default function ReviewAnswerkeyPage() {
 
 
 
+              {/* Question Paper Sub-Header Strip in Fullscreen */}
+              {viewMode === 'LIST' && isFullscreen && (
+                <div className="no-print" style={{
+                  background: '#e9edf2',
+                  borderBottom: '2px solid #cbd5e1',
+                  padding: '8px 16px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  flexShrink: 0
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontWeight: 900, fontSize: '0.88rem', color: '#004080' }}>
+                      📋 Question Paper
+                    </span>
+                    <span style={{ fontSize: '0.74rem', background: '#004080', color: '#ffffff', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                      {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setViewMode('CBT')}
+                      title="Switch back to CBT Simulator mode"
+                      style={{
+                        padding: '5px 12px',
+                        borderRadius: '4px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        border: '1px solid #004080',
+                        background: '#ffffff',
+                        color: '#004080',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      🖥️ CBT Mode
+                    </button>
+                    <button
+                      type="button"
+                      onClick={toggleFullscreen}
+                      title="Exit Full Screen"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '5px 12px',
+                        borderRadius: '4px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        border: '1px solid #003366',
+                        background: '#004080',
+                        color: '#ffffff',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
+                      </svg>
+                      <span>🗗 Exit Full Screen</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Dynamic Section Selector Tabs (Shown only in List View, hidden in CBT mode & print) */}
               {viewMode !== 'CBT' && resultData.sections && resultData.sections.length > 1 && (
-                <div className="no-print" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+                <div className="no-print" style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '6px',
+                  marginBottom: isFullscreen ? '8px' : '16px',
+                  padding: isFullscreen ? '8px 16px 0 16px' : 0,
+                  flexShrink: 0
+                }}>
                   <button
                     type="button"
                     onClick={(e) => handleSecTabChange('ALL', e)}
@@ -1067,11 +1146,16 @@ export default function ReviewAnswerkeyPage() {
 
                   {/* Question Cards List: Rendered in LIST mode on screen, and in PRINT mode always */}
                   <div
-                    className={viewMode === 'LIST' ? '' : 'print-only'}
+                    className={`cbt-question-scroll ${viewMode === 'LIST' ? '' : 'print-only'}`}
                     style={{
                       display: viewMode === 'LIST' ? 'flex' : undefined,
                       flexDirection: 'column',
-                      gap: '14px'
+                      gap: '14px',
+                      flex: isFullscreen ? 1 : 'none',
+                      minHeight: 0,
+                      overflowY: isFullscreen ? 'auto' : 'visible',
+                      padding: isFullscreen ? '14px 16px' : 0,
+                      boxSizing: 'border-box'
                     }}
                   >
                     {filteredQuestions.map((q, idx) => {
@@ -1516,66 +1600,70 @@ export default function ReviewAnswerkeyPage() {
             )}
 
             {/* Navigation Action Buttons: View Your Rank & Back to Scorecard */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-              padding: isFullscreen ? '10px 12px' : 0,
-              background: isFullscreen ? '#f8fafc' : 'transparent',
-              borderTop: isFullscreen ? '1px solid #e2e8f0' : 'none'
-            }}>
-              {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
-                <Link
-                  href="/rank"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                    color: '#ffffff',
-                    padding: '12px 16px',
-                    borderRadius: '12px',
-                    fontWeight: 800,
-                    fontSize: '0.86rem',
-                    textDecoration: 'none',
-                    boxShadow: '0 4px 12px rgba(5, 150, 105, 0.25)',
-                    textAlign: 'center',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  View Your Rank
-                </Link>
-              )}
+            {(APP_FEATURE_FLAGS.SHOW_VIEW_RANK || !isFullscreen) && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                padding: isFullscreen ? '10px 12px' : 0,
+                background: isFullscreen ? '#f8fafc' : 'transparent',
+                borderTop: isFullscreen ? '1px solid #e2e8f0' : 'none'
+              }}>
+                {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
+                  <Link
+                    href="/rank"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                      color: '#ffffff',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      fontWeight: 800,
+                      fontSize: '0.86rem',
+                      textDecoration: 'none',
+                      boxShadow: '0 4px 12px rgba(5, 150, 105, 0.25)',
+                      textAlign: 'center',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    View Your Rank
+                  </Link>
+                )}
 
-              <Link
-                href="/result"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  background: '#ffffff',
-                  color: '#0f172a',
-                  border: '1.5px solid #cbd5e1',
-                  padding: '11px',
-                  borderRadius: '12px',
-                  fontWeight: 800,
-                  fontSize: '0.85rem',
-                  textDecoration: 'none',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
-                  textAlign: 'center'
-                }}
-              >
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Back to Scorecard
-              </Link>
-            </div>
+                {!isFullscreen && (
+                  <Link
+                    href="/result"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      background: '#ffffff',
+                      color: '#0f172a',
+                      border: '1.5px solid #cbd5e1',
+                      padding: '11px',
+                      borderRadius: '12px',
+                      fontWeight: 800,
+                      fontSize: '0.85rem',
+                      textDecoration: 'none',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                      textAlign: 'center'
+                    }}
+                  >
+                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Scorecard
+                  </Link>
+                )}
+              </div>
+            )}
 
           </div>
 
