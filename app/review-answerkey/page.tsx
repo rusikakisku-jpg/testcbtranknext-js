@@ -770,12 +770,6 @@ export default function ReviewAnswerkeyPage() {
                         {/* Right: DigiALM Question Meta Info */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '0.72rem', color: '#475569' }}>
                           <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
-                            Type: MCQ
-                          </span>
-                          <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
-                            View in: English ▾
-                          </span>
-                          <span style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
                             Marking: <strong style={{ color: '#16a34a' }}>+{rightVal}</strong> | <strong style={{ color: '#dc2626' }}>-{wrongVal}</strong>
                           </span>
                         </div>
@@ -1279,19 +1273,19 @@ export default function ReviewAnswerkeyPage() {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#166534' }}>
                     <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#16a34a', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
-                      {totalRight}
+                      {pillCorrectCount}
                     </span>
                     <span>Answered (Correct)</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#991b1b' }}>
                     <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#dc2626', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
-                      {totalWrong}
+                      {pillWrongCount}
                     </span>
                     <span>Not Answered (Wrong)</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#475569' }}>
                     <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#94a3b8', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
-                      {totalUnattempted}
+                      {pillUnattemptedCount}
                     </span>
                     <span>Not Visited</span>
                   </div>
@@ -1315,7 +1309,7 @@ export default function ReviewAnswerkeyPage() {
                   textTransform: 'uppercase',
                   letterSpacing: '0.04em'
                 }}>
-                  SECTION : {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab}
+                  SECTION : {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
                 </div>
 
                 {/* Number Grid */}
@@ -1327,58 +1321,64 @@ export default function ReviewAnswerkeyPage() {
                   overflowY: 'auto',
                   padding: '10px 12px'
                 }}>
-                  {allQuestions.map(q => {
-                    const isCorrect = q.status === 'Correct';
-                    const isWrong = q.status === 'Wrong';
-                    const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
-                    const isActiveCbtQ = viewMode === 'CBT' && q.q_no === activeQNo;
-                    let bg = '#f1f5f9';
-                    let border = '1px solid #cbd5e1';
-                    let color = '#475569';
-                    if (isCorrect) {
-                      bg = '#16a34a';
-                      border = '1px solid #15803d';
-                      color = '#ffffff';
-                    } else if (isWrong) {
-                      bg = '#dc2626';
-                      border = '1px solid #b91c1c';
-                      color = '#ffffff';
-                    } else if (isBonus) {
-                      bg = '#9333ea';
-                      border = '1px solid #7e22ce';
-                      color = '#ffffff';
-                    }
+                  {filteredQuestions.length > 0 ? (
+                    filteredQuestions.map(q => {
+                      const isCorrect = q.status === 'Correct';
+                      const isWrong = q.status === 'Wrong';
+                      const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
+                      const isActiveCbtQ = viewMode === 'CBT' && q.q_no === activeQNo;
+                      let bg = '#f1f5f9';
+                      let border = '1px solid #cbd5e1';
+                      let color = '#475569';
+                      if (isCorrect) {
+                        bg = '#16a34a';
+                        border = '1px solid #15803d';
+                        color = '#ffffff';
+                      } else if (isWrong) {
+                        bg = '#dc2626';
+                        border = '1px solid #b91c1c';
+                        color = '#ffffff';
+                      } else if (isBonus) {
+                        bg = '#9333ea';
+                        border = '1px solid #7e22ce';
+                        color = '#ffffff';
+                      }
 
-                    return (
-                      <button
-                        key={q.q_no}
-                        type="button"
-                        onClick={() => jumpToQuestion(q.q_no)}
-                        title={`Q.${q.q_no} [${q.section}] - ${q.status}`}
-                        style={{
-                          aspectRatio: '1',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderRadius: '4px',
-                          fontSize: '0.72rem',
-                          fontWeight: isActiveCbtQ ? 900 : 700,
-                          cursor: 'pointer',
-                          border: isActiveCbtQ ? '2px solid #004080' : border,
-                          background: bg,
-                          color: color,
-                          padding: 0,
-                          transition: 'all 0.15s ease',
-                          transform: isActiveCbtQ ? 'scale(1.15)' : 'none',
-                          boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 12px rgba(0, 64, 128, 0.4)' : 'none',
-                          zIndex: isActiveCbtQ ? 2 : 1,
-                          position: 'relative'
-                        }}
-                      >
-                        {q.q_no}
-                      </button>
-                    );
-                  })}
+                      return (
+                        <button
+                          key={q.q_no}
+                          type="button"
+                          onClick={() => jumpToQuestion(q.q_no)}
+                          title={`Q.${q.q_no} [${q.section}] - ${q.status}`}
+                          style={{
+                            aspectRatio: '1',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '4px',
+                            fontSize: '0.72rem',
+                            fontWeight: isActiveCbtQ ? 900 : 700,
+                            cursor: 'pointer',
+                            border: isActiveCbtQ ? '2px solid #004080' : border,
+                            background: bg,
+                            color: color,
+                            padding: 0,
+                            transition: 'all 0.15s ease',
+                            transform: isActiveCbtQ ? 'scale(1.15)' : 'none',
+                            boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 12px rgba(0, 64, 128, 0.4)' : 'none',
+                            zIndex: isActiveCbtQ ? 2 : 1,
+                            position: 'relative'
+                          }}
+                        >
+                          {q.q_no}
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '16px 8px', fontSize: '0.74rem', color: '#64748b', fontWeight: 600 }}>
+                      No questions in this filter
+                    </div>
+                  )}
                 </div>
 
                 {/* Bottom Palette Action Buttons */}
@@ -1611,9 +1611,9 @@ export default function ReviewAnswerkeyPage() {
               textAlign: 'center',
               border: '1px solid #e2e8f0'
             }}>
-              <div style={{ color: '#166534' }}>🟢 {totalRight}</div>
-              <div style={{ color: '#991b1b' }}>🔴 {totalWrong}</div>
-              <div style={{ color: '#475569' }}>⚪ {totalUnattempted}</div>
+              <div style={{ color: '#166534' }}>🟢 {pillCorrectCount}</div>
+              <div style={{ color: '#991b1b' }}>🔴 {pillWrongCount}</div>
+              <div style={{ color: '#475569' }}>⚪ {pillUnattemptedCount}</div>
               <div style={{ color: '#6b21a8' }}>🟣 {pillBonusCount}</div>
             </div>
 
@@ -1626,57 +1626,63 @@ export default function ReviewAnswerkeyPage() {
               flex: 1,
               padding: '4px'
             }}>
-              {allQuestions.map(q => {
-                const isCorrect = q.status === 'Correct';
-                const isWrong = q.status === 'Wrong';
-                const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
-                const isActiveCbtQ = viewMode === 'CBT' && q.q_no === activeQNo;
-                let bg = '#f1f5f9';
-                let border = '1px solid #cbd5e1';
-                let color = '#475569';
-                if (isCorrect) {
-                  bg = '#16a34a';
-                  border = '1px solid #15803d';
-                  color = '#ffffff';
-                } else if (isWrong) {
-                  bg = '#dc2626';
-                  border = '1px solid #b91c1c';
-                  color = '#ffffff';
-                } else if (isBonus) {
-                  bg = '#9333ea';
-                  border = '1px solid #7e22ce';
-                  color = '#ffffff';
-                }
+              {filteredQuestions.length > 0 ? (
+                filteredQuestions.map(q => {
+                  const isCorrect = q.status === 'Correct';
+                  const isWrong = q.status === 'Wrong';
+                  const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
+                  const isActiveCbtQ = viewMode === 'CBT' && q.q_no === activeQNo;
+                  let bg = '#f1f5f9';
+                  let border = '1px solid #cbd5e1';
+                  let color = '#475569';
+                  if (isCorrect) {
+                    bg = '#16a34a';
+                    border = '1px solid #15803d';
+                    color = '#ffffff';
+                  } else if (isWrong) {
+                    bg = '#dc2626';
+                    border = '1px solid #b91c1c';
+                    color = '#ffffff';
+                  } else if (isBonus) {
+                    bg = '#9333ea';
+                    border = '1px solid #7e22ce';
+                    color = '#ffffff';
+                  }
 
-                return (
-                  <button
-                    key={q.q_no}
-                    type="button"
-                    onClick={() => jumpToQuestion(q.q_no)}
-                    style={{
-                      aspectRatio: '1',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '4px',
-                      fontSize: '0.84rem',
-                      fontWeight: isActiveCbtQ ? 900 : 700,
-                      cursor: 'pointer',
-                      border: isActiveCbtQ ? '2px solid #004080' : border,
-                      background: bg,
-                      color: color,
-                      padding: 0,
-                      transition: 'all 0.15s ease',
-                      transform: isActiveCbtQ ? 'scale(1.12)' : 'none',
-                      boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 10px rgba(0, 64, 128, 0.4)' : 'none',
-                      zIndex: isActiveCbtQ ? 2 : 1,
-                      position: 'relative'
-                    }}
-                  >
-                    {q.q_no}
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={q.q_no}
+                      type="button"
+                      onClick={() => jumpToQuestion(q.q_no)}
+                      style={{
+                        aspectRatio: '1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '4px',
+                        fontSize: '0.84rem',
+                        fontWeight: isActiveCbtQ ? 900 : 700,
+                        cursor: 'pointer',
+                        border: isActiveCbtQ ? '2px solid #004080' : border,
+                        background: bg,
+                        color: color,
+                        padding: 0,
+                        transition: 'all 0.15s ease',
+                        transform: isActiveCbtQ ? 'scale(1.12)' : 'none',
+                        boxShadow: isActiveCbtQ ? '0 0 0 3px #fbbf24, 0 4px 10px rgba(0, 64, 128, 0.4)' : 'none',
+                        zIndex: isActiveCbtQ ? 2 : 1,
+                        position: 'relative'
+                      }}
+                    >
+                      {q.q_no}
+                    </button>
+                  );
+                })
+              ) : (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '16px 8px', fontSize: '0.76rem', color: '#64748b', fontWeight: 600 }}>
+                  No questions in this filter
+                </div>
+              )}
             </div>
           </div>
         </div>
