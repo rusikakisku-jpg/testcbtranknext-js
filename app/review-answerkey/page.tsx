@@ -708,62 +708,7 @@ export default function ReviewAnswerkeyPage() {
                         marginBottom: '16px'
                       }}
                     >
-                      {/* DigiALM Master Navy Blue Header */}
-                      <div style={{
-                        background: 'linear-gradient(90deg, #003366 0%, #004b87 100%)',
-                        color: '#ffffff',
-                        padding: '10px 16px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: '10px',
-                        borderBottom: '2px solid #002b55'
-                      }}>
-                        <div>
-                          <div style={{ fontWeight: 900, fontSize: '0.96rem', letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ background: '#ffffff', color: '#003366', padding: '1px 6px', borderRadius: '3px', fontSize: '0.7rem', fontWeight: 900 }}>
-                              CBT
-                            </span>
-                            <span>{resultData.examName || resultData.headerBannerText || 'Computer Based Test Assessment'}</span>
-                          </div>
-                          <div style={{ fontSize: '0.68rem', opacity: 0.85, marginTop: '2px' }}>
-                            TCS iON / DigiALM Official Candidate Response Sheet Simulator
-                          </div>
-                        </div>
 
-                        {/* Candidate Profile Header Card */}
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                          background: 'rgba(255, 255, 255, 0.1)',
-                          padding: '4px 10px',
-                          borderRadius: '6px',
-                          border: '1px solid rgba(255, 255, 255, 0.2)'
-                        }}>
-                          <div style={{
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '4px',
-                            background: '#ffffff',
-                            color: '#003366',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '0.9rem',
-                            fontWeight: 900
-                          }}>
-                            👤
-                          </div>
-                          <div style={{ fontSize: '0.72rem', lineHeight: 1.25 }}>
-                            <div style={{ fontWeight: 800 }}>{candidateName}</div>
-                            <div style={{ opacity: 0.9, fontSize: '0.66rem' }}>
-                              Roll: <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rollNumber || 'N/A'}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
                       {/* DigiALM Section Ribbon & Sub-Header */}
                       <div style={{
