@@ -610,7 +610,7 @@ export default function ReviewAnswerkeyPage() {
 
 
 
-              {/* Question Paper Sub-Header Strip in Fullscreen */}
+              {/* List View Sub-Header Strip in Fullscreen */}
               {viewMode === 'LIST' && isFullscreen && (
                 <div className="no-print" style={{
                   background: '#e9edf2',
@@ -626,7 +626,7 @@ export default function ReviewAnswerkeyPage() {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontWeight: 900, fontSize: '0.88rem', color: '#004080' }}>
-                      📋 Question Paper
+                      📋 List View
                     </span>
                     <span style={{ fontSize: '0.74rem', background: '#004080', color: '#ffffff', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
                       {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
@@ -637,7 +637,7 @@ export default function ReviewAnswerkeyPage() {
                     <button
                       type="button"
                       onClick={() => setViewMode('CBT')}
-                      title="Switch back to CBT Simulator mode"
+                      title="Switch back to CBT View"
                       style={{
                         padding: '5px 12px',
                         borderRadius: '4px',
@@ -651,7 +651,7 @@ export default function ReviewAnswerkeyPage() {
                         transition: 'all 0.15s ease'
                       }}
                     >
-                      🖥️ CBT Mode
+                      🖥️ CBT View
                     </button>
                     <button
                       type="button"
@@ -739,147 +739,173 @@ export default function ReviewAnswerkeyPage() {
                 </div>
               )}
 
-              {/* Question Cards List or Clean Empty State Handler */}
-              {filteredQuestions.length === 0 ? (
-                <div style={{
-                  textAlign: 'center',
-                  padding: '36px 20px',
-                  background: '#f8fafc',
-                  border: '1.5px dashed #cbd5e1',
-                  borderRadius: '16px',
-                  margin: '10px 0'
-                }}>
-                  <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>
-                    {activeStatusFilter === 'Wrong' ? '🎉' : activeStatusFilter === 'Unattempted' ? '⚡' : '📝'}
-                  </div>
-                  <h3 style={{ fontSize: '0.96rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0' }}>
-                    {activeStatusFilter === 'Wrong' ? 'No Wrong Answers Found!' :
-                     activeStatusFilter === 'Unattempted' ? 'No Unattempted Questions!' :
-                     activeStatusFilter === 'Correct' ? 'No Correct Answers Found' :
-                     'No Questions Found'}
-                  </h3>
-                  <p style={{ fontSize: '0.78rem', color: '#64748b', margin: 0 }}>
-                    {activeStatusFilter === 'Wrong' ? 'Excellent! You answered all questions correctly in this selection.' :
-                     activeStatusFilter === 'Unattempted' ? 'Great effort! You attempted every question in this selection.' :
-                     'Select another filter or section tab above to view questions.'}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {/* CBT Exam Simulator Canvas (Active when in CBT Mode) */}
-                  {viewMode === 'CBT' && activeCbtQuestion && (
-                    <div
-                      id="cbt-question-canvas"
-                      className="no-print"
-                      style={{
-                        background: '#ffffff',
-                        border: isFullscreen ? 'none' : '1.5px solid #cbd5e1',
-                        borderRadius: isFullscreen ? 0 : '8px',
-                        boxShadow: isFullscreen ? 'none' : '0 4px 20px rgba(0, 51, 102, 0.08)',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        marginBottom: isFullscreen ? 0 : '16px',
-                        flex: isFullscreen ? 1 : 'none',
-                        height: isFullscreen ? '100%' : 'auto',
-                        minHeight: 0
-                      }}
-                    >
+              {/* CBT Exam Simulator Canvas (Active when in CBT View) */}
+              {viewMode === 'CBT' && (
+                <div
+                  id="cbt-question-canvas"
+                  className="no-print"
+                  style={{
+                    background: '#ffffff',
+                    border: isFullscreen ? 'none' : '1.5px solid #cbd5e1',
+                    borderRadius: isFullscreen ? 0 : '8px',
+                    boxShadow: isFullscreen ? 'none' : '0 4px 20px rgba(0, 51, 102, 0.08)',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginBottom: isFullscreen ? 0 : '16px',
+                    flex: isFullscreen ? 1 : 'none',
+                    height: isFullscreen ? '100%' : 'auto',
+                    minHeight: 0
+                  }}
+                >
 
 
-                      {/* DigiALM Section Ribbon & Sub-Header */}
-                      <div style={{
-                        background: '#e9edf2',
-                        borderBottom: '2px solid #cbd5e1',
-                        padding: '8px 16px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: '8px'
-                      }}>
-                        {/* Left: Dynamic Section Tabs in authentic DigiALM button style */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  {/* DigiALM Section Ribbon & Sub-Header (Always visible in CBT View) */}
+                  <div style={{
+                    background: '#e9edf2',
+                    borderBottom: '2px solid #cbd5e1',
+                    padding: '8px 16px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    flexShrink: 0
+                  }}>
+                    {/* Left: Dynamic Section Tabs in authentic DigiALM button style */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        onClick={(e) => handleSecTabChange('ALL', e)}
+                        style={{
+                          padding: '5px 12px',
+                          borderRadius: '4px',
+                          fontSize: '0.74rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          border: activeSecTab === 'ALL' ? '1px solid #003366' : '1px solid #cbd5e1',
+                          background: activeSecTab === 'ALL' ? '#004080' : '#ffffff',
+                          color: activeSecTab === 'ALL' ? '#ffffff' : '#334155',
+                          boxShadow: activeSecTab === 'ALL' ? '0 2px 4px rgba(0, 64, 128, 0.25)' : 'none',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        All Sections {activeSecTab === 'ALL' ? '▾' : ''} ({allQuestions.length})
+                      </button>
+                      {resultData.sections && resultData.sections.map(sec => {
+                        const isActive = activeSecTab === sec.name;
+                        return (
                           <button
+                            key={sec.name}
                             type="button"
-                            onClick={(e) => handleSecTabChange('ALL', e)}
+                            onClick={(e) => handleSecTabChange(sec.name, e)}
                             style={{
                               padding: '5px 12px',
                               borderRadius: '4px',
                               fontSize: '0.74rem',
                               fontWeight: 800,
                               cursor: 'pointer',
-                              border: activeSecTab === 'ALL' ? '1px solid #003366' : '1px solid #cbd5e1',
-                              background: activeSecTab === 'ALL' ? '#004080' : '#ffffff',
-                              color: activeSecTab === 'ALL' ? '#ffffff' : '#334155',
-                              boxShadow: activeSecTab === 'ALL' ? '0 2px 4px rgba(0, 64, 128, 0.25)' : 'none',
+                              border: isActive ? '1px solid #003366' : '1px solid #cbd5e1',
+                              background: isActive ? '#004080' : '#ffffff',
+                              color: isActive ? '#ffffff' : '#334155',
+                              boxShadow: isActive ? '0 2px 4px rgba(0, 64, 128, 0.25)' : 'none',
                               transition: 'all 0.15s ease'
                             }}
                           >
-                            All Sections {activeSecTab === 'ALL' ? '▾' : ''} ({allQuestions.length})
+                            {sec.name} {isActive ? '▾' : ''} ({sec.total})
                           </button>
-                          {resultData.sections && resultData.sections.map(sec => {
-                            const isActive = activeSecTab === sec.name;
-                            return (
-                              <button
-                                key={sec.name}
-                                type="button"
-                                onClick={(e) => handleSecTabChange(sec.name, e)}
-                                style={{
-                                  padding: '5px 12px',
-                                  borderRadius: '4px',
-                                  fontSize: '0.74rem',
-                                  fontWeight: 800,
-                                  cursor: 'pointer',
-                                  border: isActive ? '1px solid #003366' : '1px solid #cbd5e1',
-                                  background: isActive ? '#004080' : '#ffffff',
-                                  color: isActive ? '#ffffff' : '#334155',
-                                  boxShadow: isActive ? '0 2px 4px rgba(0, 64, 128, 0.25)' : 'none',
-                                  transition: 'all 0.15s ease'
-                                }}
-                              >
-                                {sec.name} {isActive ? '▾' : ''} ({sec.total})
-                              </button>
-                            );
-                          })}
-                        </div>
+                        );
+                      })}
+                    </div>
 
-                        {/* Right: Fullscreen Toggle Button */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <button
-                            type="button"
-                            onClick={toggleFullscreen}
-                            title={isFullscreen ? "Exit Full Screen" : "Enter Full Screen CBT Mode"}
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px',
-                              padding: '5px 12px',
-                              borderRadius: '4px',
-                              fontSize: '0.72rem',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              border: isFullscreen ? '1px solid #003366' : '1px solid #cbd5e1',
-                              background: isFullscreen ? '#004080' : '#ffffff',
-                              color: isFullscreen ? '#ffffff' : '#334155',
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                              transition: 'all 0.15s ease'
-                            }}
-                          >
-                            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                              {isFullscreen ? (
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
-                              ) : (
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                              )}
-                            </svg>
-                            <span>{isFullscreen ? '🗗 Exit Full Screen' : '⛶ Full Screen'}</span>
-                          </button>
-                        </div>
+                    {/* Right: Fullscreen Toggle Button */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={toggleFullscreen}
+                        title={isFullscreen ? "Exit Full Screen" : "Enter Full Screen CBT View"}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '5px 12px',
+                          borderRadius: '4px',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          border: isFullscreen ? '1px solid #003366' : '1px solid #cbd5e1',
+                          background: isFullscreen ? '#004080' : '#ffffff',
+                          color: isFullscreen ? '#ffffff' : '#334155',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          {isFullscreen ? (
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
+                          ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                          )}
+                        </svg>
+                        <span>{isFullscreen ? '🗗 Exit Full Screen' : '⛶ Full Screen'}</span>
+                      </button>
+                    </div>
 
+                  </div>
+
+                  {/* CBT Canvas Body: Clean Empty State if 0 matching questions, or active question display */}
+                  {filteredQuestions.length === 0 ? (
+                    <div style={{
+                      padding: '40px 20px',
+                      textAlign: 'center',
+                      background: '#ffffff',
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: isFullscreen ? 'auto' : '300px'
+                    }}>
+                      <div style={{ fontSize: '2.4rem', marginBottom: '8px' }}>
+                        {activeStatusFilter === 'Wrong' ? '🎉' : activeStatusFilter === 'Unattempted' ? '⚡' : '📝'}
                       </div>
-
-                      {/* Question Sub-Header Strip */}
+                      <h3 style={{ fontSize: '0.96rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0' }}>
+                        {activeStatusFilter === 'Wrong' ? 'No Wrong Answers Found!' :
+                         activeStatusFilter === 'Unattempted' ? 'No Unattempted Questions!' :
+                         activeStatusFilter === 'Correct' ? 'No Correct Answers Found' :
+                         'No Questions Found'}
+                      </h3>
+                      <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 16px 0', maxWidth: '440px', lineHeight: 1.5 }}>
+                        {activeStatusFilter === 'Wrong' ? 'Excellent! You answered all questions correctly in this selection.' :
+                         activeStatusFilter === 'Unattempted' ? 'Great effort! You attempted every question in this selection.' :
+                         'Select another filter or section tab above to view questions.'}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => handleStatusFilterChange('ALL', e)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '7px 16px',
+                          borderRadius: '4px',
+                          fontSize: '0.74rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          border: '1px solid #004080',
+                          background: '#004080',
+                          color: '#ffffff',
+                          boxShadow: '0 2px 4px rgba(0, 64, 128, 0.2)',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        Show All Questions in {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({currentSecQuestions.length})
+                      </button>
+                    </div>
+                  ) : (
+                    activeCbtQuestion && (
+                      <>
+                        {/* Question Sub-Header Strip */}
                       <div style={{
                         padding: '8px 18px',
                         background: '#f8fafc',
@@ -1152,25 +1178,70 @@ export default function ReviewAnswerkeyPage() {
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </>
                   )}
+                </div>
+              )}
 
-                  {/* Question Cards List: Rendered in LIST mode on screen, and in PRINT mode always */}
-                  <div
-                    className={`cbt-question-scroll ${viewMode === 'LIST' ? '' : 'print-only'}`}
+              {/* LIST View Empty State */}
+              {viewMode === 'LIST' && filteredQuestions.length === 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '36px 20px',
+                  background: '#f8fafc',
+                  border: '1.5px dashed #cbd5e1',
+                  borderRadius: '16px',
+                  margin: '10px 0'
+                }}>
+                  <div style={{ fontSize: '2.2rem', marginBottom: '8px' }}>
+                    {activeStatusFilter === 'Wrong' ? '🎉' : activeStatusFilter === 'Unattempted' ? '⚡' : '📝'}
+                  </div>
+                  <h3 style={{ fontSize: '0.96rem', fontWeight: 900, color: '#0f172a', margin: '0 0 4px 0' }}>
+                    {activeStatusFilter === 'Wrong' ? 'No Wrong Answers Found!' :
+                     activeStatusFilter === 'Unattempted' ? 'No Unattempted Questions!' :
+                     activeStatusFilter === 'Correct' ? 'No Correct Answers Found' :
+                     'No Questions Found'}
+                  </h3>
+                  <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 14px 0' }}>
+                    {activeStatusFilter === 'Wrong' ? 'Excellent! You answered all questions correctly in this selection.' :
+                     activeStatusFilter === 'Unattempted' ? 'Great effort! You attempted every question in this selection.' :
+                     'Select another filter or section tab above to view questions.'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={(e) => handleStatusFilterChange('ALL', e)}
                     style={{
-                      display: viewMode === 'LIST' ? 'flex' : undefined,
-                      flexDirection: 'column',
-                      gap: '14px',
-                      flex: isFullscreen ? 1 : 'none',
-                      minHeight: 0,
-                      overflowY: isFullscreen ? 'auto' : 'visible',
-                      padding: isFullscreen ? '0 16px 20px 16px' : 0,
-                      background: 'transparent',
-                      boxSizing: 'border-box'
+                      padding: '6px 14px',
+                      borderRadius: '4px',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      border: '1px solid #004080',
+                      background: '#004080',
+                      color: '#ffffff'
                     }}
                   >
-                    {filteredQuestions.map((q, idx) => {
+                    Show All Questions in {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({currentSecQuestions.length})
+                  </button>
+                </div>
+              )}
+
+              {/* Question Cards List: Rendered in LIST mode on screen, and in PRINT mode always */}
+              <div
+                className={`cbt-question-scroll ${viewMode === 'LIST' ? '' : 'print-only'}`}
+                style={{
+                  display: viewMode === 'LIST' ? (filteredQuestions.length > 0 ? 'flex' : 'none') : undefined,
+                  flexDirection: 'column',
+                  gap: '14px',
+                  flex: isFullscreen ? 1 : 'none',
+                  minHeight: 0,
+                  overflowY: isFullscreen ? 'auto' : 'visible',
+                  padding: isFullscreen ? '0 16px 20px 16px' : 0,
+                  background: 'transparent',
+                  boxSizing: 'border-box'
+                }}
+              >
+                {(viewMode === 'LIST' ? filteredQuestions : (filteredQuestions.length > 0 ? filteredQuestions : allQuestions)).map((q, idx) => {
                       const isCorrect = q.status === 'Correct';
                       const isWrong = q.status === 'Wrong';
                       const isBonus = q.status === 'Discarded' || q.status === 'Bonus' || q.right_option === 'Benefit to All';
@@ -1285,8 +1356,6 @@ export default function ReviewAnswerkeyPage() {
                       );
                     })}
                   </div>
-                </>
-              )}
 
             </div>
 
@@ -1568,7 +1637,7 @@ export default function ReviewAnswerkeyPage() {
                   <button
                     type="button"
                     onClick={handleToggleCbtMode}
-                    title={viewMode === 'CBT' ? "Switch to Full Question Paper List" : "Open in Full Screen CBT Mode"}
+                    title={viewMode === 'CBT' ? "Switch to List View" : "Open in Full Screen CBT View"}
                     style={{
                       flex: 1,
                       padding: '6px',
@@ -1581,7 +1650,7 @@ export default function ReviewAnswerkeyPage() {
                       cursor: 'pointer'
                     }}
                   >
-                    {viewMode === 'CBT' ? '📋 Question Paper' : '🖥️ CBT Mode'}
+                    {viewMode === 'CBT' ? '📋 List View' : '🖥️ CBT View'}
                   </button>
                   <button
                     type="button"
