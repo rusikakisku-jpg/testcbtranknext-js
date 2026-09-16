@@ -1289,9 +1289,8 @@ export default function ReviewAnswerkeyPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={downloadPDF}
-                    disabled={isGeneratingPdf}
-                    title="Download high quality Printable PDF"
+                    onClick={() => window.print()}
+                    title="Download / Print PDF"
                     style={{
                       flex: 1,
                       padding: '6px',
