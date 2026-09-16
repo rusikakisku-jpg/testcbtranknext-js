@@ -1391,10 +1391,14 @@ export default function ReviewAnswerkeyPage() {
                 <div className="palette-grid-scroll" style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(36px, 1fr))',
+                  alignContent: 'start',
                   gap: '6px',
-                  maxHeight: isFullscreen ? 'calc(100vh - 360px)' : '320px',
+                  height: '300px',
+                  minHeight: '300px',
+                  maxHeight: '300px',
                   overflowY: 'auto',
-                  padding: '10px 12px'
+                  padding: '10px 12px',
+                  boxSizing: 'border-box'
                 }}>
                   {filteredQuestions.length > 0 ? (
                     filteredQuestions.map(q => {
