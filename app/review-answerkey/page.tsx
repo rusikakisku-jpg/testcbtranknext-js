@@ -434,6 +434,11 @@ export default function ReviewAnswerkeyPage() {
             display: none !important;
           }
         }
+        body.cbt-fullscreen-active {
+          overflow: hidden !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+        }
         body.cbt-fullscreen-active #navbar,
         body.cbt-fullscreen-active header.navbar,
         body.cbt-fullscreen-active footer,
@@ -453,9 +458,23 @@ export default function ReviewAnswerkeyPage() {
           background-color: #f1f5f9 !important;
           width: 100vw !important;
           height: 100vh !important;
-          overflow-y: auto !important;
-          padding: 12px 20px !important;
+          max-height: 100vh !important;
+          overflow: hidden !important;
+          padding: 8px 12px !important;
           box-sizing: border-box !important;
+        }
+        .cbt-question-scroll::-webkit-scrollbar {
+          width: 6px;
+        }
+        .cbt-question-scroll::-webkit-scrollbar-track {
+          background: #f8fafc;
+        }
+        .cbt-question-scroll::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 4px;
+        }
+        .cbt-question-scroll::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
         }
       `}</style>
       <div
@@ -464,10 +483,13 @@ export default function ReviewAnswerkeyPage() {
         style={{
           maxWidth: isFullscreen ? '100%' : '1280px',
           margin: '0 auto',
-          padding: isFullscreen ? '12px 20px' : '16px',
+          padding: isFullscreen ? '8px 12px' : '16px',
           transition: 'all 0.2s ease',
           background: isFullscreen ? '#f1f5f9' : 'transparent',
-          minHeight: isFullscreen ? '100vh' : 'auto'
+          height: isFullscreen ? '100vh' : 'auto',
+          maxHeight: isFullscreen ? '100vh' : 'none',
+          overflow: isFullscreen ? 'hidden' : 'visible',
+          boxSizing: 'border-box'
         }}
       >
 
@@ -481,7 +503,9 @@ export default function ReviewAnswerkeyPage() {
           border: isFullscreen ? '1.5px solid #cbd5e1' : 'none',
           borderRadius: isFullscreen ? '8px' : 0,
           overflow: isFullscreen ? 'hidden' : 'visible',
-          boxShadow: isFullscreen ? '0 4px 20px rgba(0, 51, 102, 0.08)' : 'none'
+          boxShadow: isFullscreen ? '0 4px 20px rgba(0, 51, 102, 0.08)' : 'none',
+          height: isFullscreen ? 'calc(100vh - 16px)' : 'auto',
+          maxHeight: isFullscreen ? 'calc(100vh - 16px)' : 'none'
         }}>
 
           {/* LEFT MAIN CONTENT COLUMN (Header Banner + Controls + Questions) */}
@@ -491,7 +515,9 @@ export default function ReviewAnswerkeyPage() {
             display: 'flex',
             flexDirection: 'column',
             gap: isFullscreen ? 0 : '16px',
-            height: isFullscreen ? 'calc(100vh - 20px)' : 'auto'
+            height: isFullscreen ? '100%' : 'auto',
+            maxHeight: isFullscreen ? '100%' : 'none',
+            overflow: 'hidden'
           }}>
 
             {/* Question Breakdown & Header Container */}
@@ -665,7 +691,8 @@ export default function ReviewAnswerkeyPage() {
                         flexDirection: 'column',
                         marginBottom: isFullscreen ? 0 : '16px',
                         flex: isFullscreen ? 1 : 'none',
-                        height: isFullscreen ? '100%' : 'auto'
+                        height: isFullscreen ? '100%' : 'auto',
+                        minHeight: 0
                       }}
                     >
 
@@ -815,13 +842,17 @@ export default function ReviewAnswerkeyPage() {
                       </div>
 
                       {/* Question Content */}
-                      <div style={{
-                        padding: '18px 20px',
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        flex: isFullscreen ? 1 : 'none',
-                        overflowY: isFullscreen ? 'auto' : 'visible'
-                      }}>
+                      <div
+                        className="cbt-question-scroll"
+                        style={{
+                          padding: '18px 20px',
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          flex: isFullscreen ? 1 : 'none',
+                          minHeight: 0,
+                          overflowY: isFullscreen ? 'auto' : 'visible'
+                        }}
+                      >
                         {/* Question Stem & Options */}
                         <div style={{ width: '100%' }}>
                           {/* Question Text / Image / HTML */}
