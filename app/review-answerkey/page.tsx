@@ -614,61 +614,23 @@ export default function ReviewAnswerkeyPage() {
               {viewMode === 'LIST' && isFullscreen && (
                 <div className="no-print" style={{
                   background: '#e9edf2',
-                  borderBottom: '2px solid #cbd5e1',
+                  borderBottom: '1px solid #cbd5e1',
                   padding: '8px 16px',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   flexWrap: 'wrap',
                   gap: '8px',
+                  marginBottom: '10px',
                   flexShrink: 0
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                    <span style={{ fontWeight: 900, fontSize: '0.86rem', color: '#004080' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontWeight: 900, fontSize: '0.88rem', color: '#004080' }}>
                       📋 Question Paper
                     </span>
-                    {resultData.sections && resultData.sections.length > 1 && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-                        <button
-                          type="button"
-                          onClick={(e) => handleSecTabChange('ALL', e)}
-                          style={{
-                            padding: '3px 8px',
-                            borderRadius: '4px',
-                            fontSize: '0.7rem',
-                            fontWeight: 800,
-                            cursor: 'pointer',
-                            border: activeSecTab === 'ALL' ? '1px solid #004080' : '1px solid #cbd5e1',
-                            background: activeSecTab === 'ALL' ? '#004080' : '#ffffff',
-                            color: activeSecTab === 'ALL' ? '#ffffff' : '#334155'
-                          }}
-                        >
-                          All ({allQuestions.length})
-                        </button>
-                        {resultData.sections.map(sec => {
-                          const isActive = activeSecTab === sec.name;
-                          return (
-                            <button
-                              key={sec.name}
-                              type="button"
-                              onClick={(e) => handleSecTabChange(sec.name, e)}
-                              style={{
-                                padding: '3px 8px',
-                                borderRadius: '4px',
-                                fontSize: '0.7rem',
-                                fontWeight: 800,
-                                cursor: 'pointer',
-                                border: isActive ? '1px solid #004080' : '1px solid #cbd5e1',
-                                background: isActive ? '#004080' : '#ffffff',
-                                color: isActive ? '#ffffff' : '#334155'
-                              }}
-                            >
-                              {sec.name} ({sec.total})
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <span style={{ fontSize: '0.74rem', background: '#004080', color: '#ffffff', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
+                      {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
+                    </span>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -720,13 +682,15 @@ export default function ReviewAnswerkeyPage() {
                 </div>
               )}
 
-              {/* Dynamic Section Selector Tabs (Shown only in List View, hidden in CBT mode & print) */}
-              {viewMode !== 'CBT' && !isFullscreen && resultData.sections && resultData.sections.length > 1 && (
+              {/* Dynamic Section Selector Tabs (Shown in List View, hidden in CBT mode & print) */}
+              {viewMode !== 'CBT' && resultData.sections && resultData.sections.length > 1 && (
                 <div className="no-print" style={{
                   display: 'flex',
                   flexWrap: 'wrap',
                   gap: '6px',
-                  marginBottom: '16px'
+                  marginBottom: '14px',
+                  padding: isFullscreen ? '0 16px' : 0,
+                  flexShrink: 0
                 }}>
                   <button
                     type="button"
@@ -1199,11 +1163,10 @@ export default function ReviewAnswerkeyPage() {
                       flexDirection: 'column',
                       gap: '14px',
                       flex: isFullscreen ? 1 : 'none',
-                      height: isFullscreen ? '100%' : 'auto',
                       minHeight: 0,
                       overflowY: isFullscreen ? 'auto' : 'visible',
-                      padding: isFullscreen ? '16px 20px' : 0,
-                      background: isFullscreen ? '#f1f5f9' : 'transparent',
+                      padding: isFullscreen ? '0 16px 20px 16px' : 0,
+                      background: 'transparent',
                       boxSizing: 'border-box'
                     }}
                   >
@@ -1217,15 +1180,15 @@ export default function ReviewAnswerkeyPage() {
                           key={idx}
                           id={`q-card-${q.q_no}`}
                           style={{
-                            borderRadius: isFullscreen ? '8px' : '14px',
-                            border: isCorrect ? '1.5px solid #a7f3d0' : isWrong ? '1.5px solid #fecaca' : isBonus ? '1.5px solid #d8b4fe' : '1px solid #cbd5e1',
-                            background: '#ffffff',
+                            borderRadius: '14px',
+                            border: isCorrect ? '1.5px solid #a7f3d0' : isWrong ? '1.5px solid #fecaca' : isBonus ? '1.5px solid #d8b4fe' : '1px solid #e2e8f0',
+                            background: isCorrect ? '#f0fdf4' : isWrong ? '#fef2f2' : isBonus ? '#faf5ff' : '#f8fafc',
                             padding: '14px 16px',
                             scrollMarginTop: '20px',
                             boxSizing: 'border-box',
                             overflow: 'hidden',
                             width: '100%',
-                            boxShadow: isFullscreen ? '0 1px 3px rgba(0, 0, 0, 0.06)' : 'none'
+                            flexShrink: 0
                           }}
                         >
                           {/* Header */}
