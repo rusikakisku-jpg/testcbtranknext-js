@@ -91,16 +91,63 @@ export default function ReviewAnswerkeyPage() {
   const [viewMode, setViewMode] = useState<'CBT' | 'LIST'>('CBT');
   const [activeQNo, setActiveQNo] = useState<number>(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
+    function checkDevice(): boolean {
+      if (typeof window === 'undefined') return false;
+      const physicalShortSide = Math.min(window.screen.width, window.screen.height);
+      const hasTouchScreen = Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
+      const isCoarsePointer = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+
+      // 1. Touchscreen + phone physical screen width (<= 600px)
+      // Reliably catches all mobile phones even when "Desktop site" is toggled ON!
+      if ((hasTouchScreen || isCoarsePointer) && physicalShortSide <= 600) {
+        return true;
+      }
+
+      // 2. Standard Mobile User Agent check (catches phones when UA is standard)
+      const ua = (navigator.userAgent || navigator.vendor || (window as any).opera || '').toLowerCase();
+      const isMobileUa = /iphone|ipod|blackberry|iemobile|opera mini|mobile|webos/i.test(ua) || 
+                         (/android/i.test(ua) && /mobile/i.test(ua));
+      if (isMobileUa) {
+        return true;
+      }
+
+      // 3. Client Hints API (Chromium modern)
+      if ((navigator as any).userAgentData?.mobile) {
+        return true;
+      }
+
+      // 4. Viewport check for responsive window testing
+      if (window.innerWidth <= 768) {
+        return true;
+      }
+
+      return false;
+    }
+
+    const mobileDetected = checkDevice();
+    setIsMobile(mobileDetected);
+
+    if (mobileDetected) {
+      document.body.classList.add('is-mobile-device');
+      setIsFullscreen(true);
+      document.body.classList.add('cbt-fullscreen-active');
+    } else {
+      document.body.classList.remove('is-mobile-device');
+    }
+
     const handleFsChange = () => {
       const doc = document as any;
       const isFs = Boolean(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
-      setIsFullscreen(isFs);
-      if (isFs) {
-        document.body.classList.add('cbt-fullscreen-active');
-      } else {
-        document.body.classList.remove('cbt-fullscreen-active');
+      if (!mobileDetected) {
+        setIsFullscreen(isFs);
+        if (isFs) {
+          document.body.classList.add('cbt-fullscreen-active');
+        } else {
+          document.body.classList.remove('cbt-fullscreen-active');
+        }
       }
     };
 
@@ -109,18 +156,28 @@ export default function ReviewAnswerkeyPage() {
     document.addEventListener('mozfullscreenchange', handleFsChange);
     document.addEventListener('MSFullscreenChange', handleFsChange);
 
-    // Automatically enter App-Style full screen on mobile view (<= 900px)
-    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
-      setIsFullscreen(true);
-      document.body.classList.add('cbt-fullscreen-active');
-    }
+    const handleResize = () => {
+      const isMob = checkDevice();
+      setIsMobile(isMob);
+      if (isMob) {
+        document.body.classList.add('is-mobile-device');
+        setIsFullscreen(true);
+        document.body.classList.add('cbt-fullscreen-active');
+      } else {
+        document.body.classList.remove('is-mobile-device');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
       document.body.classList.remove('cbt-fullscreen-active');
+      document.body.classList.remove('is-mobile-device');
       document.removeEventListener('fullscreenchange', handleFsChange);
       document.removeEventListener('webkitfullscreenchange', handleFsChange);
       document.removeEventListener('mozfullscreenchange', handleFsChange);
       document.removeEventListener('MSFullscreenChange', handleFsChange);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -340,7 +397,7 @@ export default function ReviewAnswerkeyPage() {
       setIsFullscreen(false);
       document.body.classList.remove('cbt-fullscreen-active');
     } else {
-      if (typeof window !== 'undefined' && window.innerWidth > 900) {
+      if (!isMobile && typeof window !== 'undefined' && window.innerWidth > 900) {
         enterFullscreen();
       }
       setIsFullscreen(true);
@@ -354,7 +411,7 @@ export default function ReviewAnswerkeyPage() {
     } else {
       setViewMode('CBT');
       if (!isFullscreen) {
-        if (typeof window !== 'undefined' && window.innerWidth > 900) {
+        if (!isMobile && typeof window !== 'undefined' && window.innerWidth > 900) {
           enterFullscreen();
         }
         setIsFullscreen(true);
@@ -463,10 +520,28 @@ export default function ReviewAnswerkeyPage() {
           }
         }
         @media (min-width: 901px) {
-          .mobile-palette-float-btn,
-          .mobile-palette-toggle-btn {
+          body:not(.is-mobile-device) .mobile-palette-float-btn,
+          body:not(.is-mobile-device) .mobile-palette-toggle-btn {
             display: none !important;
           }
+          body.is-mobile-device .review-right-sidebar {
+            display: none !important;
+          }
+          body.is-mobile-device .mobile-palette-toggle-btn {
+            display: inline-flex !important;
+          }
+          body.is-mobile-device .mobile-palette-float-btn {
+            display: flex !important;
+          }
+        }
+        body.is-mobile-device .review-right-sidebar {
+          display: none !important;
+        }
+        body.is-mobile-device .mobile-palette-toggle-btn {
+          display: inline-flex !important;
+        }
+        body.is-mobile-device .mobile-palette-float-btn {
+          display: flex !important;
         }
         .section-tabs-scroll::-webkit-scrollbar {
           display: none;
