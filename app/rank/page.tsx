@@ -684,6 +684,35 @@ export default function RankPage() {
                     <strong style={{ color: '#0f172a' }}>{effectiveGender}</strong>
                   </div>
                 )}
+                {/* Dynamic Custom Fields in Candidate Profile Sidebar */}
+                {(() => {
+                  const customObj = (resultData as any)?.custom_data || (formData as any)?.custom_data;
+                  if (customObj && typeof customObj === 'object') {
+                    return Object.entries(customObj).map(([k, v]) => {
+                      if (v === undefined || v === null || String(v).trim() === '') return null;
+                      let label = k.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                      if (k === 'sub_type' || k === 'trade' || k === 'branch') label = 'Trade / Branch';
+                      if (k === 'ccaa_qualified') label = 'CCAA Qualified';
+                      if (k === 'nac_percentage') label = 'NAC Percentage';
+                      if (resultData.infoRows?.some(r => r.label.toLowerCase() === label.toLowerCase())) return null;
+                      const valStr = String(v).trim();
+                      return (
+                        <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
+                          <span style={{ color: '#64748b', fontWeight: 600 }}>{label}:</span>
+                          <strong style={{ color: '#0f172a' }}>{k === 'nac_percentage' && !valStr.endsWith('%') ? `${valStr}%` : valStr}</strong>
+                        </div>
+                      );
+                    });
+                  } else if (effectiveSubType && !resultData.infoRows?.some(r => /trade|branch|stream/i.test(r.label))) {
+                    return (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.76rem' }}>
+                        <span style={{ color: '#64748b', fontWeight: 600 }}>Trade / Branch:</span>
+                        <strong style={{ color: '#0f172a' }}>{effectiveSubType}</strong>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
 
               {/* Integrated Review Answerkey Button directly below User Info */}
