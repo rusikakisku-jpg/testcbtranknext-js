@@ -80,6 +80,7 @@ interface FormData {
 export default function ReviewAnswerkeyPage() {
   const router = useRouter();
   const breakdownRef = useRef<HTMLDivElement>(null);
+  const fullscreenContainerRef = useRef<HTMLDivElement>(null);
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [formData, setFormData] = useState<FormData | null>(null);
   const [rightVal, setRightVal] = useState(1.0);
@@ -94,7 +95,13 @@ export default function ReviewAnswerkeyPage() {
   useEffect(() => {
     const handleFsChange = () => {
       const doc = document as any;
-      setIsFullscreen(Boolean(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement));
+      const isFs = Boolean(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+      setIsFullscreen(isFs);
+      if (isFs) {
+        document.body.classList.add('cbt-fullscreen-active');
+      } else {
+        document.body.classList.remove('cbt-fullscreen-active');
+      }
     };
 
     document.addEventListener('fullscreenchange', handleFsChange);
@@ -103,6 +110,7 @@ export default function ReviewAnswerkeyPage() {
     document.addEventListener('MSFullscreenChange', handleFsChange);
 
     return () => {
+      document.body.classList.remove('cbt-fullscreen-active');
       document.removeEventListener('fullscreenchange', handleFsChange);
       document.removeEventListener('webkitfullscreenchange', handleFsChange);
       document.removeEventListener('mozfullscreenchange', handleFsChange);
@@ -284,13 +292,19 @@ export default function ReviewAnswerkeyPage() {
 
   function enterFullscreen() {
     try {
-      const elem = document.documentElement as any;
+      const elem = (fullscreenContainerRef.current || document.documentElement) as any;
       if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(() => {});
+        elem.requestFullscreen().catch(() => {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          }
+        });
       } else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
       } else if (elem.msRequestFullscreen) {
         elem.msRequestFullscreen();
+      } else if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
       }
     } catch (e) {
       console.warn('Fullscreen request failed:', e);
@@ -420,8 +434,42 @@ export default function ReviewAnswerkeyPage() {
             display: none !important;
           }
         }
+        body.cbt-fullscreen-active #navbar,
+        body.cbt-fullscreen-active header.navbar,
+        body.cbt-fullscreen-active footer,
+        body.cbt-fullscreen-active .bottom-nav,
+        :fullscreen #navbar,
+        :fullscreen header.navbar,
+        :fullscreen footer,
+        :fullscreen .bottom-nav,
+        :-webkit-full-screen #navbar,
+        :-webkit-full-screen header.navbar,
+        :-webkit-full-screen footer,
+        :-webkit-full-screen .bottom-nav {
+          display: none !important;
+        }
+        .cbt-fullscreen-root:fullscreen,
+        .cbt-fullscreen-root:-webkit-full-screen {
+          background-color: #f1f5f9 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          overflow-y: auto !important;
+          padding: 12px 20px !important;
+          box-sizing: border-box !important;
+        }
       `}</style>
-      <div className="result-main" style={{ maxWidth: isFullscreen ? '100%' : '1280px', margin: '0 auto', padding: isFullscreen ? '12px 24px' : '16px', transition: 'all 0.2s ease' }}>
+      <div
+        ref={fullscreenContainerRef}
+        className={`result-main ${isFullscreen ? 'cbt-fullscreen-root' : ''}`}
+        style={{
+          maxWidth: isFullscreen ? '100%' : '1280px',
+          margin: '0 auto',
+          padding: isFullscreen ? '12px 20px' : '16px',
+          transition: 'all 0.2s ease',
+          background: isFullscreen ? '#f1f5f9' : 'transparent',
+          minHeight: isFullscreen ? '100vh' : 'auto'
+        }}
+      >
 
         {/* 2-Column Responsive Layout with Right Sidebar */}
         <div style={{
@@ -437,56 +485,60 @@ export default function ReviewAnswerkeyPage() {
             {/* Question Breakdown & Header Container */}
             <div ref={breakdownRef} id="question-breakdown-section" style={{ padding: '18px 16px', borderRadius: '18px', background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
               
-              {/* Exam Logo / Title Banner (Centered & Full Width Display) */}
-              <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9', textAlign: 'center' }}>
-                {resultData.headerImgUrl ? (
-                  <div style={{ width: '100%', textAlign: 'center' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={resultData.headerImgUrl}
-                      alt="Exam Header Logo"
-                      className="exam-logo"
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                        maxHeight: '120px',
-                        objectFit: 'contain',
-                        display: 'block',
-                        margin: '0 auto'
-                      }}
-                    />
-                  </div>
-                ) : resultData.headerBannerText ? (
-                  <h1 className="exam-name-title" style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', textAlign: 'center' }}>
-                    {resultData.headerBannerText}
-                  </h1>
-                ) : (
-                  resultData.examName && (
+              {/* Exam Logo / Title Banner (Centered & Full Width Display, hidden in fullscreen) */}
+              {!isFullscreen && (
+                <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9', textAlign: 'center' }}>
+                  {resultData.headerImgUrl ? (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={resultData.headerImgUrl}
+                        alt="Exam Header Logo"
+                        className="exam-logo"
+                        style={{
+                          width: '100%',
+                          maxWidth: '100%',
+                          maxHeight: '120px',
+                          objectFit: 'contain',
+                          display: 'block',
+                          margin: '0 auto'
+                        }}
+                      />
+                    </div>
+                  ) : resultData.headerBannerText ? (
                     <h1 className="exam-name-title" style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', textAlign: 'center' }}>
-                      {resultData.examName}
+                      {resultData.headerBannerText}
                     </h1>
-                  )
-                )}
-              </div>
-
-              {/* Candidate Info Summary Header (Visible at Top on Mobile & Print) */}
-              <div className="candidate-top-summary" style={{
-                marginBottom: '14px',
-                padding: '10px 12px',
-                background: '#f8fafc',
-                border: '1px solid #cbd5e1',
-                borderRadius: '10px',
-                fontSize: '0.78rem'
-              }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '6px 12px', fontSize: '9pt' }}>
-                  <div><strong>Candidate:</strong> {candidateName}</div>
-                  {rollNumber && <div><strong>Roll No:</strong> <span style={{ fontFamily: 'monospace', color: '#0044cc', fontWeight: 800 }}>{rollNumber}</span></div>}
-                  {resultData.testDate && <div><strong>Date:</strong> {resultData.testDate}</div>}
-                  {resultData.testTime && <div><strong>Time:</strong> {resultData.testTime}</div>}
-                  {formData?.category && <div><strong>Category:</strong> {formData.category}</div>}
-                  {formData?.state && <div><strong>State:</strong> {formData.state}</div>}
+                  ) : (
+                    resultData.examName && (
+                      <h1 className="exam-name-title" style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a', textAlign: 'center' }}>
+                        {resultData.examName}
+                      </h1>
+                    )
+                  )}
                 </div>
-              </div>
+              )}
+
+              {/* Candidate Info Summary Header (Visible at Top on Mobile & Print, hidden in fullscreen) */}
+              {!isFullscreen && (
+                <div className="candidate-top-summary" style={{
+                  marginBottom: '14px',
+                  padding: '10px 12px',
+                  background: '#f8fafc',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '10px',
+                  fontSize: '0.78rem'
+                }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '6px 12px', fontSize: '9pt' }}>
+                    <div><strong>Candidate:</strong> {candidateName}</div>
+                    {rollNumber && <div><strong>Roll No:</strong> <span style={{ fontFamily: 'monospace', color: '#0044cc', fontWeight: 800 }}>{rollNumber}</span></div>}
+                    {resultData.testDate && <div><strong>Date:</strong> {resultData.testDate}</div>}
+                    {resultData.testTime && <div><strong>Time:</strong> {resultData.testTime}</div>}
+                    {formData?.category && <div><strong>Category:</strong> {formData.category}</div>}
+                    {formData?.state && <div><strong>State:</strong> {formData.state}</div>}
+                  </div>
+                </div>
+              )}
 
 
 
