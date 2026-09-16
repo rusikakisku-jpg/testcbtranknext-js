@@ -1079,7 +1079,7 @@ export default function ReviewAnswerkeyPage() {
                           </div>
                         </div>
 
-                        {/* Right: Save and Next */}
+                        {/* Right: Next */}
                         <div>
                           <button
                             type="button"
@@ -1089,7 +1089,7 @@ export default function ReviewAnswerkeyPage() {
                                 jumpToQuestion(cbtList[currentNavIdx + 1].q_no);
                               }
                             }}
-                            title="Save & Next Question (► Right Arrow)"
+                            title="Next Question (► Right Arrow)"
                             style={{
                               padding: '7px 20px',
                               borderRadius: '4px',
@@ -1103,7 +1103,7 @@ export default function ReviewAnswerkeyPage() {
                               transition: 'all 0.15s ease'
                             }}
                           >
-                            Save & Next ►
+                            Next ►
                           </button>
                         </div>
                       </div>
