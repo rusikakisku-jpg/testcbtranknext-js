@@ -610,77 +610,7 @@ export default function ReviewAnswerkeyPage() {
 
 
 
-              {/* List View Sub-Header Strip in Fullscreen */}
-              {viewMode === 'LIST' && isFullscreen && (
-                <div className="no-print" style={{
-                  background: '#e9edf2',
-                  borderBottom: '1px solid #cbd5e1',
-                  padding: '8px 16px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '8px',
-                  marginBottom: '10px',
-                  flexShrink: 0
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontWeight: 900, fontSize: '0.88rem', color: '#004080' }}>
-                      📋 List View
-                    </span>
-                    <span style={{ fontSize: '0.74rem', background: '#004080', color: '#ffffff', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
-                      {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
-                    </span>
-                  </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <button
-                      type="button"
-                      onClick={() => setViewMode('CBT')}
-                      title="Switch back to CBT View"
-                      style={{
-                        padding: '5px 12px',
-                        borderRadius: '4px',
-                        fontSize: '0.72rem',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        border: '1px solid #004080',
-                        background: '#ffffff',
-                        color: '#004080',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                        transition: 'all 0.15s ease'
-                      }}
-                    >
-                      🖥️ CBT View
-                    </button>
-                    <button
-                      type="button"
-                      onClick={toggleFullscreen}
-                      title="Exit Full Screen"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '5px 12px',
-                        borderRadius: '4px',
-                        fontSize: '0.72rem',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        border: '1px solid #003366',
-                        background: '#004080',
-                        color: '#ffffff',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                        transition: 'all 0.15s ease'
-                      }}
-                    >
-                      <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
-                      </svg>
-                      <span>🗗 Exit Full Screen</span>
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {/* Dynamic Section Selector Tabs (Shown in List View, hidden in CBT mode & print) */}
               {viewMode !== 'CBT' && resultData.sections && resultData.sections.length > 1 && (
@@ -1651,6 +1581,32 @@ export default function ReviewAnswerkeyPage() {
                   >
                     {viewMode === 'CBT' ? '📋 List View' : '🖥️ CBT View'}
                   </button>
+                  {isFullscreen && (
+                    <button
+                      type="button"
+                      onClick={toggleFullscreen}
+                      title="Exit Full Screen"
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: '4px',
+                        border: '1px solid #003366',
+                        background: '#004080',
+                        color: '#ffffff',
+                        fontWeight: 800,
+                        fontSize: '0.7rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
+                      </svg>
+                      Exit
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => window.print()}
