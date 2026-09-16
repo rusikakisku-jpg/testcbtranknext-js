@@ -418,124 +418,18 @@ export default function ReviewAnswerkeyPage() {
                 </div>
               </div>
 
-              {/* Colorful Filter Status Pills & Download PDF Button Row (Hidden on Print) */}
+              {/* View Mode Toggle & Download PDF Button Row (Hidden on Print) */}
               <div className="no-print" style={{
                 display: 'flex',
                 flexWrap: 'wrap',
                 alignItems: 'center',
-                justifyContent: 'space-between',
+                justifyContent: 'flex-end',
                 gap: '8px',
                 marginBottom: '14px',
                 borderBottom: '1px solid #f1f5f9',
                 paddingBottom: '12px'
               }}>
-                
-                {/* Left: Status Filter Pills (ALL, Correct, Wrong, Unattempted) */}
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  {/* ALL Pill */}
-                  <button
-                    type="button"
-                    onClick={(e) => handleStatusFilterChange('ALL', e)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '16px',
-                      fontSize: '0.7rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      border: activeStatusFilter === 'ALL' ? '1px solid #1d4ed8' : '1px solid #bfdbfe',
-                      transition: 'all 0.2s ease',
-                      background: activeStatusFilter === 'ALL' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#eff6ff',
-                      color: activeStatusFilter === 'ALL' ? '#ffffff' : '#1d4ed8',
-                      boxShadow: activeStatusFilter === 'ALL' ? '0 2px 8px rgba(37, 99, 235, 0.35)' : 'none'
-                    }}
-                  >
-                    All ({pillTotalCount})
-                  </button>
-
-                  {/* Correct Pill */}
-                  <button
-                    type="button"
-                    onClick={(e) => handleStatusFilterChange('Correct', e)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '16px',
-                      fontSize: '0.7rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      border: activeStatusFilter === 'Correct' ? '1px solid #047857' : '1px solid #a7f3d0',
-                      transition: 'all 0.2s ease',
-                      background: activeStatusFilter === 'Correct' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#ecfdf5',
-                      color: activeStatusFilter === 'Correct' ? '#ffffff' : '#047857',
-                      boxShadow: activeStatusFilter === 'Correct' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none'
-                    }}
-                  >
-                    Correct ({pillCorrectCount})
-                  </button>
-
-                  {/* Wrong Pill */}
-                  <button
-                    type="button"
-                    onClick={(e) => handleStatusFilterChange('Wrong', e)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '16px',
-                      fontSize: '0.7rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      border: activeStatusFilter === 'Wrong' ? '1px solid #b91c1c' : '1px solid #fecaca',
-                      transition: 'all 0.2s ease',
-                      background: activeStatusFilter === 'Wrong' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : '#fef2f2',
-                      color: activeStatusFilter === 'Wrong' ? '#ffffff' : '#b91c1c',
-                      boxShadow: activeStatusFilter === 'Wrong' ? '0 2px 8px rgba(239, 68, 68, 0.35)' : 'none'
-                    }}
-                  >
-                    Wrong ({pillWrongCount})
-                  </button>
-
-                  {/* Unattempted Pill */}
-                  <button
-                    type="button"
-                    onClick={(e) => handleStatusFilterChange('Unattempted', e)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '16px',
-                      fontSize: '0.7rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      border: activeStatusFilter === 'Unattempted' ? '1px solid #b45309' : '1px solid #fde68a',
-                      transition: 'all 0.2s ease',
-                      background: activeStatusFilter === 'Unattempted' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#fffbeb',
-                      color: activeStatusFilter === 'Unattempted' ? '#ffffff' : '#b45309',
-                      boxShadow: activeStatusFilter === 'Unattempted' ? '0 2px 8px rgba(245, 158, 11, 0.35)' : 'none'
-                    }}
-                  >
-                    Unattempted ({pillUnattemptedCount})
-                  </button>
-
-                  {/* Bonus / Discarded Pill (Shown only when > 0) */}
-                  {pillBonusCount > 0 && (
-                    <button
-                      type="button"
-                      onClick={(e) => handleStatusFilterChange('Discarded', e)}
-                      style={{
-                        padding: '4px 10px',
-                        borderRadius: '16px',
-                        fontSize: '0.7rem',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        border: activeStatusFilter === 'Discarded' ? '1px solid #7e22ce' : '1px solid #e9d5ff',
-                        transition: 'all 0.2s ease',
-                        background: activeStatusFilter === 'Discarded' ? 'linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)' : '#faf5ff',
-                        color: activeStatusFilter === 'Discarded' ? '#ffffff' : '#7e22ce',
-                        boxShadow: activeStatusFilter === 'Discarded' ? '0 2px 8px rgba(168, 85, 247, 0.35)' : 'none'
-                      }}
-                    >
-                      Bonus / Discarded ({pillBonusCount})
-                    </button>
-                  )}
-                </div>
-
-                {/* Right: View Mode Toggle & Download PDF Button */}
+                {/* View Mode Toggle & Download PDF Button */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   {allQuestions.length > 0 && (
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', background: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
@@ -1271,27 +1165,87 @@ export default function ReviewAnswerkeyPage() {
                   fontSize: '0.7rem',
                   fontWeight: 700
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#166534' }}>
-                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#16a34a', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                  <div
+                    onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Correct' ? 'ALL' : 'Correct', e)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#166534',
+                      cursor: 'pointer',
+                      padding: '3px 4px',
+                      borderRadius: '4px',
+                      background: activeStatusFilter === 'Correct' ? '#dcfce7' : 'transparent',
+                      border: activeStatusFilter === 'Correct' ? '1px solid #16a34a' : '1px solid transparent',
+                      transition: 'all 0.15s ease'
+                    }}
+                    title="Click to filter Answered (Correct) questions"
+                  >
+                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#16a34a', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem', flexShrink: 0 }}>
                       {pillCorrectCount}
                     </span>
                     <span>Answered (Correct)</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#991b1b' }}>
-                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#dc2626', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                  <div
+                    onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Wrong' ? 'ALL' : 'Wrong', e)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#991b1b',
+                      cursor: 'pointer',
+                      padding: '3px 4px',
+                      borderRadius: '4px',
+                      background: activeStatusFilter === 'Wrong' ? '#fee2e2' : 'transparent',
+                      border: activeStatusFilter === 'Wrong' ? '1px solid #dc2626' : '1px solid transparent',
+                      transition: 'all 0.15s ease'
+                    }}
+                    title="Click to filter Not Answered (Wrong) questions"
+                  >
+                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#dc2626', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem', flexShrink: 0 }}>
                       {pillWrongCount}
                     </span>
                     <span>Not Answered (Wrong)</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#475569' }}>
-                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#94a3b8', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                  <div
+                    onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Unattempted' ? 'ALL' : 'Unattempted', e)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#475569',
+                      cursor: 'pointer',
+                      padding: '3px 4px',
+                      borderRadius: '4px',
+                      background: activeStatusFilter === 'Unattempted' ? '#f1f5f9' : 'transparent',
+                      border: activeStatusFilter === 'Unattempted' ? '1px solid #94a3b8' : '1px solid transparent',
+                      transition: 'all 0.15s ease'
+                    }}
+                    title="Click to filter Not Visited questions"
+                  >
+                    <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#94a3b8', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem', flexShrink: 0 }}>
                       {pillUnattemptedCount}
                     </span>
                     <span>Not Visited</span>
                   </div>
                   {pillBonusCount > 0 && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#6b21a8' }}>
-                      <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#9333ea', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem' }}>
+                    <div
+                      onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Discarded' ? 'ALL' : 'Discarded', e)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#6b21a8',
+                        cursor: 'pointer',
+                        padding: '3px 4px',
+                        borderRadius: '4px',
+                        background: activeStatusFilter === 'Discarded' ? '#f3e8ff' : 'transparent',
+                        border: activeStatusFilter === 'Discarded' ? '1px solid #9333ea' : '1px solid transparent',
+                        transition: 'all 0.15s ease'
+                      }}
+                      title="Click to filter Marked for Review questions"
+                    >
+                      <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#9333ea', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem', flexShrink: 0 }}>
                         {pillBonusCount}
                       </span>
                       <span>Marked for Review</span>
@@ -1611,10 +1565,60 @@ export default function ReviewAnswerkeyPage() {
               textAlign: 'center',
               border: '1px solid #e2e8f0'
             }}>
-              <div style={{ color: '#166534' }}>🟢 {pillCorrectCount}</div>
-              <div style={{ color: '#991b1b' }}>🔴 {pillWrongCount}</div>
-              <div style={{ color: '#475569' }}>⚪ {pillUnattemptedCount}</div>
-              <div style={{ color: '#6b21a8' }}>🟣 {pillBonusCount}</div>
+              <div
+                onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Correct' ? 'ALL' : 'Correct', e)}
+                style={{
+                  color: '#166534',
+                  cursor: 'pointer',
+                  padding: '3px 2px',
+                  borderRadius: '4px',
+                  background: activeStatusFilter === 'Correct' ? '#dcfce7' : 'transparent',
+                  border: activeStatusFilter === 'Correct' ? '1px solid #16a34a' : '1px solid transparent'
+                }}
+              >
+                🟢 {pillCorrectCount}
+              </div>
+              <div
+                onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Wrong' ? 'ALL' : 'Wrong', e)}
+                style={{
+                  color: '#991b1b',
+                  cursor: 'pointer',
+                  padding: '3px 2px',
+                  borderRadius: '4px',
+                  background: activeStatusFilter === 'Wrong' ? '#fee2e2' : 'transparent',
+                  border: activeStatusFilter === 'Wrong' ? '1px solid #dc2626' : '1px solid transparent'
+                }}
+              >
+                🔴 {pillWrongCount}
+              </div>
+              <div
+                onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Unattempted' ? 'ALL' : 'Unattempted', e)}
+                style={{
+                  color: '#475569',
+                  cursor: 'pointer',
+                  padding: '3px 2px',
+                  borderRadius: '4px',
+                  background: activeStatusFilter === 'Unattempted' ? '#f1f5f9' : 'transparent',
+                  border: activeStatusFilter === 'Unattempted' ? '1px solid #94a3b8' : '1px solid transparent'
+                }}
+              >
+                ⚪ {pillUnattemptedCount}
+              </div>
+              {pillBonusCount > 0 && (
+                <div
+                  onClick={(e) => handleStatusFilterChange(activeStatusFilter === 'Discarded' ? 'ALL' : 'Discarded', e)}
+                  style={{
+                    color: '#6b21a8',
+                    cursor: 'pointer',
+                    padding: '3px 2px',
+                    borderRadius: '4px',
+                    background: activeStatusFilter === 'Discarded' ? '#f3e8ff' : 'transparent',
+                    border: activeStatusFilter === 'Discarded' ? '1px solid #9333ea' : '1px solid transparent'
+                  }}
+                >
+                  🟣 {pillBonusCount}
+                </div>
+              )}
             </div>
 
             {/* Grid */}
