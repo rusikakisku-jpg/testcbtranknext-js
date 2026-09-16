@@ -471,22 +471,55 @@ export default function ReviewAnswerkeyPage() {
         }}
       >
 
-        {/* 2-Column Responsive Layout with Right Sidebar */}
+        {/* 2-Column Responsive Layout with Right Sidebar (Unified single container in fullscreen) */}
         <div style={{
           display: 'flex',
-          gap: '20px',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap'
+          gap: isFullscreen ? 0 : '20px',
+          alignItems: isFullscreen ? 'stretch' : 'flex-start',
+          flexWrap: isFullscreen ? 'nowrap' : 'wrap',
+          background: isFullscreen ? '#ffffff' : 'transparent',
+          border: isFullscreen ? '1.5px solid #cbd5e1' : 'none',
+          borderRadius: isFullscreen ? '8px' : 0,
+          overflow: isFullscreen ? 'hidden' : 'visible',
+          boxShadow: isFullscreen ? '0 4px 20px rgba(0, 51, 102, 0.08)' : 'none'
         }}>
 
           {/* LEFT MAIN CONTENT COLUMN (Header Banner + Controls + Questions) */}
-          <div style={{ flex: '1 1 680px', minWidth: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{
+            flex: isFullscreen ? '1 1 auto' : '1 1 680px',
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isFullscreen ? 0 : '16px',
+            height: isFullscreen ? 'calc(100vh - 20px)' : 'auto'
+          }}>
 
             {/* Question Breakdown & Header Container */}
-            <div ref={breakdownRef} id="question-breakdown-section" style={{ padding: '18px 16px', borderRadius: '18px', background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
+            <div
+              ref={breakdownRef}
+              id="question-breakdown-section"
+              style={{
+                padding: isFullscreen ? 0 : '18px 16px',
+                borderRadius: isFullscreen ? 0 : '18px',
+                background: isFullscreen ? 'transparent' : '#ffffff',
+                border: isFullscreen ? 'none' : '1px solid #e2e8f0',
+                boxShadow: isFullscreen ? 'none' : '0 4px 16px rgba(15, 23, 42, 0.04)',
+                display: 'flex',
+                flexDirection: 'column',
+                height: isFullscreen ? '100%' : 'auto',
+                overflow: 'hidden'
+              }}
+            >
               
               {/* Exam Logo / Title Banner (Centered & Full Width Display) */}
-              <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9', textAlign: 'center' }}>
+              <div style={{
+                marginBottom: isFullscreen ? 0 : '16px',
+                padding: isFullscreen ? '6px 12px' : '0 0 14px 0',
+                borderBottom: '1px solid #f1f5f9',
+                textAlign: 'center',
+                flexShrink: 0,
+                background: isFullscreen ? '#f8fafc' : 'transparent'
+              }}>
                 {resultData.headerImgUrl ? (
                   <div style={{ width: '100%', textAlign: 'center' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -624,13 +657,15 @@ export default function ReviewAnswerkeyPage() {
                       className="no-print"
                       style={{
                         background: '#ffffff',
-                        border: '1.5px solid #cbd5e1',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 20px rgba(0, 51, 102, 0.08)',
+                        border: isFullscreen ? 'none' : '1.5px solid #cbd5e1',
+                        borderRadius: isFullscreen ? 0 : '8px',
+                        boxShadow: isFullscreen ? 'none' : '0 4px 20px rgba(0, 51, 102, 0.08)',
                         overflow: 'hidden',
                         display: 'flex',
                         flexDirection: 'column',
-                        marginBottom: '16px'
+                        marginBottom: isFullscreen ? 0 : '16px',
+                        flex: isFullscreen ? 1 : 'none',
+                        height: isFullscreen ? '100%' : 'auto'
                       }}
                     >
 
@@ -783,7 +818,9 @@ export default function ReviewAnswerkeyPage() {
                       <div style={{
                         padding: '18px 20px',
                         width: '100%',
-                        boxSizing: 'border-box'
+                        boxSizing: 'border-box',
+                        flex: isFullscreen ? 1 : 'none',
+                        overflowY: isFullscreen ? 'auto' : 'visible'
                       }}>
                         {/* Question Stem & Options */}
                         <div style={{ width: '100%' }}>
@@ -914,7 +951,7 @@ export default function ReviewAnswerkeyPage() {
                         </div>
                       </div>
 
-                      {/* DigiALM Bottom Action Bar */}
+                      {/* DigiALM Bottom Action Bar (Fixed at Bottom) */}
                       <div style={{
                         background: '#e9edf2',
                         borderTop: '2px solid #cbd5e1',
@@ -923,59 +960,13 @@ export default function ReviewAnswerkeyPage() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '10px',
-                        flexWrap: 'wrap'
+                        position: 'sticky',
+                        bottom: 0,
+                        zIndex: 10,
+                        flexShrink: 0
                       }}>
-                        {/* Left: Question Paper & Clear Filter */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <button
-                            type="button"
-                            onClick={() => setViewMode('LIST')}
-                            title="View Full Question Paper List"
-                            style={{
-                              padding: '7px 14px',
-                              borderRadius: '4px',
-                              fontSize: '0.74rem',
-                              fontWeight: 700,
-                              border: '1px solid #4f46e5',
-                              background: '#4f46e5',
-                              color: '#ffffff',
-                              cursor: 'pointer',
-                              boxShadow: '0 1px 3px rgba(79, 70, 229, 0.25)'
-                            }}
-                          >
-                            📋 Question Paper
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => handleStatusFilterChange('ALL', e)}
-                            title="Reset status filters to see all questions"
-                            style={{
-                              padding: '7px 14px',
-                              borderRadius: '4px',
-                              fontSize: '0.74rem',
-                              fontWeight: 700,
-                              border: '1px solid #cbd5e1',
-                              background: '#ffffff',
-                              color: '#334155',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Clear Filter
-                          </button>
-                        </div>
-
-                        {/* Center: Question Counter */}
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#004080' }}>
-                            Question {currentNavIdx + 1} of {cbtList.length}
-                          </div>
-                          <div style={{ fontSize: '0.64rem', color: '#64748b' }}>
-                            (Keyboard: ◄ / ► arrow keys)
-                          </div>
-                        </div>
-
-                        {/* Right: Previous & Save and Next */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {/* Left: Previous Button */}
+                        <div>
                           <button
                             type="button"
                             disabled={currentNavIdx <= 0}
@@ -986,7 +977,7 @@ export default function ReviewAnswerkeyPage() {
                             }}
                             title="Previous Question (◄ Left Arrow)"
                             style={{
-                              padding: '7px 16px',
+                              padding: '7px 18px',
                               borderRadius: '4px',
                               fontSize: '0.76rem',
                               fontWeight: 700,
@@ -994,12 +985,26 @@ export default function ReviewAnswerkeyPage() {
                               background: currentNavIdx <= 0 ? '#f1f5f9' : '#ffffff',
                               color: currentNavIdx <= 0 ? '#94a3b8' : '#0f172a',
                               cursor: currentNavIdx <= 0 ? 'not-allowed' : 'pointer',
-                              boxShadow: currentNavIdx <= 0 ? 'none' : '0 1px 3px rgba(0,0,0,0.05)'
+                              boxShadow: currentNavIdx <= 0 ? 'none' : '0 1px 3px rgba(0,0,0,0.05)',
+                              transition: 'all 0.15s ease'
                             }}
                           >
                             ◄ Previous
                           </button>
+                        </div>
 
+                        {/* Center: Question Counter */}
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#004080' }}>
+                            Question {currentNavIdx + 1} of {cbtList.length}
+                          </div>
+                          <div style={{ fontSize: '0.64rem', color: '#64748b' }}>
+                            (Keyboard: ◄ / ► arrow keys)
+                          </div>
+                        </div>
+
+                        {/* Right: Save and Next */}
+                        <div>
                           <button
                             type="button"
                             disabled={currentNavIdx >= cbtList.length - 1}
@@ -1010,7 +1015,7 @@ export default function ReviewAnswerkeyPage() {
                             }}
                             title="Save & Next Question (► Right Arrow)"
                             style={{
-                              padding: '7px 18px',
+                              padding: '7px 20px',
                               borderRadius: '4px',
                               fontSize: '0.76rem',
                               fontWeight: 800,
@@ -1018,7 +1023,8 @@ export default function ReviewAnswerkeyPage() {
                               background: currentNavIdx >= cbtList.length - 1 ? '#94a3b8' : '#16a34a',
                               color: '#ffffff',
                               cursor: currentNavIdx >= cbtList.length - 1 ? 'not-allowed' : 'pointer',
-                              boxShadow: currentNavIdx >= cbtList.length - 1 ? 'none' : '0 2px 6px rgba(22, 163, 74, 0.3)'
+                              boxShadow: currentNavIdx >= cbtList.length - 1 ? 'none' : '0 2px 6px rgba(22, 163, 74, 0.3)',
+                              transition: 'all 0.15s ease'
                             }}
                           >
                             Save & Next ►
@@ -1160,23 +1166,28 @@ export default function ReviewAnswerkeyPage() {
 
           {/* RIGHT SIDEBAR COLUMN (Candidate Info + Integrated View Your Rank Button + Back to Scorecard) */}
           <div className="review-right-sidebar no-print" style={{
-            flex: '0 0 310px',
+            flex: isFullscreen ? '0 0 310px' : '0 0 310px',
+            width: isFullscreen ? '310px' : 'auto',
             minWidth: '280px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px',
-            position: 'sticky',
-            top: '20px'
+            gap: isFullscreen ? 0 : '16px',
+            position: isFullscreen ? 'static' : 'sticky',
+            top: isFullscreen ? 'auto' : '20px',
+            borderLeft: isFullscreen ? '1.5px solid #cbd5e1' : 'none',
+            background: isFullscreen ? '#ffffff' : 'transparent',
+            height: isFullscreen ? '100%' : 'auto',
+            overflowY: isFullscreen ? 'auto' : 'visible'
           }}>
 
             {/* Sidebar Card 0: 🎯 DigiALM Question Palette */}
             {allQuestions.length > 0 && (
               <div className="sidebar-palette-card" style={{
                 background: '#ffffff',
-                border: '1.5px solid #cbd5e1',
-                borderRadius: '8px',
+                border: isFullscreen ? 'none' : '1.5px solid #cbd5e1',
+                borderRadius: isFullscreen ? 0 : '8px',
                 overflow: 'hidden',
-                boxShadow: '0 4px 16px rgba(0, 51, 102, 0.08)'
+                boxShadow: isFullscreen ? 'none' : '0 4px 16px rgba(0, 51, 102, 0.08)'
               }}>
                 {/* Candidate Info Strip in Palette (Authentic DigiALM Top Right Card) */}
                 <div style={{
@@ -1350,7 +1361,7 @@ export default function ReviewAnswerkeyPage() {
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(36px, 1fr))',
                   gap: '6px',
-                  maxHeight: '320px',
+                  maxHeight: isFullscreen ? 'calc(100vh - 360px)' : '320px',
                   overflowY: 'auto',
                   padding: '10px 12px'
                 }}>
@@ -1470,7 +1481,14 @@ export default function ReviewAnswerkeyPage() {
             )}
 
             {/* Navigation Action Buttons: View Your Rank & Back to Scorecard */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              padding: isFullscreen ? '10px 12px' : 0,
+              background: isFullscreen ? '#f8fafc' : 'transparent',
+              borderTop: isFullscreen ? '1px solid #e2e8f0' : 'none'
+            }}>
               {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
                 <Link
                   href="/rank"
