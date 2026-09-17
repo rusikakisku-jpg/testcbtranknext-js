@@ -356,6 +356,38 @@ export default function AnswerkeyCalculator({
     toastTimerRef.current = setTimeout(() => setToastVisible(false), 4000);
   }
 
+  const [pastedStatus, setPastedStatus] = useState(false);
+
+  async function handlePasteUrl() {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text && text.trim()) {
+          setFormData(prev => ({ ...prev, ans_key_url: text.trim() }));
+          setPastedStatus(true);
+          setTimeout(() => setPastedStatus(false), 2000);
+          showToast('Answer key link pasted from clipboard!');
+          return;
+        } else {
+          showToast('Clipboard is empty or does not contain text.');
+        }
+      } else {
+        const inputEl = document.getElementById('ans_key_url') as HTMLInputElement | null;
+        if (inputEl) {
+          inputEl.focus();
+        }
+        showToast('Clipboard reading not supported. Please paste directly into the box.');
+      }
+    } catch (err) {
+      console.warn('Clipboard read error:', err);
+      const inputEl = document.getElementById('ans_key_url') as HTMLInputElement | null;
+      if (inputEl) {
+        inputEl.focus();
+      }
+      showToast('Clipboard permission denied. Please paste directly into the box.');
+    }
+  }
+
   // Apply exam object data to form state
   function applyExamData(examObj: Record<string, unknown>, slug: string) {
     const title = (examObj.title as string) || '';
@@ -750,12 +782,62 @@ export default function AnswerkeyCalculator({
               {/* Answer Key URL */}
               <div className="ak-form-group">
                 <label htmlFor="ans_key_url">Answer Key URL <span className="star">*</span></label>
-                <input
-                  type="url" id="ans_key_url" className="ak-form-input font-mono"
-                  placeholder="Paste your official Answerkey Link" required
-                  value={formData.ans_key_url}
-                  onChange={e => setFormData(prev => ({ ...prev, ans_key_url: e.target.value }))}
-                />
+                <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="url" id="ans_key_url" className="ak-form-input font-mono"
+                    placeholder="Paste your official Answerkey Link" required
+                    value={formData.ans_key_url}
+                    onChange={e => setFormData(prev => ({ ...prev, ans_key_url: e.target.value }))}
+                    style={{ paddingRight: '76px' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handlePasteUrl}
+                    title={pastedStatus ? "Pasted!" : "Paste URL from clipboard"}
+                    aria-label="Paste URL from clipboard"
+                    className="ak-paste-btn"
+                    style={{
+                      position: 'absolute',
+                      right: '4px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      height: '28px',
+                      padding: '0 8px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      background: pastedStatus ? '#dcfce7' : '#ffffff',
+                      border: pastedStatus ? '1.5px solid #16a34a' : '1.5px solid #cbd5e1',
+                      borderRadius: '6px',
+                      color: pastedStatus ? '#16a34a' : '#003366',
+                      cursor: 'pointer',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                      transition: 'all 0.15s ease',
+                      whiteSpace: 'nowrap',
+                      zIndex: 2
+                    }}
+                  >
+                    {pastedStatus ? (
+                      <>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span>Pasted</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                        </svg>
+                        <span>Paste</span>
+                      </>
+                    )}
+                  </button>
+                </div>
                 <p className="help-text">Use the official answer key link (the page where questions are visible).</p>
               </div>
 
