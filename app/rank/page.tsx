@@ -82,7 +82,7 @@ export default function RankPage() {
     percentile: number;
   } | null>(null);
   const [loadingRank, setLoadingRank] = useState(true);
-  const [showDetailedTable, setShowDetailedTable] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   useEffect(() => {
     try {
@@ -256,6 +256,11 @@ export default function RankPage() {
   const overallAccuracy = totalAttemptedQuestions > 0 ? ((totCorrect / totalAttemptedQuestions) * 100).toFixed(1) : '0.0';
   const percentileNum = Math.min(100, Math.max(0, parseFloat(calculatedPercentile) || 0));
 
+  // Multi-segment percentage distribution
+  const pctCorrect = totQuestions > 0 ? Math.round((totCorrect / totQuestions) * 100) : 0;
+  const pctWrong = totQuestions > 0 ? Math.round((totWrong / totQuestions) * 100) : 0;
+  const pctUnattempted = Math.max(0, 100 - pctCorrect - pctWrong);
+
   const metaChips = [
     resultData.testDate ? { label: 'Date', val: `${resultData.testDate}${resultData.testTime ? ` (${resultData.testTime})` : ''}`, icon: '📅' } : null,
     effectiveCommunity ? { label: 'Category', val: effectiveCommunity, icon: '🏷️' } : null,
@@ -268,19 +273,21 @@ export default function RankPage() {
   return (
     <main style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
       <style>{`
-        /* Native App-Style UI Design System for /rank */
-        .app-rank-container {
+        /* ============================================================
+           PREMIUM MOBILE APP-STYLE DESIGN SYSTEM FOR /rank
+           ============================================================ */
+        .app-rank-page {
           width: 100%;
-          max-width: 1240px;
+          max-width: 1200px;
           margin: 0 auto;
-          padding: 16px 14px 44px;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-          color: #0f172a;
+          padding: 14px 12px 60px;
           box-sizing: border-box;
+          color: #0f172a;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           overflow-x: hidden;
         }
 
-        .app-rank-layout {
+        .app-rank-grid-layout {
           display: flex;
           gap: 20px;
           align-items: flex-start;
@@ -289,327 +296,310 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .app-rank-main {
-          flex: 1 1 700px;
+        .app-rank-content {
+          flex: 1 1 720px;
           min-width: 0;
           max-width: 100%;
           width: 100%;
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 14px;
           box-sizing: border-box;
         }
 
-        .app-rank-sidebar {
+        .app-rank-side {
           flex: 0 0 320px;
           min-width: 290px;
           max-width: 320px;
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 14px;
           position: sticky;
-          top: 16px;
+          top: 80px;
           box-sizing: border-box;
         }
 
-        /* Exam Header Card */
-        .app-exam-card {
+        /* 1. Mobile Quick Navigation Header */
+        .app-top-nav-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           background: #ffffff;
-          border-radius: 16px;
+          padding: 10px 14px;
+          border-radius: 14px;
           border: 1px solid #e2e8f0;
-          padding: 14px 16px;
-          text-align: center;
-          box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
           width: 100%;
           box-sizing: border-box;
         }
 
-        .app-exam-img {
-          max-height: 75px;
+        .app-back-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #2563eb;
+          text-decoration: none;
+          padding: 4px 8px;
+          border-radius: 8px;
+          background: #eff6ff;
+          transition: background 0.15s ease;
+        }
+
+        .app-back-link:hover {
+          background: #dbeafe;
+        }
+
+        .app-top-title-group {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .app-live-pulse-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          background: #ecfdf5;
+          color: #059669;
+          border: 1px solid #a7f3d0;
+          font-size: 0.68rem;
+          font-weight: 800;
+          padding: 3px 8px;
+          border-radius: 999px;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .app-pulse-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #10b981;
+          box-shadow: 0 0 6px #10b981;
+          animation: appPulse 2s infinite;
+        }
+
+        @keyframes appPulse {
+          0% { transform: scale(0.9); opacity: 0.8; }
+          50% { transform: scale(1.35); opacity: 1; }
+          100% { transform: scale(0.9); opacity: 0.8; }
+        }
+
+        .app-reload-icon-btn {
+          background: #f1f5f9;
+          border: 1px solid #e2e8f0;
+          color: #475569;
+          border-radius: 8px;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .app-reload-icon-btn:hover {
+          background: #e2e8f0;
+          color: #0f172a;
+        }
+
+        /* 2. Exam Banner Card */
+        .app-exam-banner-card {
+          background: #ffffff;
+          border-radius: 14px;
+          border: 1px solid #e2e8f0;
+          padding: 12px 16px;
+          text-align: center;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+          box-sizing: border-box;
+          width: 100%;
+        }
+
+        .app-exam-logo {
+          max-height: 65px;
           max-width: 100%;
           object-fit: contain;
           margin: 0 auto;
           display: block;
         }
 
-        .app-exam-title {
+        .app-exam-title-text {
           margin: 0;
-          font-size: 1.15rem;
+          font-size: 1.05rem;
           font-weight: 800;
           color: #0f172a;
           line-height: 1.35;
         }
 
-        /* Candidate App-Style Profile Card */
-        .app-profile-card {
-          background: #ffffff;
-          border-radius: 16px;
-          border: 1px solid #e2e8f0;
-          padding: 16px;
-          box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .app-profile-header {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 12px;
-          padding-bottom: 12px;
-          border-bottom: 1px solid #f1f5f9;
-        }
-
-        .app-avatar {
-          width: 46px;
-          height: 46px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #0044cc 0%, #6366f1 100%);
-          color: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.25rem;
-          font-weight: 900;
-          flex-shrink: 0;
-          box-shadow: 0 3px 10px rgba(0, 68, 204, 0.28);
-        }
-
-        .app-profile-info {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .app-candidate-name-row {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-wrap: wrap;
-        }
-
-        .app-candidate-name {
-          margin: 0;
-          font-size: 1.05rem;
-          font-weight: 900;
-          color: #0f172a;
-          line-height: 1.25;
-          word-break: break-word;
-        }
-
-        .app-verified-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 3px;
-          background: #ecfdf5;
-          color: #059669;
-          border: 1px solid #a7f3d0;
-          font-size: 0.65rem;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 999px;
-          text-transform: uppercase;
-        }
-
-        .app-roll-pill {
-          display: inline-block;
-          margin-top: 4px;
-          font-size: 0.76rem;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          font-weight: 800;
-          color: #2563eb;
-          background: #eff6ff;
-          padding: 2px 8px;
-          border-radius: 6px;
-          border: 1px solid #dbeafe;
-        }
-
-        .app-meta-chips-grid {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 6px;
-        }
-
-        .app-meta-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          padding: 4px 8px;
-          border-radius: 8px;
-          font-size: 0.74rem;
-          color: #334155;
-          line-height: 1.25;
-          max-width: 100%;
-          word-break: break-word;
-          box-sizing: border-box;
-        }
-
-        .app-meta-chip strong {
-          color: #0f172a;
-          font-weight: 800;
-        }
-
-        /* Hero Live Rank Showcase Banner */
-        .app-rank-hero {
-          background: linear-gradient(135deg, #091a36 0%, #102a5c 55%, #0044cc 100%);
+        /* 3. HERO ALL-INDIA RANK SHOWCASE CARD */
+        .app-hero-podium {
+          background: linear-gradient(145deg, #091428 0%, #112240 50%, #1e3a8a 100%);
           border-radius: 20px;
-          padding: 22px 20px;
+          padding: 20px 18px;
           color: #ffffff;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 8px 24px rgba(0, 68, 204, 0.22);
+          box-shadow: 0 10px 25px -4px rgba(30, 58, 138, 0.35);
           width: 100%;
           box-sizing: border-box;
+          border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .app-rank-hero::after {
+        .app-hero-podium::before {
           content: "";
           position: absolute;
-          top: -40px;
-          right: -40px;
-          width: 170px;
-          height: 170px;
-          background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+          top: -30px;
+          right: -30px;
+          width: 160px;
+          height: 160px;
+          background: radial-gradient(circle, rgba(96, 165, 250, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
           border-radius: 50%;
           pointer-events: none;
         }
 
-        .app-rank-hero-top {
+        /* Candidate Micro-Chip Inside Hero (Mobile) */
+        .app-hero-candidate-strip {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          margin-bottom: 14px;
-          position: relative;
-          z-index: 1;
+          gap: 10px;
+          background: rgba(255, 255, 255, 0.09);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          padding: 8px 12px;
+          border-radius: 12px;
+          margin-bottom: 16px;
+          backdrop-filter: blur(8px);
         }
 
-        .app-live-pill {
+        .app-hero-avatar {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1rem;
+          font-weight: 900;
+          flex-shrink: 0;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .app-hero-cinfo {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .app-hero-cname-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-wrap: wrap;
+        }
+
+        .app-hero-cname {
+          font-size: 0.95rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .app-hero-csub {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.72rem;
+          color: #bfdbfe;
+          margin-top: 2px;
+          flex-wrap: wrap;
+        }
+
+        .app-hero-csub-item {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+        }
+
+        /* Main Rank Podium Display */
+        .app-hero-rank-box {
+          text-align: center;
+          padding: 6px 0 10px;
+        }
+
+        .app-hero-rank-label {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: rgba(16, 185, 129, 0.18);
-          border: 1px solid rgba(52, 211, 153, 0.4);
-          color: #6ee7b7;
-          font-size: 0.7rem;
-          font-weight: 800;
-          padding: 4px 10px;
-          border-radius: 999px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .app-live-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #34d399;
-          box-shadow: 0 0 8px #34d399;
-          animation: rankPulse 2s infinite;
-        }
-
-        @keyframes rankPulse {
-          0% { transform: scale(0.95); opacity: 0.8; }
-          50% { transform: scale(1.3); opacity: 1; }
-          100% { transform: scale(0.95); opacity: 0.8; }
-        }
-
-        .app-refresh-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          background: rgba(255, 255, 255, 0.12);
-          color: #ffffff;
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          padding: 5px 12px;
-          border-radius: 999px;
-          font-size: 0.72rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          backdrop-filter: blur(4px);
-        }
-
-        .app-refresh-btn:hover {
-          background: rgba(255, 255, 255, 0.22);
-        }
-
-        .app-rank-hero-center {
-          text-align: center;
-          margin-bottom: 10px;
-          position: relative;
-          z-index: 1;
-        }
-
-        .app-rank-hero-label {
           font-size: 0.76rem;
           font-weight: 800;
           letter-spacing: 0.08em;
           text-transform: uppercase;
           color: #93c5fd;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          margin-bottom: 4px;
+          background: rgba(30, 58, 138, 0.45);
+          padding: 4px 12px;
+          border-radius: 999px;
+          border: 1px solid rgba(147, 197, 253, 0.25);
+          margin-bottom: 8px;
         }
 
-        .app-rank-hero-value {
-          font-size: clamp(2rem, 6.5vw, 2.7rem);
+        .app-hero-rank-number {
+          font-size: clamp(2.3rem, 7.5vw, 3.2rem);
           font-weight: 900;
-          line-height: 1.1;
-          letter-spacing: -0.02em;
+          line-height: 1.05;
+          letter-spacing: -0.03em;
           color: #ffffff;
-          text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+          text-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
           word-break: break-word;
-          overflow-wrap: anywhere;
         }
 
-        .app-rank-hero-total {
-          font-size: clamp(1rem, 3.5vw, 1.15rem);
-          font-weight: 700;
-          color: #bfdbfe;
+        .app-hero-rank-out-of {
+          font-size: clamp(1rem, 3.8vw, 1.25rem);
+          font-weight: 600;
+          color: #93c5fd;
           margin-left: 6px;
         }
 
-        .app-rank-percentile-pill {
+        .app-hero-percentile-badge {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: rgba(255, 255, 255, 0.15);
+          background: rgba(255, 255, 255, 0.14);
           border: 1px solid rgba(255, 255, 255, 0.25);
-          padding: 4px 14px;
+          padding: 5px 14px;
           border-radius: 999px;
-          font-size: 0.76rem;
+          font-size: 0.78rem;
           font-weight: 800;
           color: #ffffff;
-          margin-top: 8px;
+          margin-top: 10px;
           backdrop-filter: blur(4px);
-          max-width: 100%;
-          box-sizing: border-box;
         }
 
-        /* Percentile visual progress bar */
-        .app-percentile-bar-track {
+        /* Visual Percentile Progress Bar */
+        .app-hero-progress-track {
           width: 100%;
           max-width: 320px;
-          height: 6px;
-          background: rgba(255, 255, 255, 0.2);
+          height: 7px;
+          background: rgba(255, 255, 255, 0.18);
           border-radius: 999px;
-          margin: 10px auto 0;
+          margin: 12px auto 0;
           overflow: hidden;
-          position: relative;
         }
 
-        .app-percentile-bar-fill {
+        .app-hero-progress-fill {
           height: 100%;
           border-radius: 999px;
-          background: linear-gradient(90deg, #60a5fa, #34d399);
+          background: linear-gradient(90deg, #60a5fa 0%, #34d399 100%);
           transition: width 0.6s ease;
         }
 
-        /* Sub-Ranks Grid */
-        .app-sub-grid {
+        /* 4. Sub-Ranks Modern Grid */
+        .app-sub-metrics-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           gap: 10px;
@@ -618,114 +608,418 @@ export default function RankPage() {
         }
 
         @media (min-width: 901px) {
-          .app-sub-grid {
+          .app-sub-metrics-grid {
             grid-template-columns: repeat(4, 1fr);
           }
         }
 
-        .app-sub-card {
+        .app-sub-tile {
           background: #ffffff;
           border-radius: 14px;
-          border: 1.5px solid #e2e8f0;
-          padding: 12px 10px;
+          border: 1px solid #e2e8f0;
+          padding: 12px 14px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
-          transition: transform 0.15s ease;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
           box-sizing: border-box;
           min-width: 0;
-          width: 100%;
+          position: relative;
+          overflow: hidden;
         }
 
-        .app-sub-card:hover {
-          transform: translateY(-2px);
-        }
+        .app-sub-tile-shift { border-top: 3.5px solid #10b981; }
+        .app-sub-tile-cat   { border-top: 3.5px solid #f59e0b; }
+        .app-sub-tile-gen   { border-top: 3.5px solid #8b5cf6; }
+        .app-sub-tile-trade { border-top: 3.5px solid #3b82f6; }
 
-        .app-sub-card-shift {
-          border-color: #bbf7d0;
-          background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
-        }
-
-        .app-sub-card-cat {
-          border-color: #fed7aa;
-          background: linear-gradient(180deg, #fffbeb 0%, #ffffff 60%);
-        }
-
-        .app-sub-card-gen {
-          border-color: #e9d5ff;
-          background: linear-gradient(180deg, #faf5ff 0%, #ffffff 60%);
-        }
-
-        .app-sub-card-trade {
-          border-color: #c7d2fe;
-          background: linear-gradient(180deg, #eef2ff 0%, #ffffff 60%);
-        }
-
-        .app-sub-top {
+        .app-sub-tile-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 4px;
           margin-bottom: 6px;
         }
 
-        .app-sub-title {
+        .app-sub-tile-title {
           font-size: 0.68rem;
           font-weight: 800;
           text-transform: uppercase;
+          letter-spacing: 0.04em;
           color: #64748b;
-          letter-spacing: 0.03em;
         }
 
-        .app-sub-num {
-          font-size: clamp(1.1rem, 4vw, 1.35rem);
+        .app-sub-tile-val {
+          font-size: clamp(1.2rem, 4.2vw, 1.45rem);
           font-weight: 900;
-          line-height: 1.15;
+          line-height: 1.1;
+          color: #0f172a;
           word-break: break-word;
         }
 
-        .app-sub-card-shift .app-sub-num { color: #15803d; }
-        .app-sub-card-cat .app-sub-num { color: #b45309; }
-        .app-sub-card-gen .app-sub-num { color: #7e22ce; }
-        .app-sub-card-trade .app-sub-num { color: #4338ca; }
-
-        .app-sub-out-of {
+        .app-sub-tile-total {
           font-size: 0.72rem;
           font-weight: 700;
           color: #94a3b8;
         }
 
-        .app-sub-pill {
+        .app-sub-tag-pill {
           display: inline-block;
           align-self: flex-start;
           margin-top: 6px;
-          font-size: 0.66rem;
+          font-size: 0.68rem;
           font-weight: 800;
           padding: 1px 7px;
+          border-radius: 6px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+
+        .app-sub-tile-shift .app-sub-tag-pill { background: #ecfdf5; color: #047857; }
+        .app-sub-tile-cat .app-sub-tag-pill   { background: #fffbeb; color: #b45309; }
+        .app-sub-tile-gen .app-sub-tag-pill   { background: #faf5ff; color: #6b21a8; }
+        .app-sub-tile-trade .app-sub-tag-pill { background: #eff6ff; color: #1d4ed8; }
+
+        /* 5. Score & Accuracy Cockpit Card */
+        .app-score-cockpit-card {
+          background: #ffffff;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          padding: 16px;
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .app-cockpit-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .app-cockpit-title {
+          font-size: 0.86rem;
+          font-weight: 900;
+          color: #0f172a;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin: 0;
+        }
+
+        .app-net-score-pill {
+          font-size: 0.95rem;
+          font-weight: 900;
+          padding: 4px 12px;
+          border-radius: 10px;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .app-net-score-pos {
+          background: #ecfdf5;
+          color: #059669;
+          border: 1.5px solid #a7f3d0;
+        }
+
+        .app-net-score-neg {
+          background: #fef2f2;
+          color: #dc2626;
+          border: 1.5px solid #fecaca;
+        }
+
+        /* Segmented Question Bar */
+        .app-seg-bar-track {
+          width: 100%;
+          height: 10px;
           border-radius: 999px;
-          text-transform: capitalize;
+          display: flex;
+          overflow: hidden;
+          background: #f1f5f9;
         }
 
-        .app-sub-card-cat .app-sub-pill {
-          background: #fef3c7;
-          color: #b45309;
-          border: 1px solid #fde68a;
+        .app-seg-correct {
+          background: #10b981;
+          height: 100%;
+          transition: width 0.4s ease;
         }
 
-        .app-sub-card-gen .app-sub-pill {
-          background: #f3e8ff;
-          color: #7e22ce;
-          border: 1px solid #d8b4fe;
+        .app-seg-wrong {
+          background: #ef4444;
+          height: 100%;
+          transition: width 0.4s ease;
         }
 
-        .app-sub-card-trade .app-sub-pill {
-          background: #e0e7ff;
-          color: #4338ca;
-          border: 1px solid #c7d2fe;
+        .app-seg-unatt {
+          background: #cbd5e1;
+          height: 100%;
+          transition: width 0.4s ease;
         }
 
-        /* App Action Group */
-        .app-actions-group {
+        /* KPI 4-Pill Grid */
+        .app-kpi-quad-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 8px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .app-kpi-quad-item {
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
+          padding: 8px 6px;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .app-kpi-quad-label {
+          font-size: 0.65rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          color: #64748b;
+        }
+
+        .app-kpi-quad-val {
+          font-size: 0.96rem;
+          font-weight: 900;
+        }
+
+        .app-kpi-val-correct { color: #15803d; }
+        .app-kpi-val-wrong   { color: #b91c1c; }
+        .app-kpi-val-unatt   { color: #475569; }
+        .app-kpi-val-acc     { color: #2563eb; }
+
+        /* 6. Subject-Wise Performance Section */
+        .app-subjects-card {
+          background: #ffffff;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+          overflow: hidden;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .app-subjects-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 14px;
+          background: #f8fafc;
+          border-bottom: 1px solid #e2e8f0;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .app-subjects-title {
+          font-size: 0.86rem;
+          font-weight: 900;
+          color: #0f172a;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin: 0;
+        }
+
+        /* View Mode Segmented Switcher */
+        .app-view-switcher {
+          display: inline-flex;
+          background: #e2e8f0;
+          padding: 2px;
+          border-radius: 8px;
+          gap: 2px;
+        }
+
+        .app-view-tab {
+          border: none;
+          background: transparent;
+          font-size: 0.74rem;
+          font-weight: 800;
+          color: #475569;
+          padding: 5px 10px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .app-view-tab-active {
+          background: #ffffff;
+          color: #0f172a;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Subject Cards List */
+        .app-subject-cards-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 14px;
+          box-sizing: border-box;
+          width: 100%;
+        }
+
+        .app-subject-brick {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 12px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+          transition: border-color 0.15s ease;
+        }
+
+        .app-subject-brick:hover {
+          border-color: #cbd5e1;
+        }
+
+        .app-subject-brick-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+        }
+
+        .app-subject-brick-name {
+          font-size: 0.88rem;
+          font-weight: 800;
+          color: #0f172a;
+          line-height: 1.3;
+          margin: 0;
+          word-break: break-word;
+        }
+
+        .app-subject-brick-score {
+          font-size: 0.84rem;
+          font-weight: 900;
+          padding: 2px 8px;
+          border-radius: 6px;
+          white-space: nowrap;
+        }
+
+        .app-brick-score-pos {
+          background: #eff6ff;
+          color: #1d4ed8;
+          border: 1px solid #bfdbfe;
+        }
+
+        .app-brick-score-neg {
+          background: #fef2f2;
+          color: #dc2626;
+          border: 1px solid #fecaca;
+        }
+
+        /* Micro Progress Bar */
+        .app-subject-micro-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          font-size: 0.7rem;
+          color: #64748b;
+          font-weight: 700;
+        }
+
+        .app-micro-track {
+          flex: 1;
+          height: 6px;
+          background: #f1f5f9;
+          border-radius: 999px;
+          overflow: hidden;
+        }
+
+        .app-micro-fill {
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        /* Chips Row */
+        .app-subject-chips-row {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 5px;
+        }
+
+        .app-mini-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          font-size: 0.7rem;
+          font-weight: 800;
+          padding: 2px 7px;
+          border-radius: 6px;
+        }
+
+        .app-chip-total   { background: #f1f5f9; color: #475569; }
+        .app-chip-correct { background: #dcfce7; color: #15803d; }
+        .app-chip-wrong   { background: #fee2e2; color: #b91c1c; }
+        .app-chip-skip    { background: #fef3c7; color: #b45309; }
+        .app-chip-bonus   { background: #f3e8ff; color: #7e22ce; }
+
+        /* Overall Summary Brick (Mobile) */
+        .app-total-brick {
+          background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          padding: 12px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        /* 7. Detailed Table View */
+        .app-table-scroll-container {
+          width: 100%;
+          max-width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          display: block;
+        }
+
+        .app-pro-table {
+          width: 100%;
+          min-width: 480px;
+          border-collapse: collapse;
+          font-size: 0.82rem;
+          text-align: center;
+        }
+
+        .app-pro-table thead tr {
+          background: #f1f5f9;
+          color: #475569;
+          font-weight: 800;
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .app-pro-table th,
+        .app-pro-table td {
+          padding: 10px 8px;
+          border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* 8. Action Buttons */
+        .app-action-stack {
           display: flex;
           flex-direction: column;
           gap: 10px;
@@ -733,7 +1027,7 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .app-btn-primary {
+        .app-btn-main {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -753,12 +1047,12 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .app-btn-primary:hover {
-          filter: brightness(1.05);
+        .app-btn-main:hover {
+          filter: brightness(1.06);
           box-shadow: 0 6px 18px rgba(0, 68, 204, 0.35);
         }
 
-        .app-btn-row {
+        .app-btn-duo-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 10px;
@@ -766,7 +1060,7 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .app-btn-secondary {
+        .app-btn-sub {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -780,558 +1074,335 @@ export default function RankPage() {
           font-size: 0.82rem;
           text-decoration: none;
           cursor: pointer;
-          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
           transition: all 0.2s ease;
           box-sizing: border-box;
         }
 
-        .app-btn-secondary:hover {
+        .app-btn-sub:hover {
           background: #f8fafc;
           border-color: #94a3b8;
         }
 
-        /* Performance Breakdown Card */
-        .app-perf-card {
+        /* 9. Candidate Profile Card (Desktop Sidebar) */
+        .app-desktop-profile-card {
           background: #ffffff;
-          border-radius: 18px;
+          border-radius: 16px;
           border: 1px solid #e2e8f0;
-          box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-          overflow: hidden;
+          padding: 16px;
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
           width: 100%;
-          max-width: 100%;
-          min-width: 0;
           box-sizing: border-box;
         }
 
-        .app-perf-header {
-          padding: 14px 16px;
-          background: #f8fafc;
-          border-bottom: 1px solid #e2e8f0;
+        .app-profile-head {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-
-        .app-perf-title {
-          margin: 0;
-          font-size: 0.88rem;
-          font-weight: 900;
-          color: #0f172a;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .app-score-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          padding: 4px 12px;
-          border-radius: 999px;
-          font-size: 0.82rem;
-          font-weight: 900;
-        }
-
-        .app-score-positive {
-          background: #ecfdf5;
-          color: #059669;
-          border: 1px solid #a7f3d0;
-        }
-
-        .app-score-negative {
-          background: #fef2f2;
-          color: #dc2626;
-          border: 1px solid #fecaca;
-        }
-
-        .app-kpi-strip {
-          display: flex;
-          align-items: center;
-          justify-content: space-around;
-          padding: 10px 12px;
-          background: #ffffff;
-          border-bottom: 1px solid #f1f5f9;
-          font-size: 0.76rem;
-          flex-wrap: wrap;
-          gap: 6px;
-        }
-
-        .app-kpi-item {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-weight: 700;
-        }
-
-        /* NATIVE APP SUBJECT CARDS (MOBILE ONLY) */
-        .app-subject-cards-list {
-          display: flex;
-          flex-direction: column;
           gap: 12px;
-          padding: 14px;
-          box-sizing: border-box;
-          width: 100%;
+          margin-bottom: 12px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #f1f5f9;
         }
 
-        .app-subject-item-card {
-          background: #ffffff;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 14px;
-          padding: 14px;
-          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
-          box-sizing: border-box;
+        .app-chips-cloud {
           display: flex;
-          flex-direction: column;
-          gap: 10px;
-          width: 100%;
-        }
-
-        .app-subject-header-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-        }
-
-        .app-subject-name {
-          font-size: 0.88rem;
-          font-weight: 800;
-          color: #0f172a;
-          line-height: 1.3;
-          margin: 0;
-          word-break: break-word;
-        }
-
-        .app-subject-score-tag {
-          font-size: 0.84rem;
-          font-weight: 900;
-          padding: 2px 9px;
-          border-radius: 8px;
-          white-space: nowrap;
-        }
-
-        .app-subject-score-pos {
-          background: #eff6ff;
-          color: #0044cc;
-          border: 1px solid #bfdbfe;
-        }
-
-        .app-subject-score-neg {
-          background: #fef2f2;
-          color: #dc2626;
-          border: 1px solid #fecaca;
-        }
-
-        .app-subject-stats-row {
-          display: flex;
-          align-items: center;
           flex-wrap: wrap;
           gap: 6px;
         }
 
-        .app-stat-badge {
+        .app-cloud-chip {
           display: inline-flex;
           align-items: center;
-          gap: 3px;
-          font-size: 0.72rem;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 6px;
-        }
-
-        .app-stat-badge-total {
-          background: #f1f5f9;
-          color: #475569;
-        }
-
-        .app-stat-badge-correct {
-          background: #dcfce7;
-          color: #15803d;
-        }
-
-        .app-stat-badge-wrong {
-          background: #fee2e2;
-          color: #b91c1c;
-        }
-
-        .app-stat-badge-skip {
-          background: #fef3c7;
-          color: #b45309;
-        }
-
-        .app-stat-badge-bonus {
-          background: #f3e8ff;
-          color: #7e22ce;
-        }
-
-        /* Mini Subject Accuracy Progress Bar */
-        .app-subject-accuracy-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 8px;
-          font-size: 0.7rem;
-          color: #64748b;
-          font-weight: 700;
-        }
-
-        .app-accuracy-bar-track {
-          flex: 1;
-          height: 5px;
-          background: #f1f5f9;
-          border-radius: 999px;
-          overflow: hidden;
-        }
-
-        .app-accuracy-bar-fill {
-          height: 100%;
-          border-radius: 999px;
-          background: linear-gradient(90deg, #10b981, #059669);
-        }
-
-        /* Overall Total Performance Card (Mobile) */
-        .app-total-summary-card {
-          background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
-          border: 1.5px solid #cbd5e1;
-          border-radius: 14px;
-          padding: 14px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          box-sizing: border-box;
-          width: 100%;
-        }
-
-        .app-total-summary-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .app-toggle-table-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          background: #ffffff;
-          border: 1px solid #cbd5e1;
-          border-radius: 10px;
-          padding: 9px 14px;
-          font-size: 0.78rem;
-          font-weight: 800;
-          color: #334155;
-          cursor: pointer;
-          width: 100%;
-          margin-top: 4px;
-          transition: all 0.2s ease;
-          box-sizing: border-box;
-        }
-
-        .app-toggle-table-btn:hover {
+          gap: 4px;
           background: #f8fafc;
-          color: #0f172a;
+          border: 1px solid #e2e8f0;
+          padding: 4px 8px;
+          border-radius: 8px;
+          font-size: 0.74rem;
+          color: #334155;
+          line-height: 1.25;
         }
 
-        /* Detailed Table Container */
-        .app-table-wrap {
-          width: 100%;
-          max-width: 100%;
-          min-width: 0;
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-          display: block;
-          box-sizing: border-box;
-        }
-
-        .app-data-table {
-          width: 100%;
-          min-width: 480px;
-          border-collapse: collapse;
-          font-size: 0.82rem;
-          text-align: center;
-        }
-
-        .app-data-table thead tr {
-          background: #f1f5f9;
-          color: #475569;
-          font-weight: 800;
-          font-size: 0.72rem;
-          text-transform: uppercase;
-          letter-spacing: 0.03em;
-        }
-
-        .app-data-table th {
-          padding: 9px 8px;
-        }
-
-        .app-data-table td {
-          padding: 9px 8px;
-          border-bottom: 1px solid #f1f5f9;
-        }
-
-        /* Mobile vs Desktop Display Rules */
+        /* Responsive Breakpoints */
         @media (max-width: 900px) {
-          .app-rank-container {
+          .app-rank-page {
             padding: 10px 8px calc(70px + env(safe-area-inset-bottom, 0px)) !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-            box-sizing: border-box !important;
           }
-          .app-rank-layout {
+          .app-rank-grid-layout {
             flex-direction: column !important;
             gap: 12px !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            align-items: stretch !important;
-            box-sizing: border-box !important;
           }
-          .app-rank-main {
-            flex: 1 1 auto !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            box-sizing: border-box !important;
-          }
-          .app-rank-sidebar {
+          .app-rank-side {
             display: none !important;
           }
-          .app-mobile-only {
+          .app-hide-on-mobile {
+            display: none !important;
+          }
+          .app-show-on-mobile {
             display: block !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-          }
-          .app-desktop-only {
-            display: none !important;
-          }
-          .app-exam-img {
-            max-height: 55px !important;
-          }
-          .app-rank-hero {
-            padding: 18px 14px !important;
-          }
-          .app-rank-hero-value {
-            font-size: clamp(1.8rem, 6.5vw, 2.3rem) !important;
-          }
-          .app-sub-num {
-            font-size: clamp(1.05rem, 4vw, 1.35rem) !important;
           }
         }
 
         @media (min-width: 901px) {
-          .app-mobile-only {
+          .app-hide-on-desktop {
             display: none !important;
           }
-          .app-desktop-only {
+          .app-show-on-desktop {
             display: block !important;
           }
         }
 
-        /* Print View Styles */
+        /* Print Mode */
         @media print {
-          .no-print, .app-actions-group, .app-refresh-btn, .app-toggle-table-btn {
+          .no-print,
+          .app-top-nav-bar,
+          .app-action-stack,
+          .app-view-switcher {
             display: none !important;
           }
-          .app-rank-container {
+          .app-rank-page {
             padding: 0 !important;
             max-width: 100% !important;
           }
-          .app-rank-layout {
+          .app-rank-grid-layout {
             display: block !important;
           }
-          .app-rank-sidebar {
+          .app-rank-side {
             display: none !important;
           }
-          .app-rank-hero {
+          .app-hero-podium {
             background: #ffffff !important;
             color: #000000 !important;
-            border: 1px solid #000000 !important;
+            border: 1.5px solid #000000 !important;
             box-shadow: none !important;
-            padding: 12px !important;
           }
-          .app-rank-hero-value {
+          .app-hero-rank-number,
+          .app-hero-cname {
             color: #000000 !important;
           }
-          .app-rank-hero-total {
+          .app-hero-rank-out-of,
+          .app-hero-csub {
             color: #333333 !important;
           }
-          .app-rank-percentile-pill {
-            color: #000000 !important;
-            border-color: #000000 !important;
-          }
-          .app-subject-cards-list {
-            display: none !important;
-          }
-          .app-desktop-only {
+          .app-table-scroll-container {
             display: block !important;
           }
         }
       `}</style>
 
-      <div className="app-rank-container">
-        <div className="app-rank-layout">
+      <div className="app-rank-page">
+        <div className="app-rank-grid-layout">
 
-          {/* MAIN COLUMN */}
-          <div className="app-rank-main">
+          {/* MAIN CONTENT COLUMN */}
+          <div className="app-rank-content">
 
-            {/* Exam Header Logo / Title */}
-            <div className="app-exam-card">
-              {resultData.headerImgUrl ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={resultData.headerImgUrl}
-                  alt="Exam Header Logo"
-                  className="app-exam-img"
-                />
-              ) : (
-                <h1 className="app-exam-title">
-                  {resultData.headerBannerText || resultData.examName || 'CBT Exam Rank & Performance'}
-                </h1>
-              )}
-            </div>
+            {/* 1. Mobile Quick Navigation Bar */}
+            <div className="app-top-nav-bar no-print">
+              <Link href="/result" className="app-back-link">
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Scorecard</span>
+              </Link>
 
-            {/* Mobile Candidate Profile Card (Only visible on screens <= 900px) */}
-            <div className="app-mobile-only">
-              <div className="app-profile-card">
-                <div className="app-profile-header">
-                  <div className="app-avatar">
-                    {candidateInitial}
-                  </div>
-                  <div className="app-profile-info">
-                    <div className="app-candidate-name-row">
-                      <h2 className="app-candidate-name">{candidateName}</h2>
-                      <span className="app-verified-badge">✓ Verified</span>
-                    </div>
-                    {rollNumber && (
-                      <span className="app-roll-pill">Roll: {rollNumber}</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="app-meta-chips-grid">
-                  {metaChips.map((chip, idx) => (
-                    <div key={idx} className="app-meta-chip">
-                      <span>{chip.icon}</span>
-                      <span>{chip.label}:</span>
-                      <strong>{chip.val}</strong>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Hero Live Rank Showcase Banner */}
-            <div className="app-rank-hero">
-              <div className="app-rank-hero-top">
-                <div className="app-live-pill">
-                  <span className="app-live-dot" />
-                  Live Verified Rank
+              <div className="app-top-title-group">
+                <div className="app-live-pulse-badge">
+                  <span className="app-pulse-dot" />
+                  <span>Live Rank</span>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="app-refresh-btn no-print"
+                  className="app-reload-icon-btn"
+                  title="Refresh Live Rank"
+                  aria-label="Refresh Live Rank"
                 >
-                  <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Refresh
                 </button>
               </div>
+            </div>
 
-              <div className="app-rank-hero-center">
-                <span className="app-rank-hero-label">
-                  👑 Overall All-India Rank
+            {/* 2. Exam Banner Card */}
+            <div className="app-exam-banner-card">
+              {resultData.headerImgUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={resultData.headerImgUrl}
+                  alt="Exam Header Logo"
+                  className="app-exam-logo"
+                />
+              ) : (
+                <h1 className="app-exam-title-text">
+                  {resultData.headerBannerText || resultData.examName || 'CBT Exam Rank & Performance'}
+                </h1>
+              )}
+            </div>
+
+            {/* 3. HERO ALL-INDIA RANK SHOWCASE CARD */}
+            <div className="app-hero-podium">
+              {/* Candidate Info Strip (Mobile View) */}
+              <div className="app-hero-candidate-strip app-hide-on-desktop">
+                <div className="app-hero-avatar">
+                  {candidateInitial}
+                </div>
+                <div className="app-hero-cinfo">
+                  <div className="app-hero-cname-row">
+                    <h2 className="app-hero-cname">{candidateName}</h2>
+                    <span style={{ fontSize: '0.72rem', color: '#6ee7b7', fontWeight: 800 }}>✓ Verified</span>
+                  </div>
+                  <div className="app-hero-csub">
+                    {rollNumber && (
+                      <span className="app-hero-csub-item">
+                        <strong>Roll:</strong> {rollNumber}
+                      </span>
+                    )}
+                    {effectiveCommunity && (
+                      <span className="app-hero-csub-item">
+                        • <strong>Cat:</strong> {effectiveCommunity}
+                      </span>
+                    )}
+                    {resultData.testDate && (
+                      <span className="app-hero-csub-item">
+                        • {resultData.testDate}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Rank Center */}
+              <div className="app-hero-rank-box">
+                <span className="app-hero-rank-label">
+                  🏆 All India Rank (AIR)
                 </span>
-                <div className="app-rank-hero-value">
+                <div className="app-hero-rank-number">
                   {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
-                  <span className="app-rank-hero-total">
+                  <span className="app-hero-rank-out-of">
                     {' / '}{liveRank ? liveRank.totalOverall : totalOverall}
                   </span>
                 </div>
 
                 <div>
-                  <span className="app-rank-percentile-pill">
-                    🎯 Top {((Number(liveRank ? liveRank.totalOverall : totalOverall) - Number(liveRank ? liveRank.overallRank : overallRank)) / Math.max(1, Number(liveRank ? liveRank.totalOverall : totalOverall)) * 100 <= 0 ? '0.01' : (100 - Number(calculatedPercentile)).toFixed(2))}% • {calculatedPercentile} Percentile
+                  <span className="app-hero-percentile-badge">
+                    ⚡ Top {((Number(liveRank ? liveRank.totalOverall : totalOverall) - Number(liveRank ? liveRank.overallRank : overallRank)) / Math.max(1, Number(liveRank ? liveRank.totalOverall : totalOverall)) * 100 <= 0 ? '0.01' : (100 - Number(calculatedPercentile)).toFixed(2))}% • {calculatedPercentile} Percentile
                   </span>
                 </div>
 
-                {/* Visual Percentile Progress Bar */}
-                <div className="app-percentile-bar-track">
-                  <div className="app-percentile-bar-fill" style={{ width: `${percentileNum}%` }} />
+                <div className="app-hero-progress-track">
+                  <div className="app-hero-progress-fill" style={{ width: `${percentileNum}%` }} />
                 </div>
               </div>
             </div>
 
-            {/* Sub-Rank Metrics Grid */}
-            <div className="app-sub-grid">
+            {/* 4. SUB-RANKS METRICS GRID */}
+            <div className="app-sub-metrics-grid">
               {/* Shift Rank */}
-              <div className="app-sub-card app-sub-card-shift">
-                <div className="app-sub-top">
-                  <span className="app-sub-title">⏱️ Shift Rank</span>
+              <div className="app-sub-tile app-sub-tile-shift">
+                <div className="app-sub-tile-header">
+                  <span className="app-sub-tile-title">⏱️ Shift Rank</span>
                 </div>
-                <div className="app-sub-num">
+                <div className="app-sub-tile-val">
                   {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.shiftRank : shiftRank}`}
-                  <span className="app-sub-out-of"> / {liveRank ? liveRank.totalShift : totalShift}</span>
+                  <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalShift : totalShift}</span>
                 </div>
+                <span className="app-sub-tag-pill">
+                  {resultData.testTime || 'Current Shift'}
+                </span>
               </div>
 
               {/* Category Rank */}
-              <div className="app-sub-card app-sub-card-cat">
-                <div className="app-sub-top">
-                  <span className="app-sub-title">👥 Category Rank</span>
+              <div className="app-sub-tile app-sub-tile-cat">
+                <div className="app-sub-tile-header">
+                  <span className="app-sub-tile-title">👥 Category Rank</span>
                 </div>
-                <div className="app-sub-num">
+                <div className="app-sub-tile-val">
                   {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.categoryRank : categoryRank}`}
-                  <span className="app-sub-out-of"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
+                  <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
                 </div>
-                {effectiveCommunity && (
-                  <span className="app-sub-pill">{effectiveCommunity}</span>
-                )}
+                <span className="app-sub-tag-pill">
+                  {effectiveCommunity}
+                </span>
               </div>
 
               {/* Gender Rank */}
-              <div className="app-sub-card app-sub-card-gen">
-                <div className="app-sub-top">
-                  <span className="app-sub-title">🚻 Gender Rank</span>
+              <div className="app-sub-tile app-sub-tile-gen">
+                <div className="app-sub-tile-header">
+                  <span className="app-sub-tile-title">🚻 Gender Rank</span>
                 </div>
-                <div className="app-sub-num">
+                <div className="app-sub-tile-val">
                   {loadingRank && (!liveRank || !liveRank.genderRank) ? '...' : `#${liveRank && liveRank.genderRank ? liveRank.genderRank : genderRank}`}
-                  <span className="app-sub-out-of"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
+                  <span className="app-sub-tile-total"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
                 </div>
-                {effectiveGender && (
-                  <span className="app-sub-pill">{effectiveGender}</span>
-                )}
+                <span className="app-sub-tag-pill">
+                  {effectiveGender || 'All Candidates'}
+                </span>
               </div>
 
               {/* Trade / Stream Rank (if applicable) */}
               {Boolean(subTypeRank && totalSubType) && (
-                <div className="app-sub-card app-sub-card-trade">
-                  <div className="app-sub-top">
-                    <span className="app-sub-title">🔧 Trade Rank</span>
+                <div className="app-sub-tile app-sub-tile-trade">
+                  <div className="app-sub-tile-header">
+                    <span className="app-sub-tile-title">🔧 Trade Rank</span>
                   </div>
-                  <div className="app-sub-num">
+                  <div className="app-sub-tile-val">
                     {loadingRank && !liveRank ? '...' : `#${subTypeRank}`}
-                    <span className="app-sub-out-of"> / {totalSubType}</span>
+                    <span className="app-sub-tile-total"> / {totalSubType}</span>
                   </div>
-                  {effectiveSubType && (
-                    <span className="app-sub-pill">{effectiveSubType}</span>
-                  )}
+                  <span className="app-sub-tag-pill">
+                    {effectiveSubType}
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* Mobile App Action Buttons (Only visible on screens <= 900px) */}
-            <div className="app-mobile-only no-print">
-              <div className="app-actions-group">
+            {/* 5. SCORE & ACCURACY COCKPIT CARD */}
+            <div className="app-score-cockpit-card">
+              <div className="app-cockpit-top">
+                <h3 className="app-cockpit-title">
+                  📊 Performance Summary
+                </h3>
+                <div className={`app-net-score-pill ${totScore < 0 ? 'app-net-score-neg' : 'app-net-score-pos'}`}>
+                  <span>Marks:</span>
+                  <strong>{totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}</strong>
+                </div>
+              </div>
+
+              {/* Segmented Distribution Bar */}
+              <div className="app-seg-bar-track" title={`Correct: ${pctCorrect}%, Wrong: ${pctWrong}%, Unattempted: ${pctUnattempted}%`}>
+                <div className="app-seg-correct" style={{ width: `${pctCorrect}%` }} />
+                <div className="app-seg-wrong" style={{ width: `${pctWrong}%` }} />
+                <div className="app-seg-unatt" style={{ width: `${pctUnattempted}%` }} />
+              </div>
+
+              {/* 4-KPI Grid */}
+              <div className="app-kpi-quad-grid">
+                <div className="app-kpi-quad-item">
+                  <span className="app-kpi-quad-label">Correct</span>
+                  <span className="app-kpi-quad-val app-kpi-val-correct">✓ {totCorrect}</span>
+                </div>
+                <div className="app-kpi-quad-item">
+                  <span className="app-kpi-quad-label">Wrong</span>
+                  <span className="app-kpi-quad-val app-kpi-val-wrong">✕ {totWrong}</span>
+                </div>
+                <div className="app-kpi-quad-item">
+                  <span className="app-kpi-quad-label">Skipped</span>
+                  <span className="app-kpi-quad-val app-kpi-val-unatt">– {totUnattempted}</span>
+                </div>
+                <div className="app-kpi-quad-item">
+                  <span className="app-kpi-quad-label">Accuracy</span>
+                  <span className="app-kpi-quad-val app-kpi-val-acc">🎯 {overallAccuracy}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 6. MOBILE ACTIONS (Only visible on screens <= 900px) */}
+            <div className="app-hide-on-desktop no-print">
+              <div className="app-action-stack">
                 {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
-                  <Link href="/review-answerkey" className="app-btn-primary">
+                  <Link href="/review-answerkey" className="app-btn-main">
                     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
@@ -1340,16 +1411,16 @@ export default function RankPage() {
                   </Link>
                 )}
 
-                <div className="app-btn-row">
-                  <Link href="/result" className="app-btn-secondary">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <div className="app-btn-duo-row">
+                  <Link href="/result" className="app-btn-sub">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                     <span>Scorecard</span>
                   </Link>
 
-                  <button type="button" onClick={() => window.print()} className="app-btn-secondary">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <button type="button" onClick={() => window.print()} className="app-btn-sub">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     <span>Download PDF</span>
@@ -1358,50 +1429,36 @@ export default function RankPage() {
               </div>
             </div>
 
-            {/* Subject-Wise Performance Breakdown */}
+            {/* 7. SUBJECT-WISE BREAKDOWN SECTION */}
             {resultData.sections && resultData.sections.length > 0 && (
-              <div className="app-perf-card">
-                <div className="app-perf-header">
-                  <h3 className="app-perf-title">
-                    📑 Subject Performance Breakdown
+              <div className="app-subjects-card">
+                <div className="app-subjects-header">
+                  <h3 className="app-subjects-title">
+                    📑 Section-Wise Breakdown
                   </h3>
-                  <div className={`app-score-pill ${totScore < 0 ? 'app-score-negative' : 'app-score-positive'}`}>
-                    Net Score: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
+
+                  {/* View Mode Switcher */}
+                  <div className="app-view-switcher no-print">
+                    <button
+                      type="button"
+                      className={`app-view-tab ${viewMode === 'cards' ? 'app-view-tab-active' : ''}`}
+                      onClick={() => setViewMode('cards')}
+                    >
+                      📱 Cards
+                    </button>
+                    <button
+                      type="button"
+                      className={`app-view-tab ${viewMode === 'table' ? 'app-view-tab-active' : ''}`}
+                      onClick={() => setViewMode('table')}
+                    >
+                      📋 Table
+                    </button>
                   </div>
                 </div>
 
-                <div className="app-kpi-strip">
-                  <div className="app-kpi-item">
-                    <span style={{ color: '#475569' }}>Total:</span>
-                    <strong>{totQuestions}</strong>
-                  </div>
-                  <div className="app-kpi-item" style={{ color: '#15803d' }}>
-                    <span>✓ Correct:</span>
-                    <strong>{totCorrect}</strong>
-                  </div>
-                  <div className="app-kpi-item" style={{ color: '#dc2626' }}>
-                    <span>✕ Wrong:</span>
-                    <strong>{totWrong}</strong>
-                  </div>
-                  <div className="app-kpi-item" style={{ color: '#d97706' }}>
-                    <span>– Skipped:</span>
-                    <strong>{totUnattempted}</strong>
-                  </div>
-                  {hasBonus && (
-                    <div className="app-kpi-item" style={{ color: '#9333ea' }}>
-                      <span>★ Bonus:</span>
-                      <strong>{totBonus}</strong>
-                    </div>
-                  )}
-                  <div className="app-kpi-item" style={{ color: '#2563eb' }}>
-                    <span>Accuracy:</span>
-                    <strong>{overallAccuracy}%</strong>
-                  </div>
-                </div>
-
-                {/* 1. NATIVE APP SUBJECT CARDS (Displayed on Mobile by default) */}
-                <div className="app-mobile-only">
-                  <div className="app-subject-cards-list">
+                {/* VIEW A: APP CARDS (Default on mobile) */}
+                {viewMode === 'cards' && (
+                  <div className="app-subject-cards-stack">
                     {resultData.sections.map((sec, idx) => {
                       const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
                       const secAttempted = sec.total - sec.unattempted;
@@ -1410,166 +1467,155 @@ export default function RankPage() {
                       const secAccNum = Math.min(100, Math.max(0, parseFloat(secAcc) || 0));
 
                       return (
-                        <div key={idx} className="app-subject-item-card">
-                          <div className="app-subject-header-row">
-                            <h4 className="app-subject-name">{sec.name}</h4>
-                            <span className={`app-subject-score-tag ${secScore < 0 ? 'app-subject-score-neg' : 'app-subject-score-pos'}`}>
+                        <div key={idx} className="app-subject-brick">
+                          <div className="app-subject-brick-top">
+                            <h4 className="app-subject-brick-name">{sec.name}</h4>
+                            <span className={`app-subject-brick-score ${secScore < 0 ? 'app-brick-score-neg' : 'app-brick-score-pos'}`}>
                               {secScore >= 0 ? `+${secScore.toFixed(2)}` : secScore.toFixed(2)}
                             </span>
                           </div>
 
-                          {/* Accuracy Bar */}
-                          <div className="app-subject-accuracy-row">
+                          {/* Micro Progress Bar */}
+                          <div className="app-subject-micro-bar">
                             <span>Accuracy: <strong>{secAcc}%</strong></span>
-                            <div className="app-accuracy-bar-track">
-                              <div className="app-accuracy-bar-fill" style={{ width: `${secAccNum}%` }} />
+                            <div className="app-micro-track">
+                              <div className="app-micro-fill" style={{ width: `${secAccNum}%` }} />
                             </div>
                           </div>
 
-                          {/* Mini Stat Badges */}
-                          <div className="app-subject-stats-row">
-                            <span className="app-stat-badge app-stat-badge-total">Total: {sec.total}</span>
-                            <span className="app-stat-badge app-stat-badge-correct">✓ {sec.correct} Correct</span>
-                            <span className="app-stat-badge app-stat-badge-wrong">✕ {sec.wrong} Wrong</span>
-                            <span className="app-stat-badge app-stat-badge-skip">– {sec.unattempted} Left</span>
+                          {/* Stat Chips */}
+                          <div className="app-subject-chips-row">
+                            <span className="app-mini-chip app-chip-total">Total: {sec.total}</span>
+                            <span className="app-mini-chip app-chip-correct">✓ {sec.correct} Correct</span>
+                            <span className="app-mini-chip app-chip-wrong">✕ {sec.wrong} Wrong</span>
+                            <span className="app-mini-chip app-chip-skip">– {sec.unattempted} Left</span>
                             {hasBonus && (
-                              <span className="app-stat-badge app-stat-badge-bonus">★ {secBonus || 0} Bonus</span>
+                              <span className="app-mini-chip app-chip-bonus">★ {secBonus || 0} Bonus</span>
                             )}
                           </div>
                         </div>
                       );
                     })}
 
-                    {/* Mobile Total Performance Card */}
-                    <div className="app-total-summary-card">
-                      <div className="app-total-summary-header">
-                        <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>🎯 Overall Performance Summary</strong>
-                        <span className={`app-subject-score-tag ${totScore < 0 ? 'app-subject-score-neg' : 'app-subject-score-pos'}`}>
-                          Total: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
+                    {/* Overall Summary Brick */}
+                    <div className="app-total-brick">
+                      <div className="app-subject-brick-top">
+                        <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>🎯 Overall Aggregate Total</strong>
+                        <span className={`app-subject-brick-score ${totScore < 0 ? 'app-brick-score-neg' : 'app-brick-score-pos'}`}>
+                          Total Marks: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
                         </span>
                       </div>
-                      <div className="app-subject-stats-row">
-                        <span className="app-stat-badge app-stat-badge-total">Questions: {totQuestions}</span>
-                        <span className="app-stat-badge app-stat-badge-correct">✓ {totCorrect} Correct</span>
-                        <span className="app-stat-badge app-stat-badge-wrong">✕ {totWrong} Wrong</span>
-                        <span className="app-stat-badge app-stat-badge-skip">– {totUnattempted} Left</span>
+                      <div className="app-subject-chips-row">
+                        <span className="app-mini-chip app-chip-total">Questions: {totQuestions}</span>
+                        <span className="app-mini-chip app-chip-correct">✓ {totCorrect} Correct</span>
+                        <span className="app-mini-chip app-chip-wrong">✕ {totWrong} Wrong</span>
+                        <span className="app-mini-chip app-chip-skip">– {totUnattempted} Left</span>
                         {hasBonus && (
-                          <span className="app-stat-badge app-stat-badge-bonus">★ {totBonus} Bonus</span>
+                          <span className="app-mini-chip app-chip-bonus">★ {totBonus} Bonus</span>
                         )}
+                        <span className="app-mini-chip" style={{ background: '#dbeafe', color: '#1d4ed8' }}>🎯 {overallAccuracy}% Accuracy</span>
                       </div>
                     </div>
-
-                    {/* Toggle Detailed Table Button */}
-                    <button
-                      type="button"
-                      onClick={() => setShowDetailedTable(prev => !prev)}
-                      className="app-toggle-table-btn no-print"
-                    >
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d={showDetailedTable ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
-                      </svg>
-                      <span>{showDetailedTable ? 'Hide Detailed Table' : '📋 View Detailed Table'}</span>
-                    </button>
                   </div>
-                </div>
+                )}
 
-                {/* 2. DETAILED TABLE (Always visible on Desktop, togglable on Mobile) */}
-                <div
-                  className={`app-table-wrap ${!showDetailedTable ? 'app-desktop-only' : ''}`}
-                  style={{ padding: '0 0 4px' }}
-                >
-                  <table className="app-data-table">
-                    <thead>
-                      <tr>
-                        <th style={{ textAlign: 'left', minWidth: '100px' }}>Section / Subject</th>
-                        <th>Total</th>
-                        <th className="app-desktop-only">Attempted</th>
-                        <th>Correct</th>
-                        <th>Wrong</th>
-                        {hasBonus && <th>Bonus</th>}
-                        <th>Skip</th>
-                        <th style={{ textAlign: 'right' }}>Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {resultData.sections.map((sec, idx) => {
-                        const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
-                        const secAttempted = sec.total - sec.unattempted;
-                        const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
-                        return (
-                          <tr key={idx} style={{ background: idx % 2 === 0 ? '#ffffff' : '#fcfcfd' }}>
-                            <td style={{ textAlign: 'left', fontWeight: 800, color: '#0f172a', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                              {sec.name}
-                            </td>
-                            <td style={{ fontWeight: 700 }}>{sec.total}</td>
-                            <td className="app-desktop-only" style={{ fontWeight: 700 }}>{secAttempted}</td>
-                            <td>
-                              <span className="app-stat-badge app-stat-badge-correct">+{sec.correct}</span>
-                            </td>
-                            <td>
-                              <span className="app-stat-badge app-stat-badge-wrong">-{sec.wrong}</span>
-                            </td>
-                            {hasBonus && (
-                              <td>
-                                <span className="app-stat-badge app-stat-badge-bonus">{secBonus || 0}</span>
+                {/* VIEW B: FULL DATA TABLE (Shown when Table tab is clicked, or always on print) */}
+                {(viewMode === 'table' || typeof window === 'undefined') && (
+                  <div className="app-table-scroll-container">
+                    <table className="app-pro-table">
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: 'left', minWidth: '110px' }}>Section / Subject</th>
+                          <th>Total</th>
+                          <th>Attempted</th>
+                          <th>Correct</th>
+                          <th>Wrong</th>
+                          {hasBonus && <th>Bonus</th>}
+                          <th>Skipped</th>
+                          <th style={{ textAlign: 'right' }}>Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {resultData.sections.map((sec, idx) => {
+                          const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
+                          const secAttempted = sec.total - sec.unattempted;
+                          const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
+
+                          return (
+                            <tr key={idx}>
+                              <td style={{ textAlign: 'left', fontWeight: 800, color: '#0f172a' }}>
+                                {sec.name}
                               </td>
-                            )}
-                            <td>
-                              <span className="app-stat-badge app-stat-badge-skip">{sec.unattempted}</span>
-                            </td>
-                            <td style={{ textAlign: 'right', fontWeight: 900, color: secScore < 0 ? '#dc2626' : '#0f172a' }}>
-                              {secScore.toFixed(2)}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                    <tfoot>
-                      <tr style={{ background: '#f8fafc', borderTop: '2px solid #cbd5e1', fontWeight: 900, color: '#0f172a', fontSize: '0.84rem' }}>
-                        <td style={{ textAlign: 'left', fontWeight: 900, color: '#0f172a' }}>Total</td>
-                        <td style={{ fontWeight: 900 }}>{totQuestions}</td>
-                        <td className="app-desktop-only" style={{ fontWeight: 900 }}>{totAttempted}</td>
-                        <td style={{ fontWeight: 900, color: '#15803d' }}>{totCorrect}</td>
-                        <td style={{ fontWeight: 900, color: '#dc2626' }}>{totWrong}</td>
-                        {hasBonus && (
-                          <td style={{ fontWeight: 900, color: '#9333ea' }}>{totBonus}</td>
-                        )}
-                        <td style={{ fontWeight: 900, color: '#d97706' }}>{totUnattempted}</td>
-                        <td style={{ textAlign: 'right', fontWeight: 900, color: totScore < 0 ? '#dc2626' : '#0044cc', fontSize: '0.88rem' }}>
-                          {totScore.toFixed(2)}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                              <td style={{ fontWeight: 700 }}>{sec.total}</td>
+                              <td style={{ fontWeight: 700 }}>{secAttempted}</td>
+                              <td>
+                                <span className="app-mini-chip app-chip-correct">+{sec.correct}</span>
+                              </td>
+                              <td>
+                                <span className="app-mini-chip app-chip-wrong">-{sec.wrong}</span>
+                              </td>
+                              {hasBonus && (
+                                <td>
+                                  <span className="app-mini-chip app-chip-bonus">{secBonus || 0}</span>
+                                </td>
+                              )}
+                              <td>
+                                <span className="app-mini-chip app-chip-skip">{sec.unattempted}</span>
+                              </td>
+                              <td style={{ textAlign: 'right', fontWeight: 900, color: secScore < 0 ? '#dc2626' : '#0f172a' }}>
+                                {secScore.toFixed(2)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                      <tfoot>
+                        <tr style={{ background: '#f8fafc', borderTop: '2px solid #cbd5e1', fontWeight: 900, color: '#0f172a', fontSize: '0.84rem' }}>
+                          <td style={{ textAlign: 'left', fontWeight: 900, color: '#0f172a' }}>Total</td>
+                          <td style={{ fontWeight: 900 }}>{totQuestions}</td>
+                          <td style={{ fontWeight: 900 }}>{totAttempted}</td>
+                          <td style={{ fontWeight: 900, color: '#15803d' }}>{totCorrect}</td>
+                          <td style={{ fontWeight: 900, color: '#dc2626' }}>{totWrong}</td>
+                          {hasBonus && (
+                            <td style={{ fontWeight: 900, color: '#7e22ce' }}>{totBonus}</td>
+                          )}
+                          <td style={{ fontWeight: 900, color: '#b45309' }}>{totUnattempted}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 900, color: totScore < 0 ? '#dc2626' : '#0044cc' }}>
+                            {totScore.toFixed(2)}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
 
           </div>
 
           {/* DESKTOP SIDEBAR COLUMN (Only visible on screens > 900px) */}
-          <div className="app-rank-sidebar no-print">
+          <div className="app-rank-side no-print">
 
             {/* Candidate Profile Card */}
-            <div className="app-profile-card">
-              <div className="app-profile-header">
-                <div className="app-avatar">
+            <div className="app-desktop-profile-card">
+              <div className="app-profile-head">
+                <div className="app-hero-avatar">
                   {candidateInitial}
                 </div>
-                <div className="app-profile-info">
-                  <div className="app-candidate-name-row">
-                    <h2 className="app-candidate-name">{candidateName}</h2>
-                    <span className="app-verified-badge">✓ Verified</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>{candidateName}</h2>
+                    <span style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '999px' }}>✓</span>
                   </div>
                   {rollNumber && (
-                    <span className="app-roll-pill">Roll: {rollNumber}</span>
+                    <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace' }}>Roll: {rollNumber}</span>
                   )}
                 </div>
               </div>
 
-              <div className="app-meta-chips-grid">
+              <div className="app-chips-cloud">
                 {metaChips.map((chip, idx) => (
-                  <div key={idx} className="app-meta-chip">
+                  <div key={idx} className="app-cloud-chip">
                     <span>{chip.icon}</span>
                     <span>{chip.label}:</span>
                     <strong>{chip.val}</strong>
@@ -1578,26 +1624,25 @@ export default function RankPage() {
               </div>
             </div>
 
-            {/* Desktop Actions Card */}
-            <div className="app-actions-group">
+            {/* Desktop Actions */}
+            <div className="app-action-stack">
               {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
-                <Link href="/review-answerkey" className="app-btn-primary">
+                <Link href="/review-answerkey" className="app-btn-main">
                   <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                   </svg>
                   <span>Review Answerkey</span>
-                  <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
                 </Link>
               )}
 
-              <Link href="/result" className="app-btn-secondary">
+              <Link href="/result" className="app-btn-sub">
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>Back to Scorecard</span>
               </Link>
 
-              <button type="button" onClick={() => window.print()} className="app-btn-secondary">
+              <button type="button" onClick={() => window.print()} className="app-btn-sub">
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
