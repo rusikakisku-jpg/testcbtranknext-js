@@ -82,6 +82,7 @@ export default function RankPage() {
     percentile: number;
   } | null>(null);
   const [loadingRank, setLoadingRank] = useState(true);
+  const [mobileBreakdownView, setMobileBreakdownView] = useState<'cards' | 'table'>('cards');
 
   useEffect(() => {
     try {
@@ -225,10 +226,107 @@ export default function RankPage() {
 
   return (
     <main>
-      <div className="result-main" style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px' }}>
+      <style>{`
+        /* App-Style Mobile Responsive Optimization for /rank */
+        @media (max-width: 768px) {
+          .rank-result-main {
+            padding: 10px 10px calc(75px + env(safe-area-inset-bottom, 0px)) !important;
+          }
+          .rank-layout-row {
+            gap: 12px !important;
+          }
+          .rank-main-col {
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+            gap: 10px !important;
+          }
+          .rank-mobile-top-bar {
+            display: flex !important;
+          }
+          .rank-main-card {
+            padding: 12px 10px !important;
+            border-radius: 14px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+          }
+          .exam-logo {
+            max-height: 60px !important;
+          }
+          .candidate-top-summary {
+            display: block !important;
+            padding: 10px 12px !important;
+            border-radius: 12px !important;
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            margin-bottom: 12px !important;
+          }
+          .desktop-pdf-row {
+            display: none !important;
+          }
+          .rank-showcase-box {
+            padding: 14px 10px !important;
+            border-radius: 14px !important;
+            margin-bottom: 12px !important;
+          }
+          .live-rank-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 8px !important;
+            margin-bottom: 12px !important;
+          }
+          .card-trade {
+            grid-column: span 2 !important;
+          }
+          .rank-metric-card {
+            padding: 10px 6px !important;
+            border-radius: 12px !important;
+            min-height: 68px !important;
+          }
+          .rank-card-value {
+            font-size: 1.15rem !important;
+          }
+          .rank-mobile-actions {
+            display: flex !important;
+          }
+          .mobile-breakdown-toggle {
+            display: inline-flex !important;
+          }
+          .rank-desktop-table-container {
+            display: none;
+          }
+          .rank-desktop-table-container.mobile-force-show {
+            display: block !important;
+          }
+          .review-right-sidebar {
+            display: none !important;
+          }
+        }
+
+        @media (min-width: 769px) {
+          .rank-mobile-top-bar {
+            display: none !important;
+          }
+          .rank-mobile-actions {
+            display: none !important;
+          }
+          .mobile-breakdown-toggle {
+            display: none !important;
+          }
+          .rank-mobile-cards-container {
+            display: none !important;
+          }
+          .rank-desktop-table-container {
+            display: block !important;
+          }
+          .review-right-sidebar {
+            display: flex !important;
+          }
+        }
+      `}</style>
+
+      <div className="result-main rank-result-main" style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px' }}>
 
         {/* 2-Column Responsive Layout with Right Sidebar */}
-        <div style={{
+        <div className="rank-layout-row" style={{
           display: 'flex',
           gap: '20px',
           alignItems: 'flex-start',
@@ -236,10 +334,68 @@ export default function RankPage() {
         }}>
 
           {/* LEFT MAIN CONTENT COLUMN (Rank Showcase + Breakdown + Tables) */}
-          <div style={{ flex: '1 1 680px', minWidth: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="rank-main-col" style={{ flex: '1 1 680px', minWidth: '320px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+            {/* Mobile App Navigation Header Bar */}
+            <div className="rank-mobile-top-bar no-print" style={{
+              display: 'none',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: '12px',
+              padding: '8px 12px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+            }}>
+              <Link
+                href="/result"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  color: '#0044cc',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  textDecoration: 'none',
+                  padding: '4px 6px',
+                  borderRadius: '6px'
+                }}
+              >
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Scorecard
+              </Link>
+              <div style={{ fontSize: '0.82rem', fontWeight: 900, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                Live Rank & Analytics
+              </div>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  background: '#f8fafc',
+                  border: '1px solid #cbd5e1',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  color: '#334155',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                PDF
+              </button>
+            </div>
 
             {/* Rank Card Main Container */}
-            <div style={{ padding: '18px 16px', borderRadius: '18px', background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
+            <div className="rank-main-card" style={{ padding: '18px 16px', borderRadius: '18px', background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(15, 23, 42, 0.04)' }}>
               
               {/* Exam Logo / Title Banner (Centered & Full Width Display) */}
               <div style={{ marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9', textAlign: 'center' }}>
@@ -273,29 +429,54 @@ export default function RankPage() {
                 )}
               </div>
 
-              {/* Candidate Info Summary Header (Visible at Top on Mobile & Print) */}
+              {/* Candidate Info Summary Header (App-Style Profile Card on Mobile & Print) */}
               <div className="candidate-top-summary" style={{
                 marginBottom: '14px',
-                padding: '10px 12px',
+                padding: '12px 14px',
                 background: '#f8fafc',
-                border: '1px solid #cbd5e1',
-                borderRadius: '10px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px',
                 fontSize: '0.78rem'
               }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px solid #e2e8f0' }}>
+                  <div style={{
+                    width: '34px',
+                    height: '34px',
+                    borderRadius: '8px',
+                    background: 'linear-gradient(135deg, #003366 0%, #004b87 100%)',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 900,
+                    fontSize: '1rem',
+                    flexShrink: 0
+                  }}>
+                    👤
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {candidateName}
+                    </div>
+                    {rollNumber && (
+                      <div style={{ fontSize: '0.72rem', color: '#64748b' }}>
+                        Roll No: <span style={{ fontFamily: 'monospace', color: '#0044cc', fontWeight: 800 }}>{rollNumber}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '6px 12px', fontSize: '9pt' }}>
-                  <div><strong>Candidate:</strong> {candidateName}</div>
-                  {rollNumber && <div><strong>Roll No:</strong> <span style={{ fontFamily: 'monospace', color: '#0044cc', fontWeight: 800 }}>{rollNumber}</span></div>}
-                  {resultData.testDate && <div><strong>Date:</strong> {resultData.testDate}</div>}
-                  {resultData.testTime && <div><strong>Time:</strong> {resultData.testTime}</div>}
-                  {effectiveCommunity && <div><strong>Category:</strong> {effectiveCommunity}</div>}
-                  {effectiveGender && <div><strong>Gender:</strong> {effectiveGender}</div>}
-                  {formData?.state && <div><strong>State:</strong> {formData.state}</div>}
-                  {effectiveSubType && <div><strong>Trade / Stream:</strong> <span style={{ color: '#0044cc', fontWeight: 800 }}>{effectiveSubType}</span></div>}
+                  {resultData.testDate && <div><strong style={{ color: '#475569' }}>Date:</strong> <span style={{ color: '#0f172a', fontWeight: 700 }}>{resultData.testDate}</span></div>}
+                  {resultData.testTime && <div><strong style={{ color: '#475569' }}>Time:</strong> <span style={{ color: '#0f172a', fontWeight: 700 }}>{resultData.testTime}</span></div>}
+                  {effectiveCommunity && <div><strong style={{ color: '#475569' }}>Category:</strong> <span style={{ color: '#0f172a', fontWeight: 700 }}>{effectiveCommunity}</span></div>}
+                  {effectiveGender && <div><strong style={{ color: '#475569' }}>Gender:</strong> <span style={{ color: '#0f172a', fontWeight: 700 }}>{effectiveGender}</span></div>}
+                  {formData?.state && <div><strong style={{ color: '#475569' }}>State:</strong> <span style={{ color: '#0f172a', fontWeight: 700 }}>{formData.state}</span></div>}
+                  {effectiveSubType && <div><strong style={{ color: '#475569' }}>Trade / Stream:</strong> <span style={{ color: '#0044cc', fontWeight: 800 }}>{effectiveSubType}</span></div>}
                 </div>
               </div>
 
-              {/* Action Bar / Download PDF Button Row (Hidden on Print) */}
-              <div className="no-print" style={{
+              {/* Action Bar / Download PDF Button Row (Hidden on Mobile & Print) */}
+              <div className="no-print desktop-pdf-row" style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-end',
@@ -332,7 +513,7 @@ export default function RankPage() {
               </div>
 
               {/* Beautiful Live Rank Summary Showcase Card */}
-              <div style={{
+              <div className="rank-showcase-box" style={{
                 background: 'linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%)',
                 border: '1.5px solid #bfdbfe',
                 borderRadius: '16px',
@@ -488,7 +669,92 @@ export default function RankPage() {
                 </div>
               </div>
 
-              {/* Subject-Wise Performance Breakdown Table */}
+              {/* Mobile Quick Action Buttons (App Style) */}
+              <div className="rank-mobile-actions no-print" style={{
+                display: 'none',
+                flexDirection: 'column',
+                gap: '8px',
+                marginBottom: '14px'
+              }}>
+                {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
+                  <Link
+                    href="/review-answerkey"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                      color: '#ffffff',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      fontWeight: 800,
+                      fontSize: '0.88rem',
+                      textDecoration: 'none',
+                      boxShadow: '0 4px 12px rgba(37, 99, 235, 0.28)',
+                      textAlign: 'center'
+                    }}
+                  >
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    Review Answerkey
+                  </Link>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <Link
+                    href="/result"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      background: '#ffffff',
+                      border: '1px solid #cbd5e1',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
+                      color: '#1e293b',
+                      fontWeight: 800,
+                      fontSize: '0.8rem',
+                      textDecoration: 'none',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+                    }}
+                  >
+                    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Scorecard
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      background: '#f8fafc',
+                      border: '1px solid #cbd5e1',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
+                      color: '#334155',
+                      fontWeight: 800,
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+                    }}
+                  >
+                    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download PDF
+                  </button>
+                </div>
+              </div>
+
+              {/* Subject-Wise Performance Breakdown */}
               {resultData.sections && resultData.sections.length > 0 && (() => {
                 const bonusCountFromData = Number(resultData.bonusCount || resultData.rawBonusQuestions || 0);
                 const sectionsHaveBonus = Boolean(resultData.sections.some(s => s.bonus && s.bonus > 0));
@@ -512,13 +778,197 @@ export default function RankPage() {
 
                 return (
                   <div style={{ borderRadius: '14px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-                    <div style={{ background: '#f8fafc', padding: '12px 14px', borderBottom: '1px solid #e2e8f0' }}>
-                      <h3 style={{ fontSize: '0.86rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>
-                        📑 Section-Wise Performance Breakdown
+                    <div style={{
+                      background: '#f8fafc',
+                      padding: '10px 14px',
+                      borderBottom: '1px solid #e2e8f0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '10px'
+                    }}>
+                      <h3 style={{ fontSize: '0.84rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>
+                        📑 Section Breakdown
                       </h3>
+
+                      {/* Mobile View Switcher (Cards / Table) */}
+                      <div className="mobile-breakdown-toggle" style={{
+                        display: 'none',
+                        alignItems: 'center',
+                        background: '#e2e8f0',
+                        padding: '2px',
+                        borderRadius: '8px',
+                        gap: '2px'
+                      }}>
+                        <button
+                          type="button"
+                          onClick={() => setMobileBreakdownView('cards')}
+                          style={{
+                            border: 'none',
+                            background: mobileBreakdownView === 'cards' ? '#ffffff' : 'transparent',
+                            color: mobileBreakdownView === 'cards' ? '#0f172a' : '#64748b',
+                            fontWeight: 800,
+                            fontSize: '0.72rem',
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            boxShadow: mobileBreakdownView === 'cards' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          📱 Cards
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setMobileBreakdownView('table')}
+                          style={{
+                            border: 'none',
+                            background: mobileBreakdownView === 'table' ? '#ffffff' : 'transparent',
+                            color: mobileBreakdownView === 'table' ? '#0f172a' : '#64748b',
+                            fontWeight: 800,
+                            fontSize: '0.72rem',
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            boxShadow: mobileBreakdownView === 'table' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          📋 Table
+                        </button>
+                      </div>
                     </div>
 
-                    <div style={{ overflowX: 'auto' }}>
+                    {/* Mobile App-Style Section Performance Cards */}
+                    <div className="rank-mobile-cards-container" style={{
+                      display: mobileBreakdownView === 'cards' ? 'flex' : 'none',
+                      flexDirection: 'column',
+                      gap: '10px',
+                      padding: '12px 10px',
+                      background: '#f8fafc'
+                    }}>
+                      {resultData.sections.map((sec, idx) => {
+                        const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
+                        const secAttempted = sec.total - sec.unattempted;
+                        const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
+
+                        return (
+                          <div
+                            key={idx}
+                            style={{
+                              background: '#ffffff',
+                              border: '1px solid #e2e8f0',
+                              borderRadius: '12px',
+                              padding: '12px',
+                              boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)'
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '10px' }}>
+                              <div style={{ fontWeight: 800, fontSize: '0.84rem', color: '#0f172a', lineHeight: 1.3 }}>
+                                {sec.name}
+                              </div>
+                              <div style={{
+                                background: secScore < 0 ? '#fef2f2' : '#f0fdf4',
+                                border: `1px solid ${secScore < 0 ? '#fecaca' : '#bbf7d0'}`,
+                                color: secScore < 0 ? '#b91c1c' : '#15803d',
+                                fontWeight: 900,
+                                fontSize: '0.82rem',
+                                padding: '2px 8px',
+                                borderRadius: '8px',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0
+                              }}>
+                                {secScore >= 0 ? `+${secScore.toFixed(2)}` : secScore.toFixed(2)}
+                              </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: hasBonus && (secBonus > 0) ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)', gap: '6px', textAlign: 'center' }}>
+                              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '6px 4px' }}>
+                                <div style={{ fontSize: '0.64rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Total</div>
+                                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0f172a', marginTop: '2px' }}>{sec.total}</div>
+                              </div>
+                              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '6px 4px' }}>
+                                <div style={{ fontSize: '0.64rem', color: '#15803d', fontWeight: 700, textTransform: 'uppercase' }}>Correct</div>
+                                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#15803d', marginTop: '2px' }}>{sec.correct}</div>
+                              </div>
+                              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '6px 4px' }}>
+                                <div style={{ fontSize: '0.64rem', color: '#b91c1c', fontWeight: 700, textTransform: 'uppercase' }}>Wrong</div>
+                                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#b91c1c', marginTop: '2px' }}>{sec.wrong}</div>
+                              </div>
+                              <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '6px 4px' }}>
+                                <div style={{ fontSize: '0.64rem', color: '#b45309', fontWeight: 700, textTransform: 'uppercase' }}>Skip</div>
+                                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#b45309', marginTop: '2px' }}>{sec.unattempted}</div>
+                              </div>
+                              {hasBonus && (secBonus > 0) && (
+                                <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: '8px', padding: '6px 4px' }}>
+                                  <div style={{ fontSize: '0.64rem', color: '#7e22ce', fontWeight: 700, textTransform: 'uppercase' }}>Bonus</div>
+                                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#7e22ce', marginTop: '2px' }}>{secBonus}</div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {/* Total Performance Summary Card on Mobile */}
+                      <div style={{
+                        background: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
+                        border: '1.5px solid #cbd5e1',
+                        borderRadius: '12px',
+                        padding: '12px',
+                        boxShadow: '0 2px 6px rgba(15, 23, 42, 0.05)'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '10px' }}>
+                          <div>
+                            <div style={{ fontWeight: 900, fontSize: '0.86rem', color: '#0f172a' }}>
+                              Total Performance
+                            </div>
+                            <div style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                              Attempted: <strong>{totAttempted}</strong> / {totQuestions}
+                            </div>
+                          </div>
+                          <div style={{
+                            background: totScore < 0 ? '#fee2e2' : '#dcfce7',
+                            border: `1.5px solid ${totScore < 0 ? '#fca5a5' : '#86efac'}`,
+                            color: totScore < 0 ? '#991b1b' : '#166534',
+                            fontWeight: 900,
+                            fontSize: '0.92rem',
+                            padding: '4px 10px',
+                            borderRadius: '10px'
+                          }}>
+                            {totScore.toFixed(2)}
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: hasBonus && (totBonus > 0) ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)', gap: '6px', textAlign: 'center' }}>
+                          <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '6px 4px' }}>
+                            <div style={{ fontSize: '0.64rem', color: '#475569', fontWeight: 700, textTransform: 'uppercase' }}>Total</div>
+                            <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#0f172a', marginTop: '2px' }}>{totQuestions}</div>
+                          </div>
+                          <div style={{ background: '#ffffff', border: '1px solid #86efac', borderRadius: '8px', padding: '6px 4px' }}>
+                            <div style={{ fontSize: '0.64rem', color: '#166534', fontWeight: 700, textTransform: 'uppercase' }}>Correct</div>
+                            <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#166534', marginTop: '2px' }}>{totCorrect}</div>
+                          </div>
+                          <div style={{ background: '#ffffff', border: '1px solid #fca5a5', borderRadius: '8px', padding: '6px 4px' }}>
+                            <div style={{ fontSize: '0.64rem', color: '#991b1b', fontWeight: 700, textTransform: 'uppercase' }}>Wrong</div>
+                            <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#991b1b', marginTop: '2px' }}>{totWrong}</div>
+                          </div>
+                          <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: '8px', padding: '6px 4px' }}>
+                            <div style={{ fontSize: '0.64rem', color: '#b45309', fontWeight: 700, textTransform: 'uppercase' }}>Skip</div>
+                            <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#b45309', marginTop: '2px' }}>{totUnattempted}</div>
+                          </div>
+                          {hasBonus && (totBonus > 0) && (
+                            <div style={{ background: '#ffffff', border: '1px solid #d8b4fe', borderRadius: '8px', padding: '6px 4px' }}>
+                              <div style={{ fontSize: '0.64rem', color: '#6b21a8', fontWeight: 700, textTransform: 'uppercase' }}>Bonus</div>
+                              <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#6b21a8', marginTop: '2px' }}>{totBonus}</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Desktop Table View (also toggleable on mobile) */}
+                    <div className={`rank-desktop-table-container${mobileBreakdownView === 'table' ? ' mobile-force-show' : ''}`} style={{ overflowX: 'auto' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'center' }}>
                         <thead>
                           <tr style={{ background: '#f1f5f9', color: '#475569', fontWeight: 800, fontSize: '0.72rem', textTransform: 'uppercase' }}>
