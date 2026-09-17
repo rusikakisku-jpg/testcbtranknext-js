@@ -1084,9 +1084,9 @@ export default function RankPage() {
               )}
             </div>
 
-            {/* 3. Candidate Profile Card (Mobile View only, Desktop has it in sidebar) */}
+            {/* 3. Candidate Profile Card (Mobile View only - Category, Shift & Gender shown in Rank cards below) */}
             <div className="app-candidate-card app-hide-on-desktop">
-              <div className="app-profile-head">
+              <div className="app-profile-head" style={{ marginBottom: 0, paddingBottom: 0, borderBottom: 'none' }}>
                 <div className="app-hero-avatar">
                   {candidateInitial}
                 </div>
@@ -1095,20 +1095,15 @@ export default function RankPage() {
                     <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>{candidateName}</h2>
                     <span style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '999px' }}>✓ Verified</span>
                   </div>
-                  {rollNumber && (
-                    <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace' }}>Roll: {rollNumber}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="app-chips-cloud">
-                {metaChips.map((chip, idx) => (
-                  <div key={idx} className="app-cloud-chip">
-                    <span>{chip.icon}</span>
-                    <span>{chip.label}:</span>
-                    <strong>{chip.val}</strong>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
+                    {rollNumber && (
+                      <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace' }}>Roll: {rollNumber}</span>
+                    )}
+                    {resultData.testDate && (
+                      <span style={{ fontSize: '0.74rem', color: '#64748b', fontWeight: 600 }}>📅 {resultData.testDate}</span>
+                    )}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
 
