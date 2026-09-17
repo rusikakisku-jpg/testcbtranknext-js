@@ -82,6 +82,7 @@ export default function RankPage() {
     percentile: number;
   } | null>(null);
   const [loadingRank, setLoadingRank] = useState(true);
+  const [showDetailedTable, setShowDetailedTable] = useState(false);
 
   useEffect(() => {
     try {
@@ -251,6 +252,10 @@ export default function RankPage() {
 
   const candidateInitial = candidateName ? candidateName.trim().charAt(0).toUpperCase() : 'C';
 
+  const totalAttemptedQuestions = totCorrect + totWrong;
+  const overallAccuracy = totalAttemptedQuestions > 0 ? ((totCorrect / totalAttemptedQuestions) * 100).toFixed(1) : '0.0';
+  const percentileNum = Math.min(100, Math.max(0, parseFloat(calculatedPercentile) || 0));
+
   const metaChips = [
     resultData.testDate ? { label: 'Date', val: `${resultData.testDate}${resultData.testTime ? ` (${resultData.testTime})` : ''}`, icon: '📅' } : null,
     effectiveCommunity ? { label: 'Category', val: effectiveCommunity, icon: '🏷️' } : null,
@@ -263,8 +268,8 @@ export default function RankPage() {
   return (
     <main style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
       <style>{`
-        /* Modern App-Style UI Design System for /rank */
-        .rank-page-container {
+        /* Native App-Style UI Design System for /rank */
+        .app-rank-container {
           width: 100%;
           max-width: 1240px;
           margin: 0 auto;
@@ -275,7 +280,7 @@ export default function RankPage() {
           overflow-x: hidden;
         }
 
-        .rank-layout {
+        .app-rank-layout {
           display: flex;
           gap: 20px;
           align-items: flex-start;
@@ -284,7 +289,7 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .rank-main-area {
+        .app-rank-main {
           flex: 1 1 700px;
           min-width: 0;
           max-width: 100%;
@@ -295,7 +300,7 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .rank-sidebar-area {
+        .app-rank-sidebar {
           flex: 0 0 320px;
           min-width: 290px;
           max-width: 320px;
@@ -308,24 +313,26 @@ export default function RankPage() {
         }
 
         /* Exam Header Card */
-        .rank-exam-card {
+        .app-exam-card {
           background: #ffffff;
           border-radius: 16px;
           border: 1px solid #e2e8f0;
           padding: 14px 16px;
           text-align: center;
           box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+          width: 100%;
+          box-sizing: border-box;
         }
 
-        .rank-exam-img {
-          max-height: 80px;
+        .app-exam-img {
+          max-height: 75px;
           max-width: 100%;
           object-fit: contain;
           margin: 0 auto;
           display: block;
         }
 
-        .rank-exam-title {
+        .app-exam-title {
           margin: 0;
           font-size: 1.15rem;
           font-weight: 800;
@@ -334,15 +341,17 @@ export default function RankPage() {
         }
 
         /* Candidate App-Style Profile Card */
-        .rank-profile-card {
+        .app-profile-card {
           background: #ffffff;
           border-radius: 16px;
           border: 1px solid #e2e8f0;
           padding: 16px;
           box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+          width: 100%;
+          box-sizing: border-box;
         }
 
-        .rank-profile-header {
+        .app-profile-header {
           display: flex;
           align-items: center;
           gap: 12px;
@@ -351,34 +360,34 @@ export default function RankPage() {
           border-bottom: 1px solid #f1f5f9;
         }
 
-        .rank-avatar {
-          width: 44px;
-          height: 44px;
+        .app-avatar {
+          width: 46px;
+          height: 46px;
           border-radius: 50%;
           background: linear-gradient(135deg, #0044cc 0%, #6366f1 100%);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.2rem;
+          font-size: 1.25rem;
           font-weight: 900;
           flex-shrink: 0;
-          box-shadow: 0 3px 8px rgba(0, 68, 204, 0.25);
+          box-shadow: 0 3px 10px rgba(0, 68, 204, 0.28);
         }
 
-        .rank-profile-info {
+        .app-profile-info {
           flex: 1;
           min-width: 0;
         }
 
-        .rank-candidate-name-row {
+        .app-candidate-name-row {
           display: flex;
           align-items: center;
           gap: 6px;
           flex-wrap: wrap;
         }
 
-        .rank-candidate-name {
+        .app-candidate-name {
           margin: 0;
           font-size: 1.05rem;
           font-weight: 900;
@@ -387,7 +396,7 @@ export default function RankPage() {
           word-break: break-word;
         }
 
-        .rank-verified-badge {
+        .app-verified-badge {
           display: inline-flex;
           align-items: center;
           gap: 3px;
@@ -401,7 +410,7 @@ export default function RankPage() {
           text-transform: uppercase;
         }
 
-        .rank-roll-pill {
+        .app-roll-pill {
           display: inline-block;
           margin-top: 4px;
           font-size: 0.76rem;
@@ -414,13 +423,13 @@ export default function RankPage() {
           border: 1px solid #dbeafe;
         }
 
-        .rank-meta-chips-grid {
+        .app-meta-chips-grid {
           display: flex;
           flex-wrap: wrap;
           gap: 6px;
         }
 
-        .rank-meta-chip {
+        .app-meta-chip {
           display: inline-flex;
           align-items: center;
           gap: 4px;
@@ -431,15 +440,18 @@ export default function RankPage() {
           font-size: 0.74rem;
           color: #334155;
           line-height: 1.25;
+          max-width: 100%;
+          word-break: break-word;
+          box-sizing: border-box;
         }
 
-        .rank-meta-chip strong {
+        .app-meta-chip strong {
           color: #0f172a;
           font-weight: 800;
         }
 
         /* Hero Live Rank Showcase Banner */
-        .rank-hero-banner {
+        .app-rank-hero {
           background: linear-gradient(135deg, #091a36 0%, #102a5c 55%, #0044cc 100%);
           border-radius: 20px;
           padding: 22px 20px;
@@ -447,9 +459,11 @@ export default function RankPage() {
           position: relative;
           overflow: hidden;
           box-shadow: 0 8px 24px rgba(0, 68, 204, 0.22);
+          width: 100%;
+          box-sizing: border-box;
         }
 
-        .rank-hero-banner::after {
+        .app-rank-hero::after {
           content: "";
           position: absolute;
           top: -40px;
@@ -461,7 +475,7 @@ export default function RankPage() {
           pointer-events: none;
         }
 
-        .rank-hero-top {
+        .app-rank-hero-top {
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -470,7 +484,7 @@ export default function RankPage() {
           z-index: 1;
         }
 
-        .rank-live-pill {
+        .app-live-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
@@ -485,7 +499,7 @@ export default function RankPage() {
           letter-spacing: 0.05em;
         }
 
-        .rank-live-dot {
+        .app-live-dot {
           width: 7px;
           height: 7px;
           border-radius: 50%;
@@ -500,7 +514,7 @@ export default function RankPage() {
           100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        .rank-refresh-btn {
+        .app-refresh-btn {
           display: inline-flex;
           align-items: center;
           gap: 5px;
@@ -516,18 +530,18 @@ export default function RankPage() {
           backdrop-filter: blur(4px);
         }
 
-        .rank-refresh-btn:hover {
+        .app-refresh-btn:hover {
           background: rgba(255, 255, 255, 0.22);
         }
 
-        .rank-hero-center {
+        .app-rank-hero-center {
           text-align: center;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
           position: relative;
           z-index: 1;
         }
 
-        .rank-hero-label {
+        .app-rank-hero-label {
           font-size: 0.76rem;
           font-weight: 800;
           letter-spacing: 0.08em;
@@ -540,23 +554,25 @@ export default function RankPage() {
           margin-bottom: 4px;
         }
 
-        .rank-hero-value {
-          font-size: 2.7rem;
+        .app-rank-hero-value {
+          font-size: clamp(2rem, 6.5vw, 2.7rem);
           font-weight: 900;
           line-height: 1.1;
           letter-spacing: -0.02em;
           color: #ffffff;
           text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+          word-break: break-word;
+          overflow-wrap: anywhere;
         }
 
-        .rank-hero-total {
-          font-size: 1.15rem;
+        .app-rank-hero-total {
+          font-size: clamp(1rem, 3.5vw, 1.15rem);
           font-weight: 700;
           color: #bfdbfe;
           margin-left: 6px;
         }
 
-        .rank-hero-percentile {
+        .app-rank-percentile-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
@@ -569,22 +585,45 @@ export default function RankPage() {
           color: #ffffff;
           margin-top: 8px;
           backdrop-filter: blur(4px);
+          max-width: 100%;
+          box-sizing: border-box;
+        }
+
+        /* Percentile visual progress bar */
+        .app-percentile-bar-track {
+          width: 100%;
+          max-width: 320px;
+          height: 6px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 999px;
+          margin: 10px auto 0;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .app-percentile-bar-fill {
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #60a5fa, #34d399);
+          transition: width 0.6s ease;
         }
 
         /* Sub-Ranks Grid */
-        .rank-sub-grid {
+        .app-sub-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           gap: 10px;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         @media (min-width: 901px) {
-          .rank-sub-grid {
+          .app-sub-grid {
             grid-template-columns: repeat(4, 1fr);
           }
         }
 
-        .rank-sub-card {
+        .app-sub-card {
           background: #ffffff;
           border-radius: 14px;
           border: 1.5px solid #e2e8f0;
@@ -595,40 +634,42 @@ export default function RankPage() {
           box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
           transition: transform 0.15s ease;
           box-sizing: border-box;
+          min-width: 0;
+          width: 100%;
         }
 
-        .rank-sub-card:hover {
+        .app-sub-card:hover {
           transform: translateY(-2px);
         }
 
-        .rank-sub-card-shift {
+        .app-sub-card-shift {
           border-color: #bbf7d0;
           background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
         }
 
-        .rank-sub-card-cat {
+        .app-sub-card-cat {
           border-color: #fed7aa;
           background: linear-gradient(180deg, #fffbeb 0%, #ffffff 60%);
         }
 
-        .rank-sub-card-gen {
+        .app-sub-card-gen {
           border-color: #e9d5ff;
           background: linear-gradient(180deg, #faf5ff 0%, #ffffff 60%);
         }
 
-        .rank-sub-card-trade {
+        .app-sub-card-trade {
           border-color: #c7d2fe;
           background: linear-gradient(180deg, #eef2ff 0%, #ffffff 60%);
         }
 
-        .rank-sub-top {
+        .app-sub-top {
           display: flex;
           align-items: center;
           justify-content: space-between;
           margin-bottom: 6px;
         }
 
-        .rank-sub-title {
+        .app-sub-title {
           font-size: 0.68rem;
           font-weight: 800;
           text-transform: uppercase;
@@ -636,24 +677,25 @@ export default function RankPage() {
           letter-spacing: 0.03em;
         }
 
-        .rank-sub-num {
-          font-size: 1.35rem;
+        .app-sub-num {
+          font-size: clamp(1.1rem, 4vw, 1.35rem);
           font-weight: 900;
           line-height: 1.15;
+          word-break: break-word;
         }
 
-        .rank-sub-card-shift .rank-sub-num { color: #15803d; }
-        .rank-sub-card-cat .rank-sub-num { color: #b45309; }
-        .rank-sub-card-gen .rank-sub-num { color: #7e22ce; }
-        .rank-sub-card-trade .rank-sub-num { color: #4338ca; }
+        .app-sub-card-shift .app-sub-num { color: #15803d; }
+        .app-sub-card-cat .app-sub-num { color: #b45309; }
+        .app-sub-card-gen .app-sub-num { color: #7e22ce; }
+        .app-sub-card-trade .app-sub-num { color: #4338ca; }
 
-        .rank-sub-out-of {
+        .app-sub-out-of {
           font-size: 0.72rem;
           font-weight: 700;
           color: #94a3b8;
         }
 
-        .rank-sub-pill {
+        .app-sub-pill {
           display: inline-block;
           align-self: flex-start;
           margin-top: 6px;
@@ -664,32 +706,34 @@ export default function RankPage() {
           text-transform: capitalize;
         }
 
-        .rank-sub-card-cat .rank-sub-pill {
+        .app-sub-card-cat .app-sub-pill {
           background: #fef3c7;
           color: #b45309;
           border: 1px solid #fde68a;
         }
 
-        .rank-sub-card-gen .rank-sub-pill {
+        .app-sub-card-gen .app-sub-pill {
           background: #f3e8ff;
           color: #7e22ce;
           border: 1px solid #d8b4fe;
         }
 
-        .rank-sub-card-trade .rank-sub-pill {
+        .app-sub-card-trade .app-sub-pill {
           background: #e0e7ff;
           color: #4338ca;
           border: 1px solid #c7d2fe;
         }
 
         /* App Action Group */
-        .rank-actions-group {
+        .app-actions-group {
           display: flex;
           flex-direction: column;
           gap: 10px;
+          width: 100%;
+          box-sizing: border-box;
         }
 
-        .rank-btn-primary {
+        .app-btn-primary {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -709,18 +753,20 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .rank-btn-primary:hover {
+        .app-btn-primary:hover {
           filter: brightness(1.05);
           box-shadow: 0 6px 18px rgba(0, 68, 204, 0.35);
         }
 
-        .rank-btn-row {
+        .app-btn-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 10px;
+          width: 100%;
+          box-sizing: border-box;
         }
 
-        .rank-btn-secondary {
+        .app-btn-secondary {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -739,21 +785,25 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .rank-btn-secondary:hover {
+        .app-btn-secondary:hover {
           background: #f8fafc;
           border-color: #94a3b8;
         }
 
         /* Performance Breakdown Card */
-        .rank-perf-card {
+        .app-perf-card {
           background: #ffffff;
-          border-radius: 16px;
+          border-radius: 18px;
           border: 1px solid #e2e8f0;
           box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
           overflow: hidden;
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
         }
 
-        .rank-perf-header {
+        .app-perf-header {
           padding: 14px 16px;
           background: #f8fafc;
           border-bottom: 1px solid #e2e8f0;
@@ -764,9 +814,9 @@ export default function RankPage() {
           gap: 8px;
         }
 
-        .rank-perf-title {
+        .app-perf-title {
           margin: 0;
-          font-size: 0.86rem;
+          font-size: 0.88rem;
           font-weight: 900;
           color: #0f172a;
           text-transform: uppercase;
@@ -776,7 +826,7 @@ export default function RankPage() {
           gap: 6px;
         }
 
-        .rank-score-pill {
+        .app-score-pill {
           display: inline-flex;
           align-items: center;
           gap: 4px;
@@ -786,19 +836,19 @@ export default function RankPage() {
           font-weight: 900;
         }
 
-        .rank-score-positive {
+        .app-score-positive {
           background: #ecfdf5;
           color: #059669;
           border: 1px solid #a7f3d0;
         }
 
-        .rank-score-negative {
+        .app-score-negative {
           background: #fef2f2;
           color: #dc2626;
           border: 1px solid #fecaca;
         }
 
-        .rank-kpi-strip {
+        .app-kpi-strip {
           display: flex;
           align-items: center;
           justify-content: space-around;
@@ -810,15 +860,184 @@ export default function RankPage() {
           gap: 6px;
         }
 
-        .rank-kpi-item {
+        .app-kpi-item {
           display: flex;
           align-items: center;
           gap: 4px;
           font-weight: 700;
         }
 
-        /* Section Table Styling */
-        .rank-table-wrap {
+        /* NATIVE APP SUBJECT CARDS (MOBILE ONLY) */
+        .app-subject-cards-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          padding: 14px;
+          box-sizing: border-box;
+          width: 100%;
+        }
+
+        .app-subject-item-card {
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 14px;
+          padding: 14px;
+          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 100%;
+        }
+
+        .app-subject-header-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+        }
+
+        .app-subject-name {
+          font-size: 0.88rem;
+          font-weight: 800;
+          color: #0f172a;
+          line-height: 1.3;
+          margin: 0;
+          word-break: break-word;
+        }
+
+        .app-subject-score-tag {
+          font-size: 0.84rem;
+          font-weight: 900;
+          padding: 2px 9px;
+          border-radius: 8px;
+          white-space: nowrap;
+        }
+
+        .app-subject-score-pos {
+          background: #eff6ff;
+          color: #0044cc;
+          border: 1px solid #bfdbfe;
+        }
+
+        .app-subject-score-neg {
+          background: #fef2f2;
+          color: #dc2626;
+          border: 1px solid #fecaca;
+        }
+
+        .app-subject-stats-row {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .app-stat-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          font-size: 0.72rem;
+          font-weight: 800;
+          padding: 2px 7px;
+          border-radius: 6px;
+        }
+
+        .app-stat-badge-total {
+          background: #f1f5f9;
+          color: #475569;
+        }
+
+        .app-stat-badge-correct {
+          background: #dcfce7;
+          color: #15803d;
+        }
+
+        .app-stat-badge-wrong {
+          background: #fee2e2;
+          color: #b91c1c;
+        }
+
+        .app-stat-badge-skip {
+          background: #fef3c7;
+          color: #b45309;
+        }
+
+        .app-stat-badge-bonus {
+          background: #f3e8ff;
+          color: #7e22ce;
+        }
+
+        /* Mini Subject Accuracy Progress Bar */
+        .app-subject-accuracy-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          font-size: 0.7rem;
+          color: #64748b;
+          font-weight: 700;
+        }
+
+        .app-accuracy-bar-track {
+          flex: 1;
+          height: 5px;
+          background: #f1f5f9;
+          border-radius: 999px;
+          overflow: hidden;
+        }
+
+        .app-accuracy-bar-fill {
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        /* Overall Total Performance Card (Mobile) */
+        .app-total-summary-card {
+          background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+          border: 1.5px solid #cbd5e1;
+          border-radius: 14px;
+          padding: 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          box-sizing: border-box;
+          width: 100%;
+        }
+
+        .app-total-summary-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .app-toggle-table-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          background: #ffffff;
+          border: 1px solid #cbd5e1;
+          border-radius: 10px;
+          padding: 9px 14px;
+          font-size: 0.78rem;
+          font-weight: 800;
+          color: #334155;
+          cursor: pointer;
+          width: 100%;
+          margin-top: 4px;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+        }
+
+        .app-toggle-table-btn:hover {
+          background: #f8fafc;
+          color: #0f172a;
+        }
+
+        /* Detailed Table Container */
+        .app-table-wrap {
           width: 100%;
           max-width: 100%;
           min-width: 0;
@@ -828,7 +1047,7 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        .rank-data-table {
+        .app-data-table {
           width: 100%;
           min-width: 480px;
           border-collapse: collapse;
@@ -836,7 +1055,7 @@ export default function RankPage() {
           text-align: center;
         }
 
-        .rank-data-table thead tr {
+        .app-data-table thead tr {
           background: #f1f5f9;
           color: #475569;
           font-weight: 800;
@@ -845,65 +1064,25 @@ export default function RankPage() {
           letter-spacing: 0.03em;
         }
 
-        .rank-data-table th {
+        .app-data-table th {
           padding: 9px 8px;
         }
 
-        .rank-data-table td {
+        .app-data-table td {
           padding: 9px 8px;
           border-bottom: 1px solid #f1f5f9;
         }
 
-        .rank-badge-correct {
-          display: inline-block;
-          background: #dcfce7;
-          color: #15803d;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 6px;
-          font-size: 0.76rem;
-        }
-
-        .rank-badge-wrong {
-          display: inline-block;
-          background: #fee2e2;
-          color: #b91c1c;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 6px;
-          font-size: 0.76rem;
-        }
-
-        .rank-badge-skip {
-          display: inline-block;
-          background: #fef3c7;
-          color: #b45309;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 6px;
-          font-size: 0.76rem;
-        }
-
-        .rank-badge-bonus {
-          display: inline-block;
-          background: #f3e8ff;
-          color: #7e22ce;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 6px;
-          font-size: 0.76rem;
-        }
-
         /* Mobile vs Desktop Display Rules */
         @media (max-width: 900px) {
-          .rank-page-container {
+          .app-rank-container {
             padding: 10px 8px calc(70px + env(safe-area-inset-bottom, 0px)) !important;
             width: 100% !important;
             max-width: 100% !important;
             overflow-x: hidden !important;
             box-sizing: border-box !important;
           }
-          .rank-layout {
+          .app-rank-layout {
             flex-direction: column !important;
             gap: 12px !important;
             width: 100% !important;
@@ -911,163 +1090,132 @@ export default function RankPage() {
             align-items: stretch !important;
             box-sizing: border-box !important;
           }
-          .rank-main-area {
+          .app-rank-main {
             flex: 1 1 auto !important;
             width: 100% !important;
             max-width: 100% !important;
             min-width: 0 !important;
             box-sizing: border-box !important;
           }
-          .rank-sidebar-area {
+          .app-rank-sidebar {
             display: none !important;
           }
-          .rank-mobile-only {
+          .app-mobile-only {
             display: block !important;
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box !important;
           }
-          .rank-desktop-only {
+          .app-desktop-only {
             display: none !important;
           }
-          .rank-exam-img {
-            max-height: 60px !important;
+          .app-exam-img {
+            max-height: 55px !important;
           }
-          .rank-hero-banner {
-            width: 100% !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
+          .app-rank-hero {
             padding: 18px 14px !important;
           }
-          .rank-hero-value {
+          .app-rank-hero-value {
             font-size: clamp(1.8rem, 6.5vw, 2.3rem) !important;
-            word-break: break-word !important;
-            overflow-wrap: anywhere !important;
           }
-          .rank-hero-total {
-            font-size: clamp(0.95rem, 3.5vw, 1.15rem) !important;
-          }
-          .rank-sub-grid {
-            width: 100% !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-          }
-          .rank-sub-card {
-            width: 100% !important;
-            min-width: 0 !important;
-            box-sizing: border-box !important;
-          }
-          .rank-sub-num {
+          .app-sub-num {
             font-size: clamp(1.05rem, 4vw, 1.35rem) !important;
-            word-break: break-word !important;
-          }
-          .rank-actions-group {
-            width: 100% !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-          }
-          .rank-perf-card {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            box-sizing: border-box !important;
-            overflow: hidden !important;
-          }
-          .rank-table-wrap {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            box-sizing: border-box !important;
           }
         }
 
         @media (min-width: 901px) {
-          .rank-mobile-only {
+          .app-mobile-only {
             display: none !important;
           }
-          .rank-desktop-only {
+          .app-desktop-only {
             display: block !important;
           }
         }
 
         /* Print View Styles */
         @media print {
-          .no-print, .rank-actions-group, .rank-refresh-btn {
+          .no-print, .app-actions-group, .app-refresh-btn, .app-toggle-table-btn {
             display: none !important;
           }
-          .rank-page-container {
+          .app-rank-container {
             padding: 0 !important;
             max-width: 100% !important;
           }
-          .rank-layout {
+          .app-rank-layout {
             display: block !important;
           }
-          .rank-sidebar-area {
+          .app-rank-sidebar {
             display: none !important;
           }
-          .rank-hero-banner {
+          .app-rank-hero {
             background: #ffffff !important;
             color: #000000 !important;
             border: 1px solid #000000 !important;
             box-shadow: none !important;
             padding: 12px !important;
           }
-          .rank-hero-value {
+          .app-rank-hero-value {
             color: #000000 !important;
           }
-          .rank-hero-total {
+          .app-rank-hero-total {
             color: #333333 !important;
           }
-          .rank-hero-percentile {
+          .app-rank-percentile-pill {
             color: #000000 !important;
             border-color: #000000 !important;
+          }
+          .app-subject-cards-list {
+            display: none !important;
+          }
+          .app-desktop-only {
+            display: block !important;
           }
         }
       `}</style>
 
-      <div className="rank-page-container">
-        <div className="rank-layout">
+      <div className="app-rank-container">
+        <div className="app-rank-layout">
 
           {/* MAIN COLUMN */}
-          <div className="rank-main-area">
+          <div className="app-rank-main">
 
             {/* Exam Header Logo / Title */}
-            <div className="rank-exam-card">
+            <div className="app-exam-card">
               {resultData.headerImgUrl ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={resultData.headerImgUrl}
                   alt="Exam Header Logo"
-                  className="rank-exam-img"
+                  className="app-exam-img"
                 />
               ) : (
-                <h1 className="rank-exam-title">
+                <h1 className="app-exam-title">
                   {resultData.headerBannerText || resultData.examName || 'CBT Exam Rank & Performance'}
                 </h1>
               )}
             </div>
 
             {/* Mobile Candidate Profile Card (Only visible on screens <= 900px) */}
-            <div className="rank-mobile-only">
-              <div className="rank-profile-card">
-                <div className="rank-profile-header">
-                  <div className="rank-avatar">
+            <div className="app-mobile-only">
+              <div className="app-profile-card">
+                <div className="app-profile-header">
+                  <div className="app-avatar">
                     {candidateInitial}
                   </div>
-                  <div className="rank-profile-info">
-                    <div className="rank-candidate-name-row">
-                      <h2 className="rank-candidate-name">{candidateName}</h2>
-                      <span className="rank-verified-badge">✓ Verified</span>
+                  <div className="app-profile-info">
+                    <div className="app-candidate-name-row">
+                      <h2 className="app-candidate-name">{candidateName}</h2>
+                      <span className="app-verified-badge">✓ Verified</span>
                     </div>
                     {rollNumber && (
-                      <span className="rank-roll-pill">Roll: {rollNumber}</span>
+                      <span className="app-roll-pill">Roll: {rollNumber}</span>
                     )}
                   </div>
                 </div>
 
-                <div className="rank-meta-chips-grid">
+                <div className="app-meta-chips-grid">
                   {metaChips.map((chip, idx) => (
-                    <div key={idx} className="rank-meta-chip">
+                    <div key={idx} className="app-meta-chip">
                       <span>{chip.icon}</span>
                       <span>{chip.label}:</span>
                       <strong>{chip.val}</strong>
@@ -1078,17 +1226,17 @@ export default function RankPage() {
             </div>
 
             {/* Hero Live Rank Showcase Banner */}
-            <div className="rank-hero-banner">
-              <div className="rank-hero-top">
-                <div className="rank-live-pill">
-                  <span className="rank-live-dot" />
+            <div className="app-rank-hero">
+              <div className="app-rank-hero-top">
+                <div className="app-live-pill">
+                  <span className="app-live-dot" />
                   Live Verified Rank
                 </div>
 
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="rank-refresh-btn no-print"
+                  className="app-refresh-btn no-print"
                 >
                   <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -1097,88 +1245,93 @@ export default function RankPage() {
                 </button>
               </div>
 
-              <div className="rank-hero-center">
-                <span className="rank-hero-label">
+              <div className="app-rank-hero-center">
+                <span className="app-rank-hero-label">
                   👑 Overall All-India Rank
                 </span>
-                <div className="rank-hero-value">
+                <div className="app-rank-hero-value">
                   {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
-                  <span className="rank-hero-total">
+                  <span className="app-rank-hero-total">
                     {' / '}{liveRank ? liveRank.totalOverall : totalOverall}
                   </span>
                 </div>
 
                 <div>
-                  <span className="rank-hero-percentile">
+                  <span className="app-rank-percentile-pill">
                     🎯 Top {((Number(liveRank ? liveRank.totalOverall : totalOverall) - Number(liveRank ? liveRank.overallRank : overallRank)) / Math.max(1, Number(liveRank ? liveRank.totalOverall : totalOverall)) * 100 <= 0 ? '0.01' : (100 - Number(calculatedPercentile)).toFixed(2))}% • {calculatedPercentile} Percentile
                   </span>
+                </div>
+
+                {/* Visual Percentile Progress Bar */}
+                <div className="app-percentile-bar-track">
+                  <div className="app-percentile-bar-fill" style={{ width: `${percentileNum}%` }} />
                 </div>
               </div>
             </div>
 
             {/* Sub-Rank Metrics Grid */}
-            <div className="rank-sub-grid">
+            <div className="app-sub-grid">
               {/* Shift Rank */}
-              <div className="rank-sub-card rank-sub-card-shift">
-                <div className="rank-sub-top">
-                  <span className="rank-sub-title">⏱️ Shift Rank</span>
+              <div className="app-sub-card app-sub-card-shift">
+                <div className="app-sub-top">
+                  <span className="app-sub-title">⏱️ Shift Rank</span>
                 </div>
-                <div className="rank-sub-num">
+                <div className="app-sub-num">
                   {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.shiftRank : shiftRank}`}
-                  <span className="rank-sub-out-of"> / {liveRank ? liveRank.totalShift : totalShift}</span>
+                  <span className="app-sub-out-of"> / {liveRank ? liveRank.totalShift : totalShift}</span>
                 </div>
               </div>
 
               {/* Category Rank */}
-              <div className="rank-sub-card rank-sub-card-cat">
-                <div className="rank-sub-top">
-                  <span className="rank-sub-title">👥 Category Rank</span>
+              <div className="app-sub-card app-sub-card-cat">
+                <div className="app-sub-top">
+                  <span className="app-sub-title">👥 Category Rank</span>
                 </div>
-                <div className="rank-sub-num">
+                <div className="app-sub-num">
                   {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.categoryRank : categoryRank}`}
-                  <span className="rank-sub-out-of"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
+                  <span className="app-sub-out-of"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
                 </div>
                 {effectiveCommunity && (
-                  <span className="rank-sub-pill">{effectiveCommunity}</span>
+                  <span className="app-sub-pill">{effectiveCommunity}</span>
                 )}
               </div>
 
               {/* Gender Rank */}
-              <div className="rank-sub-card rank-sub-card-gen">
-                <div className="rank-sub-top">
-                  <span className="rank-sub-title">🚻 Gender Rank</span>
+              <div className="app-sub-card app-sub-card-gen">
+                <div className="app-sub-top">
+                  <span className="app-sub-title">🚻 Gender Rank</span>
                 </div>
-                <div className="rank-sub-num">
+                <div className="app-sub-num">
                   {loadingRank && (!liveRank || !liveRank.genderRank) ? '...' : `#${liveRank && liveRank.genderRank ? liveRank.genderRank : genderRank}`}
-                  <span className="rank-sub-out-of"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
+                  <span className="app-sub-out-of"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
                 </div>
                 {effectiveGender && (
-                  <span className="rank-sub-pill">{effectiveGender}</span>
+                  <span className="app-sub-pill">{effectiveGender}</span>
                 )}
               </div>
 
               {/* Trade / Stream Rank (if applicable) */}
               {Boolean(subTypeRank && totalSubType) && (
-                <div className="rank-sub-card rank-sub-card-trade">
-                  <div className="rank-sub-top">
-                    <span className="rank-sub-title">🔧 Trade Rank</span>
+                <div className="app-sub-card app-sub-card-trade">
+                  <div className="app-sub-top">
+                    <span className="app-sub-title">🔧 Trade Rank</span>
                   </div>
-                  <div className="rank-sub-num">
+                  <div className="app-sub-num">
                     {loadingRank && !liveRank ? '...' : `#${subTypeRank}`}
-                    <span className="rank-sub-out-of"> / {totalSubType}</span>
+                    <span className="app-sub-out-of"> / {totalSubType}</span>
                   </div>
                   {effectiveSubType && (
-                    <span className="rank-sub-pill">{effectiveSubType}</span>
+                    <span className="app-sub-pill">{effectiveSubType}</span>
                   )}
                 </div>
               )}
             </div>
 
             {/* Mobile App Action Buttons (Only visible on screens <= 900px) */}
-            <div className="rank-mobile-only no-print">
-              <div className="rank-actions-group">
+            <div className="app-mobile-only no-print">
+              <div className="app-actions-group">
                 {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
-                  <Link href="/review-answerkey" className="rank-btn-primary">
+                  <Link href="/review-answerkey" className="app-btn-primary">
                     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
@@ -1187,15 +1340,15 @@ export default function RankPage() {
                   </Link>
                 )}
 
-                <div className="rank-btn-row">
-                  <Link href="/result" className="rank-btn-secondary">
+                <div className="app-btn-row">
+                  <Link href="/result" className="app-btn-secondary">
                     <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                     <span>Scorecard</span>
                   </Link>
 
-                  <button type="button" onClick={() => window.print()} className="rank-btn-secondary">
+                  <button type="button" onClick={() => window.print()} className="app-btn-secondary">
                     <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
@@ -1205,50 +1358,132 @@ export default function RankPage() {
               </div>
             </div>
 
-            {/* Subject-Wise Performance Breakdown Table */}
+            {/* Subject-Wise Performance Breakdown */}
             {resultData.sections && resultData.sections.length > 0 && (
-              <div className="rank-perf-card">
-                <div className="rank-perf-header">
-                  <h3 className="rank-perf-title">
+              <div className="app-perf-card">
+                <div className="app-perf-header">
+                  <h3 className="app-perf-title">
                     📑 Subject Performance Breakdown
                   </h3>
-                  <div className={`rank-score-pill ${totScore < 0 ? 'rank-score-negative' : 'rank-score-positive'}`}>
+                  <div className={`app-score-pill ${totScore < 0 ? 'app-score-negative' : 'app-score-positive'}`}>
                     Net Score: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
                   </div>
                 </div>
 
-                <div className="rank-kpi-strip">
-                  <div className="rank-kpi-item">
+                <div className="app-kpi-strip">
+                  <div className="app-kpi-item">
                     <span style={{ color: '#475569' }}>Total:</span>
                     <strong>{totQuestions}</strong>
                   </div>
-                  <div className="rank-kpi-item" style={{ color: '#15803d' }}>
+                  <div className="app-kpi-item" style={{ color: '#15803d' }}>
                     <span>✓ Correct:</span>
                     <strong>{totCorrect}</strong>
                   </div>
-                  <div className="rank-kpi-item" style={{ color: '#dc2626' }}>
+                  <div className="app-kpi-item" style={{ color: '#dc2626' }}>
                     <span>✕ Wrong:</span>
                     <strong>{totWrong}</strong>
                   </div>
-                  <div className="rank-kpi-item" style={{ color: '#d97706' }}>
+                  <div className="app-kpi-item" style={{ color: '#d97706' }}>
                     <span>– Skipped:</span>
                     <strong>{totUnattempted}</strong>
                   </div>
                   {hasBonus && (
-                    <div className="rank-kpi-item" style={{ color: '#9333ea' }}>
+                    <div className="app-kpi-item" style={{ color: '#9333ea' }}>
                       <span>★ Bonus:</span>
                       <strong>{totBonus}</strong>
                     </div>
                   )}
+                  <div className="app-kpi-item" style={{ color: '#2563eb' }}>
+                    <span>Accuracy:</span>
+                    <strong>{overallAccuracy}%</strong>
+                  </div>
                 </div>
 
-                <div className="rank-table-wrap">
-                  <table className="rank-data-table">
+                {/* 1. NATIVE APP SUBJECT CARDS (Displayed on Mobile by default) */}
+                <div className="app-mobile-only">
+                  <div className="app-subject-cards-list">
+                    {resultData.sections.map((sec, idx) => {
+                      const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
+                      const secAttempted = sec.total - sec.unattempted;
+                      const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
+                      const secAcc = secAttempted > 0 ? ((sec.correct / secAttempted) * 100).toFixed(1) : '0.0';
+                      const secAccNum = Math.min(100, Math.max(0, parseFloat(secAcc) || 0));
+
+                      return (
+                        <div key={idx} className="app-subject-item-card">
+                          <div className="app-subject-header-row">
+                            <h4 className="app-subject-name">{sec.name}</h4>
+                            <span className={`app-subject-score-tag ${secScore < 0 ? 'app-subject-score-neg' : 'app-subject-score-pos'}`}>
+                              {secScore >= 0 ? `+${secScore.toFixed(2)}` : secScore.toFixed(2)}
+                            </span>
+                          </div>
+
+                          {/* Accuracy Bar */}
+                          <div className="app-subject-accuracy-row">
+                            <span>Accuracy: <strong>{secAcc}%</strong></span>
+                            <div className="app-accuracy-bar-track">
+                              <div className="app-accuracy-bar-fill" style={{ width: `${secAccNum}%` }} />
+                            </div>
+                          </div>
+
+                          {/* Mini Stat Badges */}
+                          <div className="app-subject-stats-row">
+                            <span className="app-stat-badge app-stat-badge-total">Total: {sec.total}</span>
+                            <span className="app-stat-badge app-stat-badge-correct">✓ {sec.correct} Correct</span>
+                            <span className="app-stat-badge app-stat-badge-wrong">✕ {sec.wrong} Wrong</span>
+                            <span className="app-stat-badge app-stat-badge-skip">– {sec.unattempted} Left</span>
+                            {hasBonus && (
+                              <span className="app-stat-badge app-stat-badge-bonus">★ {secBonus || 0} Bonus</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Mobile Total Performance Card */}
+                    <div className="app-total-summary-card">
+                      <div className="app-total-summary-header">
+                        <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>🎯 Overall Performance Summary</strong>
+                        <span className={`app-subject-score-tag ${totScore < 0 ? 'app-subject-score-neg' : 'app-subject-score-pos'}`}>
+                          Total: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="app-subject-stats-row">
+                        <span className="app-stat-badge app-stat-badge-total">Questions: {totQuestions}</span>
+                        <span className="app-stat-badge app-stat-badge-correct">✓ {totCorrect} Correct</span>
+                        <span className="app-stat-badge app-stat-badge-wrong">✕ {totWrong} Wrong</span>
+                        <span className="app-stat-badge app-stat-badge-skip">– {totUnattempted} Left</span>
+                        {hasBonus && (
+                          <span className="app-stat-badge app-stat-badge-bonus">★ {totBonus} Bonus</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Toggle Detailed Table Button */}
+                    <button
+                      type="button"
+                      onClick={() => setShowDetailedTable(prev => !prev)}
+                      className="app-toggle-table-btn no-print"
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d={showDetailedTable ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+                      </svg>
+                      <span>{showDetailedTable ? 'Hide Detailed Table' : '📋 View Detailed Table'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2. DETAILED TABLE (Always visible on Desktop, togglable on Mobile) */}
+                <div
+                  className={`app-table-wrap ${!showDetailedTable ? 'app-desktop-only' : ''}`}
+                  style={{ padding: '0 0 4px' }}
+                >
+                  <table className="app-data-table">
                     <thead>
                       <tr>
-                        <th style={{ textAlign: 'left', minWidth: '120px' }}>Section / Subject</th>
+                        <th style={{ textAlign: 'left', minWidth: '100px' }}>Section / Subject</th>
                         <th>Total</th>
-                        <th className="rank-desktop-only">Attempted</th>
+                        <th className="app-desktop-only">Attempted</th>
                         <th>Correct</th>
                         <th>Wrong</th>
                         {hasBonus && <th>Bonus</th>}
@@ -1267,20 +1502,20 @@ export default function RankPage() {
                               {sec.name}
                             </td>
                             <td style={{ fontWeight: 700 }}>{sec.total}</td>
-                            <td className="rank-desktop-only" style={{ fontWeight: 700 }}>{secAttempted}</td>
+                            <td className="app-desktop-only" style={{ fontWeight: 700 }}>{secAttempted}</td>
                             <td>
-                              <span className="rank-badge-correct">+{sec.correct}</span>
+                              <span className="app-stat-badge app-stat-badge-correct">+{sec.correct}</span>
                             </td>
                             <td>
-                              <span className="rank-badge-wrong">-{sec.wrong}</span>
+                              <span className="app-stat-badge app-stat-badge-wrong">-{sec.wrong}</span>
                             </td>
                             {hasBonus && (
                               <td>
-                                <span className="rank-badge-bonus">{secBonus || 0}</span>
+                                <span className="app-stat-badge app-stat-badge-bonus">{secBonus || 0}</span>
                               </td>
                             )}
                             <td>
-                              <span className="rank-badge-skip">{sec.unattempted}</span>
+                              <span className="app-stat-badge app-stat-badge-skip">{sec.unattempted}</span>
                             </td>
                             <td style={{ textAlign: 'right', fontWeight: 900, color: secScore < 0 ? '#dc2626' : '#0f172a' }}>
                               {secScore.toFixed(2)}
@@ -1293,7 +1528,7 @@ export default function RankPage() {
                       <tr style={{ background: '#f8fafc', borderTop: '2px solid #cbd5e1', fontWeight: 900, color: '#0f172a', fontSize: '0.84rem' }}>
                         <td style={{ textAlign: 'left', fontWeight: 900, color: '#0f172a' }}>Total</td>
                         <td style={{ fontWeight: 900 }}>{totQuestions}</td>
-                        <td className="rank-desktop-only" style={{ fontWeight: 900 }}>{totAttempted}</td>
+                        <td className="app-desktop-only" style={{ fontWeight: 900 }}>{totAttempted}</td>
                         <td style={{ fontWeight: 900, color: '#15803d' }}>{totCorrect}</td>
                         <td style={{ fontWeight: 900, color: '#dc2626' }}>{totWrong}</td>
                         {hasBonus && (
@@ -1313,28 +1548,28 @@ export default function RankPage() {
           </div>
 
           {/* DESKTOP SIDEBAR COLUMN (Only visible on screens > 900px) */}
-          <div className="rank-sidebar-area no-print">
+          <div className="app-rank-sidebar no-print">
 
             {/* Candidate Profile Card */}
-            <div className="rank-profile-card">
-              <div className="rank-profile-header">
-                <div className="rank-avatar">
+            <div className="app-profile-card">
+              <div className="app-profile-header">
+                <div className="app-avatar">
                   {candidateInitial}
                 </div>
-                <div className="rank-profile-info">
-                  <div className="rank-candidate-name-row">
-                    <h2 className="rank-candidate-name">{candidateName}</h2>
-                    <span className="rank-verified-badge">✓ Verified</span>
+                <div className="app-profile-info">
+                  <div className="app-candidate-name-row">
+                    <h2 className="app-candidate-name">{candidateName}</h2>
+                    <span className="app-verified-badge">✓ Verified</span>
                   </div>
                   {rollNumber && (
-                    <span className="rank-roll-pill">Roll: {rollNumber}</span>
+                    <span className="app-roll-pill">Roll: {rollNumber}</span>
                   )}
                 </div>
               </div>
 
-              <div className="rank-meta-chips-grid">
+              <div className="app-meta-chips-grid">
                 {metaChips.map((chip, idx) => (
-                  <div key={idx} className="rank-meta-chip">
+                  <div key={idx} className="app-meta-chip">
                     <span>{chip.icon}</span>
                     <span>{chip.label}:</span>
                     <strong>{chip.val}</strong>
@@ -1344,9 +1579,9 @@ export default function RankPage() {
             </div>
 
             {/* Desktop Actions Card */}
-            <div className="rank-actions-group">
+            <div className="app-actions-group">
               {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
-                <Link href="/review-answerkey" className="rank-btn-primary">
+                <Link href="/review-answerkey" className="app-btn-primary">
                   <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                   </svg>
@@ -1355,14 +1590,14 @@ export default function RankPage() {
                 </Link>
               )}
 
-              <Link href="/result" className="rank-btn-secondary">
+              <Link href="/result" className="app-btn-secondary">
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>Back to Scorecard</span>
               </Link>
 
-              <button type="button" onClick={() => window.print()} className="rank-btn-secondary">
+              <button type="button" onClick={() => window.print()} className="app-btn-secondary">
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
