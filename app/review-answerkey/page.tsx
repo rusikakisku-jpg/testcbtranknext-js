@@ -582,12 +582,49 @@ export default function ReviewAnswerkeyPage() {
         body.is-mobile-device .mobile-section-dropdown-container {
           display: flex !important;
         }
+        .cbt-option-item {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        body.is-mobile-device .cbt-option-item {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 4px !important;
+        }
+        body.is-mobile-device .cbt-option-item .cbt-option-badge-wrapper {
+          padding-left: 26px !important;
+          margin-top: 3px !important;
+          margin-left: 0 !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        body.is-mobile-device .cbt-option-item.list-option-item .cbt-option-badge-wrapper {
+          padding-left: 16px !important;
+        }
         @media (max-width: 768px) {
           .desktop-section-tabs {
             display: none !important;
           }
           .mobile-section-dropdown-container {
             display: flex !important;
+          }
+          .cbt-option-item {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 4px !important;
+          }
+          .cbt-option-item .cbt-option-badge-wrapper {
+            padding-left: 26px !important;
+            margin-top: 3px !important;
+            margin-left: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          .cbt-option-item.list-option-item .cbt-option-badge-wrapper {
+            padding-left: 16px !important;
           }
         }
         .section-tabs-scroll::-webkit-scrollbar {
@@ -1346,6 +1383,7 @@ export default function ReviewAnswerkeyPage() {
                                 return (
                                   <div
                                     key={opt.option_no}
+                                    className="cbt-option-item"
                                     style={{
                                       padding: '10px 14px',
                                       borderRadius: '6px',
@@ -1354,16 +1392,17 @@ export default function ReviewAnswerkeyPage() {
                                       color: color,
                                       fontSize: '0.84rem',
                                       display: 'flex',
+                                      flexDirection: isMobile ? 'column' : 'row',
                                       justifyContent: 'space-between',
                                       alignItems: 'flex-start',
                                       width: '100%',
                                       boxSizing: 'border-box',
                                       overflow: 'hidden',
-                                      gap: '10px',
+                                      gap: isMobile ? '4px' : '10px',
                                       transition: 'all 0.15s ease'
                                     }}
                                   >
-                                    <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '8px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                                    <div style={{ flex: 1, width: '100%', minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '8px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                                       {/* DigiALM Style Radio Button */}
                                       <span style={{
                                         width: '18px',
@@ -1386,20 +1425,25 @@ export default function ReviewAnswerkeyPage() {
                                       )}
                                     </div>
                                     {badgeText && (
-                                      <span style={{
-                                        fontSize: '0.7rem',
-                                        fontWeight: 900,
-                                        padding: '2px 8px',
-                                        borderRadius: '4px',
-                                        background: isOptRight ? '#16a34a' : '#dc2626',
-                                        color: '#ffffff',
-                                        marginLeft: '6px',
-                                        whiteSpace: 'nowrap',
-                                        flexShrink: 0,
-                                        marginTop: '2px'
+                                      <div className="cbt-option-badge-wrapper" style={{
+                                        paddingLeft: isMobile ? '26px' : '0',
+                                        marginTop: isMobile ? '3px' : '2px',
+                                        marginLeft: isMobile ? '0' : '6px',
+                                        flexShrink: 0
                                       }}>
-                                        {badgeText}
-                                      </span>
+                                        <span style={{
+                                          fontSize: '0.7rem',
+                                          fontWeight: 900,
+                                          padding: '2px 8px',
+                                          borderRadius: '4px',
+                                          background: isOptRight ? '#16a34a' : '#dc2626',
+                                          color: '#ffffff',
+                                          whiteSpace: 'nowrap',
+                                          display: 'inline-block'
+                                        }}>
+                                          {badgeText}
+                                        </span>
+                                      </div>
                                     )}
                                   </div>
                                 );
@@ -1625,12 +1669,27 @@ export default function ReviewAnswerkeyPage() {
                                 const cleanOptText = opt.option_text ? opt.option_text.replace(new RegExp(`^(\\s*)${opt.option_no}[\\.\\)]\\s*`, 'i'), '$1') : '';
 
                                 return (
-                                  <div key={opt.option_no} style={{
-                                    padding: '9px 12px', borderRadius: '8px', background: bg, border: border, color: color,
-                                    fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
-                                    width: '100%', boxSizing: 'border-box', overflow: 'hidden', gap: '8px'
-                                  }}>
-                                    <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '6px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                                  <div
+                                    key={opt.option_no}
+                                    className="cbt-option-item list-option-item"
+                                    style={{
+                                      padding: '9px 12px',
+                                      borderRadius: '8px',
+                                      background: bg,
+                                      border: border,
+                                      color: color,
+                                      fontSize: '0.82rem',
+                                      display: 'flex',
+                                      flexDirection: isMobile ? 'column' : 'row',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'flex-start',
+                                      width: '100%',
+                                      boxSizing: 'border-box',
+                                      overflow: 'hidden',
+                                      gap: isMobile ? '4px' : '8px'
+                                    }}
+                                  >
+                                    <div style={{ flex: 1, width: '100%', minWidth: 0, display: 'flex', alignItems: 'flex-start', gap: '6px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                                       <span style={{ fontWeight: 800, flexShrink: 0, marginTop: '1px' }}>{opt.option_no}.</span>
                                       {cleanOptHtml ? (
                                         <div className="review-img-fluid" style={{ flex: 1, minWidth: 0, maxWidth: '100%', wordBreak: 'break-word', overflowWrap: 'break-word' }} dangerouslySetInnerHTML={{ __html: cleanOptHtml }} />
@@ -1642,9 +1701,16 @@ export default function ReviewAnswerkeyPage() {
                                       )}
                                     </div>
                                     {badgeText && (
-                                      <span style={{ fontSize: '0.68rem', fontWeight: 900, marginLeft: '6px', whiteSpace: 'nowrap', flexShrink: 0, marginTop: '2px' }}>
-                                        {badgeText}
-                                      </span>
+                                      <div className="cbt-option-badge-wrapper" style={{
+                                        paddingLeft: isMobile ? '16px' : '0',
+                                        marginTop: isMobile ? '3px' : '2px',
+                                        marginLeft: isMobile ? '0' : '6px',
+                                        flexShrink: 0
+                                      }}>
+                                        <span style={{ fontSize: '0.68rem', fontWeight: 900, whiteSpace: 'nowrap', display: 'inline-block' }}>
+                                          {badgeText}
+                                        </span>
+                                      </div>
                                     )}
                                   </div>
                                 );
