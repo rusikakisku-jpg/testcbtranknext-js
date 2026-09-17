@@ -320,6 +320,7 @@ export default function AnswerkeyCalculator({
   const [langLoading, setLangLoading] = useState(false);
   const [showHtmlPaste, setShowHtmlPaste] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  const [toastType, setToastType] = useState<'error' | 'success' | 'info'>('error');
   const [toastVisible, setToastVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [btnText, setBtnText] = useState('Calculate Marks & Rank');
@@ -349,8 +350,9 @@ export default function AnswerkeyCalculator({
     consent: false,
   });
 
-  function showToast(msg: string) {
+  function showToast(msg: string, type: 'error' | 'success' | 'info' = 'error') {
     setToastMsg(msg);
+    setToastType(type);
     setToastVisible(true);
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     toastTimerRef.current = setTimeout(() => setToastVisible(false), 4000);
@@ -366,17 +368,16 @@ export default function AnswerkeyCalculator({
           setFormData(prev => ({ ...prev, ans_key_url: text.trim() }));
           setPastedStatus(true);
           setTimeout(() => setPastedStatus(false), 2000);
-          showToast('Answer key link pasted from clipboard!');
           return;
         } else {
-          showToast('Clipboard is empty or does not contain text.');
+          showToast('Clipboard is empty or does not contain text.', 'info');
         }
       } else {
         const inputEl = document.getElementById('ans_key_url') as HTMLInputElement | null;
         if (inputEl) {
           inputEl.focus();
         }
-        showToast('Clipboard reading not supported. Please paste directly into the box.');
+        showToast('Clipboard reading not supported. Please paste directly into the box.', 'info');
       }
     } catch (err) {
       console.warn('Clipboard read error:', err);
@@ -384,7 +385,7 @@ export default function AnswerkeyCalculator({
       if (inputEl) {
         inputEl.focus();
       }
-      showToast('Clipboard permission denied. Please paste directly into the box.');
+      showToast('Clipboard permission denied. Please paste directly into the box.', 'info');
     }
   }
 
@@ -747,12 +748,24 @@ export default function AnswerkeyCalculator({
         <div className={`toast-container${toastVisible ? ' show' : ''}`} id="toast-container">
           <div className="toast-box">
             <div className="toast-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-              </svg>
+              {toastType === 'success' ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              ) : toastType === 'info' ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              )}
             </div>
             <div style={{ flex: 1 }}>
-              <p className="toast-title">Error</p>
+              <p className="toast-title" style={{ color: toastType === 'success' ? '#16a34a' : toastType === 'info' ? '#2563eb' : '#ef4444' }}>
+                {toastType === 'success' ? 'Success' : toastType === 'info' ? 'Notice' : 'Error'}
+              </p>
               <p className="toast-msg">{toastMsg}</p>
             </div>
             <button className="toast-close" onClick={() => setToastVisible(false)}>&times;</button>
