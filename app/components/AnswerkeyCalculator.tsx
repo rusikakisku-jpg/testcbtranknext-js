@@ -788,7 +788,21 @@ export default function AnswerkeyCalculator({
                     placeholder="Paste your official Answerkey Link" required
                     value={formData.ans_key_url}
                     onChange={e => setFormData(prev => ({ ...prev, ans_key_url: e.target.value }))}
-                    style={{ paddingRight: '36px' }}
+                    style={{ paddingRight: '44px' }}
+                  />
+                  {/* Vertical Divider "|" before Paste Icon */}
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      right: '34px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      height: '18px',
+                      width: '1px',
+                      backgroundColor: '#cbd5e1',
+                      pointerEvents: 'none'
+                    }}
                   />
                   <button
                     type="button"
@@ -798,7 +812,7 @@ export default function AnswerkeyCalculator({
                     className="ak-paste-icon-btn"
                     style={{
                       position: 'absolute',
-                      right: '8px',
+                      right: '6px',
                       top: '50%',
                       transform: 'translateY(-50%)',
                       background: 'none',
