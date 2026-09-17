@@ -2264,12 +2264,12 @@ export default function ReviewAnswerkeyPage() {
                 }}>
                   👤
                 </div>
-                <div style={{ minWidth: 0 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ fontSize: '0.84rem', fontWeight: 900, color: '#ffffff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {candidateName}
                   </div>
                   <div style={{ fontSize: '0.68rem', color: '#cbd5e1' }}>
-                    Question Palette
+                    Roll: <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rollNumber || 'N/A'}</span>
                   </div>
                 </div>
               </div>
@@ -2292,7 +2292,7 @@ export default function ReviewAnswerkeyPage() {
                   flexShrink: 0,
                   transition: 'background 0.15s ease'
                 }}
-                title="Close Palette"
+                title="Close"
               >
                 ✕
               </button>
@@ -2514,17 +2514,46 @@ export default function ReviewAnswerkeyPage() {
                   onClick={() => setShowMobilePalette(false)}
                   style={{
                     flex: 1,
-                    padding: '8px',
+                    padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #cbd5e1',
                     background: '#ffffff',
                     color: '#475569',
                     fontWeight: 800,
                     fontSize: '0.74rem',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '4px'
                   }}
                 >
-                  ✕ Close Palette
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  title="Download / Print PDF"
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1.5px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    fontWeight: 800,
+                    fontSize: '0.74rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download PDF
                 </button>
               </div>
 
