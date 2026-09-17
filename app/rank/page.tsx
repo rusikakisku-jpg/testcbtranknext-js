@@ -244,17 +244,14 @@ export default function RankPage() {
   const totWrong = resultData.sections?.reduce((acc, s) => acc + (s.wrong || 0), 0) || 0;
   const totScore = ((totCorrect + totBonus) * rightVal) - (totWrong * wrongVal);
 
-  const currentOverall = liveRank ? liveRank.overallRank : overallRank;
-  const currentTotal = liveRank ? liveRank.totalOverall : totalOverall;
   const calculatedPercentile = liveRank?.percentile !== undefined && liveRank.percentile !== null
     ? Number(liveRank.percentile).toFixed(2)
-    : (currentTotal > 1 ? (((currentTotal - currentOverall) / currentTotal) * 100).toFixed(2) : '100.00');
+    : (totalOverall > 1 ? (((totalOverall - overallRank) / totalOverall) * 100).toFixed(2) : '100.00');
 
   const candidateInitial = candidateName ? candidateName.trim().charAt(0).toUpperCase() : 'C';
 
   const totalAttemptedQuestions = totCorrect + totWrong;
   const overallAccuracy = totalAttemptedQuestions > 0 ? ((totCorrect / totalAttemptedQuestions) * 100).toFixed(1) : '0.0';
-  const percentileNum = Math.min(100, Math.max(0, parseFloat(calculatedPercentile) || 0));
 
   // Multi-segment percentage distribution
   const pctCorrect = totQuestions > 0 ? Math.round((totCorrect / totQuestions) * 100) : 0;
@@ -434,171 +431,62 @@ export default function RankPage() {
           line-height: 1.35;
         }
 
-        /* 3. HERO ALL-INDIA RANK SHOWCASE CARD */
-        .app-hero-podium {
-          background: linear-gradient(145deg, #091428 0%, #112240 50%, #1e3a8a 100%);
-          border-radius: 20px;
-          padding: 20px 18px;
-          color: #ffffff;
-          position: relative;
-          overflow: hidden;
-          box-shadow: 0 10px 25px -4px rgba(30, 58, 138, 0.35);
+        /* 3. Candidate Profile Card (Mobile & Desktop) */
+        .app-candidate-card,
+        .app-desktop-profile-card {
+          background: #ffffff;
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          padding: 16px;
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
           width: 100%;
           box-sizing: border-box;
-          border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .app-hero-podium::before {
-          content: "";
-          position: absolute;
-          top: -30px;
-          right: -30px;
-          width: 160px;
-          height: 160px;
-          background: radial-gradient(circle, rgba(96, 165, 250, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
-          border-radius: 50%;
-          pointer-events: none;
-        }
-
-        /* Candidate Micro-Chip Inside Hero (Mobile) */
-        .app-hero-candidate-strip {
+        .app-profile-head {
           display: flex;
           align-items: center;
-          gap: 10px;
-          background: rgba(255, 255, 255, 0.09);
-          border: 1px solid rgba(255, 255, 255, 0.16);
-          padding: 8px 12px;
-          border-radius: 12px;
-          margin-bottom: 16px;
-          backdrop-filter: blur(8px);
+          gap: 12px;
+          margin-bottom: 12px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #f1f5f9;
         }
 
         .app-hero-avatar {
-          width: 38px;
-          height: 38px;
+          width: 42px;
+          height: 42px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+          background: linear-gradient(135deg, #0044cc 0%, #2563eb 100%);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.1rem;
+          font-size: 1.15rem;
           font-weight: 900;
           flex-shrink: 0;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.25);
         }
 
-        .app-hero-cinfo {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .app-hero-cname-row {
+        .app-chips-cloud {
           display: flex;
-          align-items: center;
-          gap: 6px;
           flex-wrap: wrap;
-        }
-
-        .app-hero-cname {
-          font-size: 0.95rem;
-          font-weight: 800;
-          color: #ffffff;
-          margin: 0;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .app-hero-csub {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.72rem;
-          color: #bfdbfe;
-          margin-top: 2px;
-          flex-wrap: wrap;
-        }
-
-        .app-hero-csub-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 3px;
-        }
-
-        /* Main Rank Podium Display */
-        .app-hero-rank-box {
-          text-align: center;
-          padding: 6px 0 10px;
-        }
-
-        .app-hero-rank-label {
-          display: inline-flex;
-          align-items: center;
           gap: 6px;
-          font-size: 0.76rem;
-          font-weight: 800;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          color: #93c5fd;
-          background: rgba(30, 58, 138, 0.45);
-          padding: 4px 12px;
-          border-radius: 999px;
-          border: 1px solid rgba(147, 197, 253, 0.25);
-          margin-bottom: 8px;
         }
 
-        .app-hero-rank-number {
-          font-size: clamp(2.3rem, 7.5vw, 3.2rem);
-          font-weight: 900;
-          line-height: 1.05;
-          letter-spacing: -0.03em;
-          color: #ffffff;
-          text-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-          word-break: break-word;
-        }
-
-        .app-hero-rank-out-of {
-          font-size: clamp(1rem, 3.8vw, 1.25rem);
-          font-weight: 600;
-          color: #93c5fd;
-          margin-left: 6px;
-        }
-
-        .app-hero-percentile-badge {
+        .app-cloud-chip {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          background: rgba(255, 255, 255, 0.14);
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          padding: 5px 14px;
-          border-radius: 999px;
-          font-size: 0.78rem;
-          font-weight: 800;
-          color: #ffffff;
-          margin-top: 10px;
-          backdrop-filter: blur(4px);
+          gap: 4px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          padding: 4px 8px;
+          border-radius: 8px;
+          font-size: 0.74rem;
+          color: #334155;
+          line-height: 1.25;
         }
 
-        /* Visual Percentile Progress Bar */
-        .app-hero-progress-track {
-          width: 100%;
-          max-width: 320px;
-          height: 7px;
-          background: rgba(255, 255, 255, 0.18);
-          border-radius: 999px;
-          margin: 12px auto 0;
-          overflow: hidden;
-        }
-
-        .app-hero-progress-fill {
-          height: 100%;
-          border-radius: 999px;
-          background: linear-gradient(90deg, #60a5fa 0%, #34d399 100%);
-          transition: width 0.6s ease;
-        }
-
-        /* 4. Sub-Ranks Modern Grid */
+        /* 4. RANKS METRICS GRID (Overall, Shift, Category, Gender, Trade) */
         .app-sub-metrics-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
@@ -609,7 +497,7 @@ export default function RankPage() {
 
         @media (min-width: 901px) {
           .app-sub-metrics-grid {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
           }
         }
 
@@ -617,7 +505,7 @@ export default function RankPage() {
           background: #ffffff;
           border-radius: 14px;
           border: 1px solid #e2e8f0;
-          padding: 12px 14px;
+          padding: 13px 14px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -626,12 +514,19 @@ export default function RankPage() {
           min-width: 0;
           position: relative;
           overflow: hidden;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .app-sub-tile-shift { border-top: 3.5px solid #10b981; }
-        .app-sub-tile-cat   { border-top: 3.5px solid #f59e0b; }
-        .app-sub-tile-gen   { border-top: 3.5px solid #8b5cf6; }
-        .app-sub-tile-trade { border-top: 3.5px solid #3b82f6; }
+        .app-sub-tile:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .app-sub-tile-overall { border-top: 3.5px solid #2563eb; }
+        .app-sub-tile-shift   { border-top: 3.5px solid #10b981; }
+        .app-sub-tile-cat     { border-top: 3.5px solid #f59e0b; }
+        .app-sub-tile-gen     { border-top: 3.5px solid #8b5cf6; }
+        .app-sub-tile-trade   { border-top: 3.5px solid #06b6d4; }
 
         .app-sub-tile-header {
           display: flex;
@@ -669,7 +564,7 @@ export default function RankPage() {
           margin-top: 6px;
           font-size: 0.68rem;
           font-weight: 800;
-          padding: 1px 7px;
+          padding: 2px 7px;
           border-radius: 6px;
           white-space: nowrap;
           overflow: hidden;
@@ -677,10 +572,11 @@ export default function RankPage() {
           max-width: 100%;
         }
 
-        .app-sub-tile-shift .app-sub-tag-pill { background: #ecfdf5; color: #047857; }
-        .app-sub-tile-cat .app-sub-tag-pill   { background: #fffbeb; color: #b45309; }
-        .app-sub-tile-gen .app-sub-tag-pill   { background: #faf5ff; color: #6b21a8; }
-        .app-sub-tile-trade .app-sub-tag-pill { background: #eff6ff; color: #1d4ed8; }
+        .app-sub-tile-overall .app-sub-tag-pill { background: #eff6ff; color: #1d4ed8; }
+        .app-sub-tile-shift .app-sub-tag-pill   { background: #ecfdf5; color: #047857; }
+        .app-sub-tile-cat .app-sub-tag-pill     { background: #fffbeb; color: #b45309; }
+        .app-sub-tile-gen .app-sub-tag-pill     { background: #faf5ff; color: #6b21a8; }
+        .app-sub-tile-trade .app-sub-tag-pill   { background: #ecfeff; color: #0e7490; }
 
         /* 5. Score & Accuracy Cockpit Card */
         .app-score-cockpit-card {
@@ -1084,45 +980,6 @@ export default function RankPage() {
           border-color: #94a3b8;
         }
 
-        /* 9. Candidate Profile Card (Desktop Sidebar) */
-        .app-desktop-profile-card {
-          background: #ffffff;
-          border-radius: 16px;
-          border: 1px solid #e2e8f0;
-          padding: 16px;
-          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .app-profile-head {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 12px;
-          padding-bottom: 12px;
-          border-bottom: 1px solid #f1f5f9;
-        }
-
-        .app-chips-cloud {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 6px;
-        }
-
-        .app-cloud-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          padding: 4px 8px;
-          border-radius: 8px;
-          font-size: 0.74rem;
-          color: #334155;
-          line-height: 1.25;
-        }
-
         /* Responsive Breakpoints */
         @media (max-width: 900px) {
           .app-rank-page {
@@ -1169,20 +1026,6 @@ export default function RankPage() {
           }
           .app-rank-side {
             display: none !important;
-          }
-          .app-hero-podium {
-            background: #ffffff !important;
-            color: #000000 !important;
-            border: 1.5px solid #000000 !important;
-            box-shadow: none !important;
-          }
-          .app-hero-rank-number,
-          .app-hero-cname {
-            color: #000000 !important;
-          }
-          .app-hero-rank-out-of,
-          .app-hero-csub {
-            color: #333333 !important;
           }
           .app-table-scroll-container {
             display: block !important;
@@ -1241,64 +1084,50 @@ export default function RankPage() {
               )}
             </div>
 
-            {/* 3. HERO ALL-INDIA RANK SHOWCASE CARD */}
-            <div className="app-hero-podium">
-              {/* Candidate Info Strip (Mobile View) */}
-              <div className="app-hero-candidate-strip app-hide-on-desktop">
+            {/* 3. Candidate Profile Card (Mobile View only, Desktop has it in sidebar) */}
+            <div className="app-candidate-card app-hide-on-desktop">
+              <div className="app-profile-head">
                 <div className="app-hero-avatar">
                   {candidateInitial}
                 </div>
-                <div className="app-hero-cinfo">
-                  <div className="app-hero-cname-row">
-                    <h2 className="app-hero-cname">{candidateName}</h2>
-                    <span style={{ fontSize: '0.72rem', color: '#6ee7b7', fontWeight: 800 }}>✓ Verified</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>{candidateName}</h2>
+                    <span style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '999px' }}>✓ Verified</span>
                   </div>
-                  <div className="app-hero-csub">
-                    {rollNumber && (
-                      <span className="app-hero-csub-item">
-                        <strong>Roll:</strong> {rollNumber}
-                      </span>
-                    )}
-                    {effectiveCommunity && (
-                      <span className="app-hero-csub-item">
-                        • <strong>Cat:</strong> {effectiveCommunity}
-                      </span>
-                    )}
-                    {resultData.testDate && (
-                      <span className="app-hero-csub-item">
-                        • {resultData.testDate}
-                      </span>
-                    )}
-                  </div>
+                  {rollNumber && (
+                    <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace' }}>Roll: {rollNumber}</span>
+                  )}
                 </div>
               </div>
 
-              {/* Main Rank Center */}
-              <div className="app-hero-rank-box">
-                <span className="app-hero-rank-label">
-                  🏆 All India Rank (AIR)
-                </span>
-                <div className="app-hero-rank-number">
-                  {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
-                  <span className="app-hero-rank-out-of">
-                    {' / '}{liveRank ? liveRank.totalOverall : totalOverall}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="app-hero-percentile-badge">
-                    ⚡ Top {((Number(liveRank ? liveRank.totalOverall : totalOverall) - Number(liveRank ? liveRank.overallRank : overallRank)) / Math.max(1, Number(liveRank ? liveRank.totalOverall : totalOverall)) * 100 <= 0 ? '0.01' : (100 - Number(calculatedPercentile)).toFixed(2))}% • {calculatedPercentile} Percentile
-                  </span>
-                </div>
-
-                <div className="app-hero-progress-track">
-                  <div className="app-hero-progress-fill" style={{ width: `${percentileNum}%` }} />
-                </div>
+              <div className="app-chips-cloud">
+                {metaChips.map((chip, idx) => (
+                  <div key={idx} className="app-cloud-chip">
+                    <span>{chip.icon}</span>
+                    <span>{chip.label}:</span>
+                    <strong>{chip.val}</strong>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* 4. SUB-RANKS METRICS GRID */}
+            {/* 4. RANKS METRICS GRID (Overall Rank, Shift Rank, Category Rank, Gender Rank, Trade Rank) */}
             <div className="app-sub-metrics-grid">
+              {/* Overall Rank - Styled exactly like Shift & Category Rank */}
+              <div className="app-sub-tile app-sub-tile-overall">
+                <div className="app-sub-tile-header">
+                  <span className="app-sub-tile-title">🏆 Overall Rank</span>
+                </div>
+                <div className="app-sub-tile-val">
+                  {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
+                  <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalOverall : totalOverall}</span>
+                </div>
+                <span className="app-sub-tag-pill">
+                  {calculatedPercentile}%ile
+                </span>
+              </div>
+
               {/* Shift Rank */}
               <div className="app-sub-tile app-sub-tile-shift">
                 <div className="app-sub-tile-header">
