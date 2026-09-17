@@ -572,11 +572,23 @@ export default function ReviewAnswerkeyPage() {
           display: inline-flex !important;
         }
         body.is-mobile-device .mobile-palette-float-btn {
-          display: flex !important;
+          display: none !important;
         }
         body.is-mobile-device .desktop-fullscreen-btn,
-        body.is-mobile-device .candidate-top-summary {
+        body.is-mobile-device .candidate-top-summary,
+        body.is-mobile-device .desktop-section-tabs {
           display: none !important;
+        }
+        body.is-mobile-device .mobile-section-dropdown-container {
+          display: flex !important;
+        }
+        @media (max-width: 768px) {
+          .desktop-section-tabs {
+            display: none !important;
+          }
+          .mobile-section-dropdown-container {
+            display: flex !important;
+          }
         }
         .section-tabs-scroll::-webkit-scrollbar {
           display: none;
@@ -818,8 +830,45 @@ export default function ReviewAnswerkeyPage() {
                   width: '100%',
                   boxSizing: 'border-box'
                 }}>
-                  <div className="section-tabs-scroll" style={{
-                    display: 'flex',
+                  {/* Mobile Section Dropdown in List View */}
+                  <div className="mobile-section-dropdown-container" style={{
+                    display: isMobile ? 'flex' : 'none',
+                    alignItems: 'center',
+                    gap: '8px',
+                    flex: 1,
+                    minWidth: 0
+                  }}>
+                    <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#4338ca', whiteSpace: 'nowrap', flexShrink: 0 }}>Section:</span>
+                    <select
+                      value={activeSecTab}
+                      onChange={(e) => handleSecTabChange(e.target.value, e)}
+                      style={{
+                        background: '#ffffff',
+                        color: '#4338ca',
+                        border: '1.5px solid #4338ca',
+                        borderRadius: '6px',
+                        padding: '5px 8px',
+                        fontSize: '0.76rem',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        flex: 1,
+                        minWidth: 0,
+                        outline: 'none',
+                        boxShadow: '0 1px 3px rgba(67, 56, 202, 0.12)'
+                      }}
+                    >
+                      <option value="ALL">All Sections ({allQuestions.length})</option>
+                      {resultData.sections && resultData.sections.map(sec => (
+                        <option key={sec.name} value={sec.name}>
+                          {sec.name} ({sec.total})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Desktop Section Tabs in List View */}
+                  <div className="desktop-section-tabs section-tabs-scroll" style={{
+                    display: isMobile ? 'none' : 'flex',
                     alignItems: 'center',
                     gap: '6px',
                     overflowX: 'auto',
@@ -883,24 +932,27 @@ export default function ReviewAnswerkeyPage() {
                       type="button"
                       onClick={() => setShowMobilePalette(true)}
                       className="mobile-palette-toggle-btn"
-                      title="Open Question Palette"
+                      title="Question Palette"
                       style={{
                         display: 'none',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
-                        borderRadius: '8px',
-                        fontSize: '0.72rem',
+                        justifyContent: 'center',
+                        width: '34px',
+                        height: '34px',
+                        padding: 0,
+                        borderRadius: '6px',
+                        fontSize: '1.15rem',
                         fontWeight: 800,
                         cursor: 'pointer',
                         border: '1px solid #003366',
                         background: '#004080',
                         color: '#ffffff',
-                        boxShadow: '0 2px 6px rgba(0, 64, 128, 0.25)'
+                        boxShadow: '0 2px 6px rgba(0, 64, 128, 0.25)',
+                        lineHeight: 1,
+                        flexShrink: 0
                       }}
                     >
-                      <span style={{ fontSize: '0.85rem' }}>☰</span>
-                      <span>Palette ({allQuestions.length})</span>
+                      ☰
                     </button>
                   </div>
                 </div>
@@ -941,9 +993,53 @@ export default function ReviewAnswerkeyPage() {
                     width: '100%',
                     boxSizing: 'border-box'
                   }}>
-                    {/* Left: Dynamic Section Tabs in authentic DigiALM button style with horizontal scroll */}
-                    <div className="section-tabs-scroll" style={{
-                      display: 'flex',
+                    {/* Mobile Section Dropdown: Fits cleanly on single screen with zero horizontal scroll */}
+                    <div className="mobile-section-dropdown-container" style={{
+                      display: isMobile ? 'flex' : 'none',
+                      alignItems: 'center',
+                      gap: '8px',
+                      flex: 1,
+                      minWidth: 0
+                    }}>
+                      <span style={{
+                        fontSize: '0.74rem',
+                        fontWeight: 800,
+                        color: '#004080',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0
+                      }}>
+                        Section:
+                      </span>
+                      <select
+                        value={activeSecTab}
+                        onChange={(e) => handleSecTabChange(e.target.value, e)}
+                        style={{
+                          background: '#ffffff',
+                          color: '#004080',
+                          border: '1.5px solid #004080',
+                          borderRadius: '4px',
+                          padding: '5px 8px',
+                          fontSize: '0.76rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          flex: 1,
+                          minWidth: 0,
+                          outline: 'none',
+                          boxShadow: '0 1px 3px rgba(0, 64, 128, 0.12)'
+                        }}
+                      >
+                        <option value="ALL">All Sections ({allQuestions.length})</option>
+                        {resultData.sections && resultData.sections.map(sec => (
+                          <option key={sec.name} value={sec.name}>
+                            {sec.name} ({sec.total})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Desktop Section Tabs: Shown on desktop/laptops in authentic DigiALM button style */}
+                    <div className="desktop-section-tabs section-tabs-scroll" style={{
+                      display: isMobile ? 'none' : 'flex',
                       alignItems: 'center',
                       gap: '6px',
                       overflowX: 'auto',
@@ -1008,25 +1104,28 @@ export default function ReviewAnswerkeyPage() {
                         type="button"
                         onClick={() => setShowMobilePalette(true)}
                         className="mobile-palette-toggle-btn"
-                        title="Open Question Palette Menu"
+                        title="Question Palette"
                         style={{
                           display: 'none',
                           alignItems: 'center',
-                          gap: '6px',
-                          padding: '5px 12px',
+                          justifyContent: 'center',
+                          width: '34px',
+                          height: '34px',
+                          padding: 0,
                           borderRadius: '4px',
-                          fontSize: '0.72rem',
+                          fontSize: '1.15rem',
                           fontWeight: 800,
                           cursor: 'pointer',
                           border: '1px solid #003366',
                           background: '#004080',
                           color: '#ffffff',
                           boxShadow: '0 1px 3px rgba(0, 64, 128, 0.25)',
-                          transition: 'all 0.15s ease'
+                          transition: 'all 0.15s ease',
+                          lineHeight: 1,
+                          flexShrink: 0
                         }}
                       >
-                        <span style={{ fontSize: '0.85rem' }}>☰</span>
-                        <span>Palette ({allQuestions.length})</span>
+                        ☰
                       </button>
 
                       {!isMobile && (
@@ -2007,8 +2106,8 @@ export default function ReviewAnswerkeyPage() {
 
       </div>
 
-      {/* Mobile Floating Question Palette Button (Only on screens <= 900px) */}
-      {allQuestions.length > 0 && (
+      {/* Mobile Floating Question Palette Button (Only when not in fullscreen, on screens <= 900px) */}
+      {!isFullscreen && allQuestions.length > 0 && (
         <button
           type="button"
           className="mobile-palette-float-btn no-print"
@@ -2020,30 +2119,22 @@ export default function ReviewAnswerkeyPage() {
             zIndex: 999,
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            justifyContent: 'center',
             background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
             color: '#ffffff',
             border: 'none',
-            padding: '10px 16px',
-            borderRadius: '999px',
+            width: '42px',
+            height: '42px',
+            padding: 0,
+            borderRadius: '50%',
             boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)',
             fontWeight: 800,
-            fontSize: '0.8rem',
+            fontSize: '1.2rem',
             cursor: 'pointer'
           }}
+          title="Question Palette"
         >
-          <span style={{ fontSize: '0.9rem' }}>☰</span>
-          <span>Palette</span>
-          <span style={{
-            background: '#ffffff',
-            color: '#1d4ed8',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            fontSize: '0.72rem',
-            fontWeight: 900
-          }}>
-            {allQuestions.length}
-          </span>
+          ☰
         </button>
       )}
 
