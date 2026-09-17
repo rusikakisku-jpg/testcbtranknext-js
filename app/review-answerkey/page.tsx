@@ -1323,7 +1323,7 @@ export default function ReviewAnswerkeyPage() {
                                 jumpToQuestion(cbtList[currentNavIdx - 1].q_no);
                               }
                             }}
-                            title="Previous Question (◄ Left Arrow)"
+                            title="Previous Question"
                             style={{
                               padding: '7px 18px',
                               borderRadius: '4px',
@@ -1337,18 +1337,8 @@ export default function ReviewAnswerkeyPage() {
                               transition: 'all 0.15s ease'
                             }}
                           >
-                            ◄ Previous
+                            Previous
                           </button>
-                        </div>
-
-                        {/* Center: Question Counter */}
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#004080' }}>
-                            Question {currentNavIdx + 1} of {cbtList.length}
-                          </div>
-                          <div style={{ fontSize: '0.64rem', color: '#64748b' }}>
-                            (Keyboard: ◄ / ► arrow keys)
-                          </div>
                         </div>
 
                         {/* Right: Next */}
@@ -1361,7 +1351,7 @@ export default function ReviewAnswerkeyPage() {
                                 jumpToQuestion(cbtList[currentNavIdx + 1].q_no);
                               }
                             }}
-                            title="Next Question (► Right Arrow)"
+                            title="Next Question"
                             style={{
                               padding: '7px 20px',
                               borderRadius: '4px',
@@ -1375,7 +1365,7 @@ export default function ReviewAnswerkeyPage() {
                               transition: 'all 0.15s ease'
                             }}
                           >
-                            Next ►
+                            Next
                           </button>
                         </div>
                       </div>
