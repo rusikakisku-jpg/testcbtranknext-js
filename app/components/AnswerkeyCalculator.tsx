@@ -788,21 +788,7 @@ export default function AnswerkeyCalculator({
                     placeholder="Paste your official Answerkey Link" required
                     value={formData.ans_key_url}
                     onChange={e => setFormData(prev => ({ ...prev, ans_key_url: e.target.value }))}
-                    style={{ paddingRight: '44px' }}
-                  />
-                  {/* Vertical Divider "|" before Paste Icon */}
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      right: '34px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      height: '18px',
-                      width: '1px',
-                      backgroundColor: '#cbd5e1',
-                      pointerEvents: 'none'
-                    }}
+                    style={{ paddingRight: '48px' }}
                   />
                   <button
                     type="button"
@@ -812,19 +798,23 @@ export default function AnswerkeyCalculator({
                     className="ak-paste-icon-btn"
                     style={{
                       position: 'absolute',
-                      right: '6px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'none',
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: '38px',
+                      height: '100%',
                       border: 'none',
+                      borderLeft: '1.5px solid #cbd5e1',
+                      borderTopRightRadius: '8px',
+                      borderBottomRightRadius: '8px',
+                      background: 'transparent',
                       boxShadow: 'none',
-                      padding: '4px',
+                      padding: 0,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: pastedStatus ? '#16a34a' : '#64748b',
-                      transition: 'color 0.2s ease, transform 0.15s ease',
                       outline: 'none',
                       lineHeight: 1
                     }}

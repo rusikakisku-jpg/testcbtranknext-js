@@ -1187,14 +1187,24 @@ footer {
   border: none;
   box-shadow: none;
   color: #64748b;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .ak-paste-icon-btn:hover {
+  background-color: rgba(241, 245, 249, 0.7) !important;
   color: #003366 !important;
 }
 
 .ak-paste-icon-btn:active {
-  transform: translateY(-50%) scale(0.9) !important;
+  background-color: #e2e8f0 !important;
+}
+
+.ak-paste-icon-btn:active svg {
+  transform: scale(0.88);
+}
+
+.ak-form-input:focus ~ .ak-paste-icon-btn {
+  border-left-color: #2563eb !important;
 }
 
 .help-text {
