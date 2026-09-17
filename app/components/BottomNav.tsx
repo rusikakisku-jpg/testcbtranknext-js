@@ -27,6 +27,10 @@ export default function BottomNav() {
 
   const currentPath = optimisticPath ?? pathname;
 
+  if (pathname?.startsWith('/review-answerkey')) {
+    return null;
+  }
+
   const isHomeActive = currentPath === '/';
   const isCalculatorActive =
     currentPath === '/answerkey' ||

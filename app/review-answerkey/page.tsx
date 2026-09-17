@@ -134,6 +134,7 @@ export default function ReviewAnswerkeyPage() {
       document.body.classList.add('is-mobile-device');
       setIsFullscreen(true);
       document.body.classList.add('cbt-fullscreen-active');
+      document.documentElement.classList.add('cbt-fullscreen-active');
     } else {
       document.body.classList.remove('is-mobile-device');
     }
@@ -145,8 +146,10 @@ export default function ReviewAnswerkeyPage() {
         setIsFullscreen(isFs);
         if (isFs) {
           document.body.classList.add('cbt-fullscreen-active');
+          document.documentElement.classList.add('cbt-fullscreen-active');
         } else {
           document.body.classList.remove('cbt-fullscreen-active');
+          document.documentElement.classList.remove('cbt-fullscreen-active');
         }
       }
     };
@@ -163,6 +166,7 @@ export default function ReviewAnswerkeyPage() {
         document.body.classList.add('is-mobile-device');
         setIsFullscreen(true);
         document.body.classList.add('cbt-fullscreen-active');
+        document.documentElement.classList.add('cbt-fullscreen-active');
       } else {
         document.body.classList.remove('is-mobile-device');
       }
@@ -172,6 +176,7 @@ export default function ReviewAnswerkeyPage() {
 
     return () => {
       document.body.classList.remove('cbt-fullscreen-active');
+      document.documentElement.classList.remove('cbt-fullscreen-active');
       document.body.classList.remove('is-mobile-device');
       document.removeEventListener('fullscreenchange', handleFsChange);
       document.removeEventListener('webkitfullscreenchange', handleFsChange);
@@ -276,17 +281,24 @@ export default function ReviewAnswerkeyPage() {
       }
     }
     
-    requestAnimationFrame(() => {
-      if (topPos !== null && currentScrollY > topPos) {
-        window.scrollTo({ top: topPos - 20, behavior: 'instant' as ScrollBehavior });
-      } else {
-        window.scrollTo({ top: currentScrollY, behavior: 'instant' as ScrollBehavior });
+    if (!isFullscreen) {
+      requestAnimationFrame(() => {
+        if (topPos !== null && currentScrollY > topPos) {
+          window.scrollTo({ top: topPos - 20, behavior: 'instant' as ScrollBehavior });
+        } else {
+          window.scrollTo({ top: currentScrollY, behavior: 'instant' as ScrollBehavior });
+        }
+      });
+    } else {
+      const scrollBox = document.querySelector('.cbt-question-scroll');
+      if (scrollBox) {
+        scrollBox.scrollTop = 0;
       }
-    });
+    }
   }
 
-  function handleSecTabChange(secName: string, e: React.MouseEvent) {
-    e.preventDefault();
+  function handleSecTabChange(secName: string, e?: React.SyntheticEvent) {
+    if (e && e.preventDefault) e.preventDefault();
     const currentScrollY = window.scrollY;
     const topPos = breakdownRef.current ? breakdownRef.current.getBoundingClientRect().top + window.scrollY : null;
     
@@ -305,13 +317,20 @@ export default function ReviewAnswerkeyPage() {
       }
     }
     
-    requestAnimationFrame(() => {
-      if (topPos !== null && currentScrollY > topPos) {
-        window.scrollTo({ top: topPos - 20, behavior: 'instant' as ScrollBehavior });
-      } else {
-        window.scrollTo({ top: currentScrollY, behavior: 'instant' as ScrollBehavior });
+    if (!isFullscreen) {
+      requestAnimationFrame(() => {
+        if (topPos !== null && currentScrollY > topPos) {
+          window.scrollTo({ top: topPos - 20, behavior: 'instant' as ScrollBehavior });
+        } else {
+          window.scrollTo({ top: currentScrollY, behavior: 'instant' as ScrollBehavior });
+        }
+      });
+    } else {
+      const scrollBox = document.querySelector('.cbt-question-scroll');
+      if (scrollBox) {
+        scrollBox.scrollTop = 0;
       }
-    });
+    }
   }
 
   function jumpToQuestion(qNo: number) {
@@ -346,9 +365,16 @@ export default function ReviewAnswerkeyPage() {
         }
       }, 100);
     } else {
-      const canvasEl = document.getElementById('cbt-question-canvas');
-      if (canvasEl && window.innerWidth <= 900) {
-        canvasEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!isFullscreen) {
+        const canvasEl = document.getElementById('cbt-question-canvas');
+        if (canvasEl && window.innerWidth <= 900) {
+          canvasEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        const scrollBox = document.querySelector('.cbt-question-scroll');
+        if (scrollBox) {
+          scrollBox.scrollTop = 0;
+        }
       }
     }
   }
@@ -396,12 +422,14 @@ export default function ReviewAnswerkeyPage() {
       exitFullscreen();
       setIsFullscreen(false);
       document.body.classList.remove('cbt-fullscreen-active');
+      document.documentElement.classList.remove('cbt-fullscreen-active');
     } else {
       if (!isMobile && typeof window !== 'undefined' && window.innerWidth > 900) {
         enterFullscreen();
       }
       setIsFullscreen(true);
       document.body.classList.add('cbt-fullscreen-active');
+      document.documentElement.classList.add('cbt-fullscreen-active');
     }
   }
 
@@ -416,6 +444,7 @@ export default function ReviewAnswerkeyPage() {
         }
         setIsFullscreen(true);
         document.body.classList.add('cbt-fullscreen-active');
+        document.documentElement.classList.add('cbt-fullscreen-active');
       }
     }
   }
@@ -546,12 +575,21 @@ export default function ReviewAnswerkeyPage() {
         .section-tabs-scroll::-webkit-scrollbar {
           display: none;
         }
+        html.cbt-fullscreen-active,
         body.cbt-fullscreen-active {
-          overflow: hidden !important;
-          height: 100vh !important;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100% !important;
+          width: 100vw !important;
+          height: 100% !important;
           height: 100dvh !important;
-          max-height: 100vh !important;
           max-height: 100dvh !important;
+          overflow: hidden !important;
+          overscroll-behavior: none !important;
+          touch-action: none !important;
           margin: 0 !important;
           padding: 0 !important;
         }
@@ -598,6 +636,23 @@ export default function ReviewAnswerkeyPage() {
           margin: 0 !important;
           box-sizing: border-box !important;
         }
+        .cbt-question-scroll {
+          overscroll-behavior: contain !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        body.cbt-fullscreen-active .cbt-question-scroll {
+          touch-action: pan-y !important;
+        }
+        .palette-grid-scroll {
+          overscroll-behavior: contain !important;
+          -webkit-overflow-scrolling: touch !important;
+          touch-action: pan-y !important;
+        }
+        .section-tabs-scroll {
+          overscroll-behavior: contain !important;
+          -webkit-overflow-scrolling: touch !important;
+          touch-action: pan-x !important;
+        }
         .cbt-question-scroll::-webkit-scrollbar {
           width: 6px;
         }
@@ -621,8 +676,8 @@ export default function ReviewAnswerkeyPage() {
           padding: isFullscreen ? 0 : '16px',
           transition: 'all 0.2s ease',
           background: isFullscreen ? '#ffffff' : 'transparent',
-          height: isFullscreen ? '100vh' : 'auto',
-          maxHeight: isFullscreen ? '100vh' : 'none',
+          height: isFullscreen ? '100dvh' : 'auto',
+          maxHeight: isFullscreen ? '100dvh' : 'none',
           overflow: isFullscreen ? 'hidden' : 'visible',
           boxSizing: 'border-box',
           width: isFullscreen ? '100vw' : 'auto'
@@ -640,15 +695,15 @@ export default function ReviewAnswerkeyPage() {
           borderRadius: 0,
           overflow: isFullscreen ? 'hidden' : 'visible',
           boxShadow: 'none',
-          height: isFullscreen ? '100vh' : 'auto',
-          maxHeight: isFullscreen ? '100vh' : 'none',
+          height: isFullscreen ? '100%' : 'auto',
+          maxHeight: isFullscreen ? '100%' : 'none',
           width: isFullscreen ? '100vw' : '100%',
           boxSizing: 'border-box'
         }}>
 
           {/* LEFT MAIN CONTENT COLUMN (Header Banner + Controls + Questions) */}
           <div style={{
-            flex: isFullscreen ? '1 1 auto' : '1 1 680px',
+            flex: isFullscreen ? '1 1 0%' : '1 1 680px',
             minWidth: 0,
             minHeight: 0,
             display: 'flex',
@@ -671,7 +726,7 @@ export default function ReviewAnswerkeyPage() {
                 boxShadow: isFullscreen ? 'none' : '0 4px 16px rgba(15, 23, 42, 0.04)',
                 display: 'flex',
                 flexDirection: 'column',
-                flex: isFullscreen ? 1 : 'none',
+                flex: isFullscreen ? '1 1 0%' : 'none',
                 height: isFullscreen ? '100%' : 'auto',
                 maxHeight: isFullscreen ? '100%' : 'none',
                 minHeight: 0,
@@ -682,7 +737,7 @@ export default function ReviewAnswerkeyPage() {
               {/* Exam Logo / Title Banner (Centered & Full Width Display) */}
               <div style={{
                 marginBottom: isFullscreen ? 0 : '16px',
-                padding: isFullscreen ? '6px 12px' : '0 0 14px 0',
+                padding: isFullscreen ? '4px 12px' : '0 0 14px 0',
                 borderBottom: '1px solid #f1f5f9',
                 textAlign: 'center',
                 flexShrink: 0,
@@ -698,7 +753,7 @@ export default function ReviewAnswerkeyPage() {
                       style={{
                         width: '100%',
                         maxWidth: '100%',
-                        maxHeight: '120px',
+                        maxHeight: isFullscreen ? (isMobile ? '40px' : '75px') : '120px',
                         objectFit: 'contain',
                         display: 'block',
                         margin: '0 auto'
@@ -859,7 +914,7 @@ export default function ReviewAnswerkeyPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     marginBottom: isFullscreen ? 0 : '16px',
-                    flex: isFullscreen ? 1 : 'none',
+                    flex: isFullscreen ? '1 1 0%' : 'none',
                     height: isFullscreen ? '100%' : 'auto',
                     minHeight: 0
                   }}
@@ -1061,7 +1116,8 @@ export default function ReviewAnswerkeyPage() {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         flexWrap: 'wrap',
-                        gap: '6px'
+                        gap: '6px',
+                        flexShrink: 0
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span style={{ fontWeight: 900, fontSize: '0.94rem', color: '#004080' }}>
@@ -1111,7 +1167,7 @@ export default function ReviewAnswerkeyPage() {
                           padding: '18px 20px',
                           width: '100%',
                           boxSizing: 'border-box',
-                          flex: isFullscreen ? 1 : 'none',
+                          flex: isFullscreen ? '1 1 0%' : 'none',
                           minHeight: 0,
                           overflowY: isFullscreen ? 'auto' : 'visible'
                         }}
@@ -1249,15 +1305,13 @@ export default function ReviewAnswerkeyPage() {
                       <div style={{
                         background: '#e9edf2',
                         borderTop: '2px solid #cbd5e1',
-                        padding: '10px 18px',
+                        padding: isFullscreen ? '10px 18px calc(12px + env(safe-area-inset-bottom, 0px)) 18px' : '10px 18px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '10px',
-                        position: 'sticky',
-                        bottom: 0,
-                        zIndex: 10,
-                        flexShrink: 0
+                        flexShrink: 0,
+                        zIndex: 20
                       }}>
                         {/* Left: Previous Button */}
                         <div>
@@ -1687,17 +1741,45 @@ export default function ReviewAnswerkeyPage() {
                   </div>
                 </div>
 
-                {/* DigiALM Section Ribbon Header */}
+                {/* DigiALM Section Ribbon Header with Dropdown */}
                 <div style={{
                   background: '#004080',
                   color: '#ffffff',
-                  padding: '6px 12px',
+                  padding: '6px 10px',
                   fontSize: '0.72rem',
                   fontWeight: 800,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '6px'
                 }}>
-                  SECTION : {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
+                  <span style={{ whiteSpace: 'nowrap', flexShrink: 0, letterSpacing: '0.04em' }}>SECTION :</span>
+                  <select
+                    value={activeSecTab}
+                    onChange={(e) => handleSecTabChange(e.target.value, e)}
+                    style={{
+                      background: '#002b55',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.35)',
+                      borderRadius: '4px',
+                      padding: '3px 8px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      flex: 1,
+                      minWidth: 0,
+                      outline: 'none'
+                    }}
+                  >
+                    <option value="ALL" style={{ background: '#003366', color: '#ffffff' }}>
+                      All Sections ({allQuestions.length})
+                    </option>
+                    {resultData.sections && resultData.sections.map(sec => (
+                      <option key={sec.name} value={sec.name} style={{ background: '#003366', color: '#ffffff' }}>
+                        {sec.name} ({sec.total})
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Number Grid */}
@@ -2149,18 +2231,46 @@ export default function ReviewAnswerkeyPage() {
               </div>
             </div>
 
-            {/* Section Header */}
+            {/* Section Header with Dropdown */}
             <div style={{
               background: '#004080',
               color: '#ffffff',
               padding: '6px 12px',
               fontSize: '0.72rem',
               fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.03em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '8px',
               flexShrink: 0
             }}>
-              SECTION : {activeSecTab === 'ALL' ? 'All Sections' : activeSecTab} ({filteredQuestions.length})
+              <span style={{ whiteSpace: 'nowrap', flexShrink: 0, letterSpacing: '0.03em' }}>SECTION :</span>
+              <select
+                value={activeSecTab}
+                onChange={(e) => handleSecTabChange(e.target.value, e)}
+                style={{
+                  background: '#002b55',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255, 255, 255, 0.35)',
+                  borderRadius: '4px',
+                  padding: '4px 8px',
+                  fontSize: '0.74rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  flex: 1,
+                  minWidth: 0,
+                  outline: 'none'
+                }}
+              >
+                <option value="ALL" style={{ background: '#003366', color: '#ffffff' }}>
+                  All Sections ({allQuestions.length})
+                </option>
+                {resultData.sections && resultData.sections.map(sec => (
+                  <option key={sec.name} value={sec.name} style={{ background: '#003366', color: '#ffffff' }}>
+                    {sec.name} ({sec.total})
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Number Grid */}
@@ -2236,7 +2346,7 @@ export default function ReviewAnswerkeyPage() {
             <div style={{
               background: '#f8fafc',
               borderTop: '1px solid #e2e8f0',
-              padding: '10px 12px',
+              padding: '10px 12px calc(10px + env(safe-area-inset-bottom, 0px)) 12px',
               display: 'flex',
               flexDirection: 'column',
               gap: '8px',
