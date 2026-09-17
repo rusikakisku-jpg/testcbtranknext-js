@@ -261,40 +261,50 @@ export default function RankPage() {
   ].filter(Boolean) as Array<{ label: string; val: string; icon: string }>;
 
   return (
-    <main>
+    <main style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
       <style>{`
         /* Modern App-Style UI Design System for /rank */
         .rank-page-container {
+          width: 100%;
           max-width: 1240px;
           margin: 0 auto;
           padding: 16px 14px 44px;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
           color: #0f172a;
           box-sizing: border-box;
+          overflow-x: hidden;
         }
 
         .rank-layout {
           display: flex;
           gap: 20px;
           align-items: flex-start;
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
         }
 
         .rank-main-area {
           flex: 1 1 700px;
           min-width: 0;
+          max-width: 100%;
+          width: 100%;
           display: flex;
           flex-direction: column;
           gap: 16px;
+          box-sizing: border-box;
         }
 
         .rank-sidebar-area {
           flex: 0 0 320px;
           min-width: 290px;
+          max-width: 320px;
           display: flex;
           flex-direction: column;
           gap: 16px;
           position: sticky;
           top: 16px;
+          box-sizing: border-box;
         }
 
         /* Exam Header Card */
@@ -809,12 +819,18 @@ export default function RankPage() {
 
         /* Section Table Styling */
         .rank-table-wrap {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
+          display: block;
+          box-sizing: border-box;
         }
 
         .rank-data-table {
           width: 100%;
+          min-width: 480px;
           border-collapse: collapse;
           font-size: 0.82rem;
           text-align: center;
@@ -882,16 +898,34 @@ export default function RankPage() {
         @media (max-width: 900px) {
           .rank-page-container {
             padding: 10px 8px calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
           }
           .rank-layout {
             flex-direction: column !important;
             gap: 12px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            align-items: stretch !important;
+            box-sizing: border-box !important;
+          }
+          .rank-main-area {
+            flex: 1 1 auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
           }
           .rank-sidebar-area {
             display: none !important;
           }
           .rank-mobile-only {
             display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
           }
           .rank-desktop-only {
             display: none !important;
@@ -899,8 +933,51 @@ export default function RankPage() {
           .rank-exam-img {
             max-height: 60px !important;
           }
+          .rank-hero-banner {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            padding: 18px 14px !important;
+          }
           .rank-hero-value {
-            font-size: 2.3rem !important;
+            font-size: clamp(1.8rem, 6.5vw, 2.3rem) !important;
+            word-break: break-word !important;
+            overflow-wrap: anywhere !important;
+          }
+          .rank-hero-total {
+            font-size: clamp(0.95rem, 3.5vw, 1.15rem) !important;
+          }
+          .rank-sub-grid {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          .rank-sub-card {
+            width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
+          }
+          .rank-sub-num {
+            font-size: clamp(1.05rem, 4vw, 1.35rem) !important;
+            word-break: break-word !important;
+          }
+          .rank-actions-group {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          .rank-perf-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+          }
+          .rank-table-wrap {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            box-sizing: border-box !important;
           }
         }
 
