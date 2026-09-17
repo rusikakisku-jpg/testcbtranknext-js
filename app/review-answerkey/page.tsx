@@ -418,6 +418,7 @@ export default function ReviewAnswerkeyPage() {
   }
 
   function toggleFullscreen() {
+    if (isMobile) return;
     if (isFullscreen) {
       exitFullscreen();
       setIsFullscreen(false);
@@ -434,6 +435,7 @@ export default function ReviewAnswerkeyPage() {
   }
 
   function handleToggleCbtMode() {
+    if (isMobile) return;
     if (viewMode === 'CBT') {
       setViewMode('LIST');
     } else {
@@ -571,6 +573,10 @@ export default function ReviewAnswerkeyPage() {
         }
         body.is-mobile-device .mobile-palette-float-btn {
           display: flex !important;
+        }
+        body.is-mobile-device .desktop-fullscreen-btn,
+        body.is-mobile-device .candidate-top-summary {
+          display: none !important;
         }
         .section-tabs-scroll::-webkit-scrollbar {
           display: none;
@@ -1023,35 +1029,38 @@ export default function ReviewAnswerkeyPage() {
                         <span>Palette ({allQuestions.length})</span>
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={toggleFullscreen}
-                        title={isFullscreen ? "Exit Full Screen" : "Enter Full Screen CBT View"}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          padding: '5px 12px',
-                          borderRadius: '4px',
-                          fontSize: '0.72rem',
-                          fontWeight: 800,
-                          cursor: 'pointer',
-                          border: isFullscreen ? '1px solid #003366' : '1px solid #cbd5e1',
-                          background: isFullscreen ? '#004080' : '#ffffff',
-                          color: isFullscreen ? '#ffffff' : '#334155',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                          transition: 'all 0.15s ease'
-                        }}
-                      >
-                        <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          {isFullscreen ? (
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
-                          ) : (
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                          )}
-                        </svg>
-                        <span>{isFullscreen ? '🗗 Exit Full Screen' : '⛶ Full Screen'}</span>
-                      </button>
+                      {!isMobile && (
+                        <button
+                          type="button"
+                          onClick={toggleFullscreen}
+                          className="desktop-fullscreen-btn"
+                          title={isFullscreen ? "Exit Full Screen" : "Enter Full Screen CBT View"}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '5px 12px',
+                            borderRadius: '4px',
+                            fontSize: '0.72rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            border: isFullscreen ? '1px solid #003366' : '1px solid #cbd5e1',
+                            background: isFullscreen ? '#004080' : '#ffffff',
+                            color: isFullscreen ? '#ffffff' : '#334155',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            {isFullscreen ? (
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 9L4 4m0 0v4m0-4h4m6 6l5-5m0 0v4m0-4h-4M9 15l-5 5m0 0v-4m0 4h4m6-6l5 5m0 0v-4m0 4h-4" />
+                            ) : (
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                            )}
+                          </svg>
+                          <span>{isFullscreen ? '🗗 Exit Full Screen' : '⛶ Full Screen'}</span>
+                        </button>
+                      )}
                     </div>
 
                   </div>
@@ -2345,26 +2354,6 @@ export default function ReviewAnswerkeyPage() {
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
                   type="button"
-                  onClick={() => {
-                    handleToggleCbtMode();
-                    setShowMobilePalette(false);
-                  }}
-                  style={{
-                    flex: 1,
-                    padding: '8px',
-                    borderRadius: '6px',
-                    border: '1px solid #004080',
-                    background: '#ffffff',
-                    color: '#004080',
-                    fontWeight: 800,
-                    fontSize: '0.74rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {viewMode === 'CBT' ? '📋 List View' : '🖥️ CBT View'}
-                </button>
-                <button
-                  type="button"
                   onClick={() => setShowMobilePalette(false)}
                   style={{
                     flex: 1,
@@ -2378,7 +2367,7 @@ export default function ReviewAnswerkeyPage() {
                     cursor: 'pointer'
                   }}
                 >
-                  ✕ Close
+                  ✕ Close Palette
                 </button>
               </div>
 
