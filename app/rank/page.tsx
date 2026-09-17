@@ -1037,7 +1037,7 @@ export default function RankPage() {
                     <span className="app-sub-tile-title">🏆 Overall Rank</span>
                   </div>
                   <div className="app-sub-tile-val">
-                    {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
+                    {loadingRank && !liveRank ? '...' : (liveRank ? liveRank.overallRank : overallRank)}
                     <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalOverall : totalOverall}</span>
                   </div>
                   <span className="app-sub-tag-pill">
@@ -1051,7 +1051,7 @@ export default function RankPage() {
                     <span className="app-sub-tile-title">⏱️ Shift Rank</span>
                   </div>
                   <div className="app-sub-tile-val">
-                    {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.shiftRank : shiftRank}`}
+                    {loadingRank && !liveRank ? '...' : (liveRank ? liveRank.shiftRank : shiftRank)}
                     <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalShift : totalShift}</span>
                   </div>
                   <span className="app-sub-tag-pill">
@@ -1065,7 +1065,7 @@ export default function RankPage() {
                     <span className="app-sub-tile-title">👥 Category Rank</span>
                   </div>
                   <div className="app-sub-tile-val">
-                    {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.categoryRank : categoryRank}`}
+                    {loadingRank && !liveRank ? '...' : (liveRank ? liveRank.categoryRank : categoryRank)}
                     <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
                   </div>
                   <span className="app-sub-tag-pill">
@@ -1079,7 +1079,7 @@ export default function RankPage() {
                     <span className="app-sub-tile-title">🚻 Gender Rank</span>
                   </div>
                   <div className="app-sub-tile-val">
-                    {loadingRank && (!liveRank || !liveRank.genderRank) ? '...' : `#${liveRank && liveRank.genderRank ? liveRank.genderRank : genderRank}`}
+                    {loadingRank && (!liveRank || !liveRank.genderRank) ? '...' : (liveRank && liveRank.genderRank ? liveRank.genderRank : genderRank)}
                     <span className="app-sub-tile-total"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
                   </div>
                   <span className="app-sub-tag-pill">
@@ -1094,7 +1094,7 @@ export default function RankPage() {
                       <span className="app-sub-tile-title">🔧 Trade Rank</span>
                     </div>
                     <div className="app-sub-tile-val">
-                      {loadingRank && !liveRank ? '...' : `#${subTypeRank}`}
+                      {loadingRank && !liveRank ? '...' : subTypeRank}
                       <span className="app-sub-tile-total"> / {totalSubType}</span>
                     </div>
                     <span className="app-sub-tag-pill">
