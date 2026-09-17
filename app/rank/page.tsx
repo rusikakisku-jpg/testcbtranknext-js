@@ -316,103 +316,34 @@ export default function RankPage() {
           box-sizing: border-box;
         }
 
-        /* 1. Mobile Quick Navigation Header */
-        .app-top-nav-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+        /* Unified Single Container Card for /rank */
+        .app-unified-container {
           background: #ffffff;
-          padding: 10px 14px;
-          border-radius: 14px;
+          border-radius: 16px;
           border: 1px solid #e2e8f0;
-          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+          padding: 20px 18px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
           width: 100%;
           box-sizing: border-box;
         }
 
-        .app-back-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.82rem;
-          font-weight: 700;
-          color: #2563eb;
-          text-decoration: none;
-          padding: 4px 8px;
-          border-radius: 8px;
-          background: #eff6ff;
-          transition: background 0.15s ease;
+        @media (max-width: 900px) {
+          .app-unified-container {
+            padding: 16px 14px;
+            border-radius: 14px;
+            gap: 14px;
+          }
         }
 
-        .app-back-link:hover {
-          background: #dbeafe;
-        }
-
-        .app-top-title-group {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .app-live-pulse-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          background: #ecfdf5;
-          color: #059669;
-          border: 1px solid #a7f3d0;
-          font-size: 0.68rem;
-          font-weight: 800;
-          padding: 3px 8px;
-          border-radius: 999px;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-        }
-
-        .app-pulse-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #10b981;
-          box-shadow: 0 0 6px #10b981;
-          animation: appPulse 2s infinite;
-        }
-
-        @keyframes appPulse {
-          0% { transform: scale(0.9); opacity: 0.8; }
-          50% { transform: scale(1.35); opacity: 1; }
-          100% { transform: scale(0.9); opacity: 0.8; }
-        }
-
-        .app-reload-icon-btn {
-          background: #f1f5f9;
-          border: 1px solid #e2e8f0;
-          color: #475569;
-          border-radius: 8px;
-          width: 32px;
-          height: 32px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.15s ease;
-        }
-
-        .app-reload-icon-btn:hover {
-          background: #e2e8f0;
-          color: #0f172a;
-        }
-
-        /* 2. Exam Banner Card */
-        .app-exam-banner-card {
-          background: #ffffff;
-          border-radius: 14px;
-          border: 1px solid #e2e8f0;
-          padding: 12px 16px;
+        .app-unified-header {
           text-align: center;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-          box-sizing: border-box;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #f1f5f9;
           width: 100%;
+          box-sizing: border-box;
         }
 
         .app-exam-logo {
@@ -429,6 +360,25 @@ export default function RankPage() {
           font-weight: 800;
           color: #0f172a;
           line-height: 1.35;
+        }
+
+        .app-unified-profile {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #f1f5f9;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .app-unified-actions {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 100%;
+          box-sizing: border-box;
+          padding-top: 4px;
         }
 
         /* 3. Candidate Profile Card (Mobile & Desktop) */
@@ -1042,62 +992,32 @@ export default function RankPage() {
           {/* MAIN CONTENT COLUMN */}
           <div className="app-rank-content">
 
-            {/* 1. Mobile Quick Navigation Bar */}
-            <div className="app-top-nav-bar no-print">
-              <Link href="/result" className="app-back-link">
-                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>Scorecard</span>
-              </Link>
+            {/* UNIFIED SINGLE CARD CONTAINER (All content in ONE container) */}
+            <div className="app-unified-container">
 
-              <div className="app-top-title-group">
-                <div className="app-live-pulse-badge">
-                  <span className="app-pulse-dot" />
-                  <span>Live Rank</span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => window.location.reload()}
-                  className="app-reload-icon-btn"
-                  title="Refresh Live Rank"
-                  aria-label="Refresh Live Rank"
-                >
-                  <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </button>
+              {/* 1. Exam Banner / Logo Header */}
+              <div className="app-unified-header">
+                {resultData.headerImgUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={resultData.headerImgUrl}
+                    alt="Exam Header Logo"
+                    className="app-exam-logo"
+                  />
+                ) : (
+                  <h1 className="app-exam-title-text">
+                    {resultData.headerBannerText || resultData.examName || 'CBT Exam Rank & Performance'}
+                  </h1>
+                )}
               </div>
-            </div>
 
-            {/* 2. Exam Banner Card */}
-            <div className="app-exam-banner-card">
-              {resultData.headerImgUrl ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={resultData.headerImgUrl}
-                  alt="Exam Header Logo"
-                  className="app-exam-logo"
-                />
-              ) : (
-                <h1 className="app-exam-title-text">
-                  {resultData.headerBannerText || resultData.examName || 'CBT Exam Rank & Performance'}
-                </h1>
-              )}
-            </div>
-
-            {/* 3. Candidate Profile Card (Mobile View only - Category, Shift & Gender shown in Rank cards below) */}
-            <div className="app-candidate-card app-hide-on-desktop">
-              <div className="app-profile-head" style={{ marginBottom: 0, paddingBottom: 0, borderBottom: 'none' }}>
+              {/* 2. Candidate Profile Row (Mobile only, without tick icon) */}
+              <div className="app-unified-profile app-hide-on-desktop">
                 <div className="app-hero-avatar">
                   {candidateInitial}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>{candidateName}</h2>
-                    <span style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '999px' }}>✓ Verified</span>
-                  </div>
+                  <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>{candidateName}</h2>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
                     {rollNumber && (
                       <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace' }}>Roll: {rollNumber}</span>
@@ -1108,86 +1028,84 @@ export default function RankPage() {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* 4. RANKS METRICS GRID (Overall Rank, Shift Rank, Category Rank, Gender Rank, Trade Rank) */}
-            <div className="app-sub-metrics-grid">
-              {/* Overall Rank - Styled exactly like Shift & Category Rank */}
-              <div className="app-sub-tile app-sub-tile-overall">
-                <div className="app-sub-tile-header">
-                  <span className="app-sub-tile-title">🏆 Overall Rank</span>
-                </div>
-                <div className="app-sub-tile-val">
-                  {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
-                  <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalOverall : totalOverall}</span>
-                </div>
-                <span className="app-sub-tag-pill">
-                  {calculatedPercentile}%ile
-                </span>
-              </div>
-
-              {/* Shift Rank */}
-              <div className="app-sub-tile app-sub-tile-shift">
-                <div className="app-sub-tile-header">
-                  <span className="app-sub-tile-title">⏱️ Shift Rank</span>
-                </div>
-                <div className="app-sub-tile-val">
-                  {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.shiftRank : shiftRank}`}
-                  <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalShift : totalShift}</span>
-                </div>
-                <span className="app-sub-tag-pill">
-                  {resultData.testTime || 'Current Shift'}
-                </span>
-              </div>
-
-              {/* Category Rank */}
-              <div className="app-sub-tile app-sub-tile-cat">
-                <div className="app-sub-tile-header">
-                  <span className="app-sub-tile-title">👥 Category Rank</span>
-                </div>
-                <div className="app-sub-tile-val">
-                  {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.categoryRank : categoryRank}`}
-                  <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
-                </div>
-                <span className="app-sub-tag-pill">
-                  {effectiveCommunity}
-                </span>
-              </div>
-
-              {/* Gender Rank */}
-              <div className="app-sub-tile app-sub-tile-gen">
-                <div className="app-sub-tile-header">
-                  <span className="app-sub-tile-title">🚻 Gender Rank</span>
-                </div>
-                <div className="app-sub-tile-val">
-                  {loadingRank && (!liveRank || !liveRank.genderRank) ? '...' : `#${liveRank && liveRank.genderRank ? liveRank.genderRank : genderRank}`}
-                  <span className="app-sub-tile-total"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
-                </div>
-                <span className="app-sub-tag-pill">
-                  {effectiveGender || 'All Candidates'}
-                </span>
-              </div>
-
-              {/* Trade / Stream Rank (if applicable) */}
-              {Boolean(subTypeRank && totalSubType) && (
-                <div className="app-sub-tile app-sub-tile-trade">
+              {/* 3. RANKS METRICS GRID (Overall Rank, Shift Rank, Category Rank, Gender Rank, Trade Rank) */}
+              <div className="app-sub-metrics-grid">
+                {/* Overall Rank - Styled exactly like Shift & Category Rank */}
+                <div className="app-sub-tile app-sub-tile-overall">
                   <div className="app-sub-tile-header">
-                    <span className="app-sub-tile-title">🔧 Trade Rank</span>
+                    <span className="app-sub-tile-title">🏆 Overall Rank</span>
                   </div>
                   <div className="app-sub-tile-val">
-                    {loadingRank && !liveRank ? '...' : `#${subTypeRank}`}
-                    <span className="app-sub-tile-total"> / {totalSubType}</span>
+                    {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.overallRank : overallRank}`}
+                    <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalOverall : totalOverall}</span>
                   </div>
                   <span className="app-sub-tag-pill">
-                    {effectiveSubType}
+                    {calculatedPercentile}%ile
                   </span>
                 </div>
-              )}
-            </div>
 
-            {/* 5. MOBILE ACTIONS (Only visible on screens <= 900px, right below rank tiles) */}
-            <div className="app-hide-on-desktop no-print">
-              <div className="app-action-stack">
+                {/* Shift Rank */}
+                <div className="app-sub-tile app-sub-tile-shift">
+                  <div className="app-sub-tile-header">
+                    <span className="app-sub-tile-title">⏱️ Shift Rank</span>
+                  </div>
+                  <div className="app-sub-tile-val">
+                    {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.shiftRank : shiftRank}`}
+                    <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalShift : totalShift}</span>
+                  </div>
+                  <span className="app-sub-tag-pill">
+                    {resultData.testTime || 'Current Shift'}
+                  </span>
+                </div>
+
+                {/* Category Rank */}
+                <div className="app-sub-tile app-sub-tile-cat">
+                  <div className="app-sub-tile-header">
+                    <span className="app-sub-tile-title">👥 Category Rank</span>
+                  </div>
+                  <div className="app-sub-tile-val">
+                    {loadingRank && !liveRank ? '...' : `#${liveRank ? liveRank.categoryRank : categoryRank}`}
+                    <span className="app-sub-tile-total"> / {liveRank ? liveRank.totalCategory : totalCategory}</span>
+                  </div>
+                  <span className="app-sub-tag-pill">
+                    {effectiveCommunity}
+                  </span>
+                </div>
+
+                {/* Gender Rank */}
+                <div className="app-sub-tile app-sub-tile-gen">
+                  <div className="app-sub-tile-header">
+                    <span className="app-sub-tile-title">🚻 Gender Rank</span>
+                  </div>
+                  <div className="app-sub-tile-val">
+                    {loadingRank && (!liveRank || !liveRank.genderRank) ? '...' : `#${liveRank && liveRank.genderRank ? liveRank.genderRank : genderRank}`}
+                    <span className="app-sub-tile-total"> / {liveRank && liveRank.totalGender ? liveRank.totalGender : totalGender}</span>
+                  </div>
+                  <span className="app-sub-tag-pill">
+                    {effectiveGender || 'All Candidates'}
+                  </span>
+                </div>
+
+                {/* Trade / Stream Rank (if applicable) */}
+                {Boolean(subTypeRank && totalSubType) && (
+                  <div className="app-sub-tile app-sub-tile-trade">
+                    <div className="app-sub-tile-header">
+                      <span className="app-sub-tile-title">🔧 Trade Rank</span>
+                    </div>
+                    <div className="app-sub-tile-val">
+                      {loadingRank && !liveRank ? '...' : `#${subTypeRank}`}
+                      <span className="app-sub-tile-total"> / {totalSubType}</span>
+                    </div>
+                    <span className="app-sub-tag-pill">
+                      {effectiveSubType}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* 4. Action Buttons (Mobile View) */}
+              <div className="app-unified-actions app-hide-on-desktop no-print">
                 {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
                   <Link href="/review-answerkey" className="app-btn-main">
                     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -1214,209 +1132,210 @@ export default function RankPage() {
                   </button>
                 </div>
               </div>
-            </div>
 
-            {/* 6. SCORE & ACCURACY COCKPIT CARD (Hidden on mobile) */}
-            <div className="app-score-cockpit-card app-hide-on-mobile">
-              <div className="app-cockpit-top">
-                <h3 className="app-cockpit-title">
-                  📊 Performance Summary
-                </h3>
-                <div className={`app-net-score-pill ${totScore < 0 ? 'app-net-score-neg' : 'app-net-score-pos'}`}>
-                  <span>Marks:</span>
-                  <strong>{totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}</strong>
-                </div>
-              </div>
-
-              {/* Segmented Distribution Bar */}
-              <div className="app-seg-bar-track" title={`Correct: ${pctCorrect}%, Wrong: ${pctWrong}%, Unattempted: ${pctUnattempted}%`}>
-                <div className="app-seg-correct" style={{ width: `${pctCorrect}%` }} />
-                <div className="app-seg-wrong" style={{ width: `${pctWrong}%` }} />
-                <div className="app-seg-unatt" style={{ width: `${pctUnattempted}%` }} />
-              </div>
-
-              {/* 4-KPI Grid */}
-              <div className="app-kpi-quad-grid">
-                <div className="app-kpi-quad-item">
-                  <span className="app-kpi-quad-label">Correct</span>
-                  <span className="app-kpi-quad-val app-kpi-val-correct">✓ {totCorrect}</span>
-                </div>
-                <div className="app-kpi-quad-item">
-                  <span className="app-kpi-quad-label">Wrong</span>
-                  <span className="app-kpi-quad-val app-kpi-val-wrong">✕ {totWrong}</span>
-                </div>
-                <div className="app-kpi-quad-item">
-                  <span className="app-kpi-quad-label">Skipped</span>
-                  <span className="app-kpi-quad-val app-kpi-val-unatt">– {totUnattempted}</span>
-                </div>
-                <div className="app-kpi-quad-item">
-                  <span className="app-kpi-quad-label">Accuracy</span>
-                  <span className="app-kpi-quad-val app-kpi-val-acc">🎯 {overallAccuracy}%</span>
-                </div>
-              </div>
-            </div>
-
-            {/* 7. SUBJECT-WISE BREAKDOWN SECTION (Hidden on mobile) */}
-            {resultData.sections && resultData.sections.length > 0 && (
-              <div className="app-subjects-card app-hide-on-mobile">
-                <div className="app-subjects-header">
-                  <h3 className="app-subjects-title">
-                    📑 Section-Wise Breakdown
+              {/* 5. SCORE & ACCURACY COCKPIT CARD (Hidden on mobile) */}
+              <div className="app-score-cockpit-card app-hide-on-mobile">
+                <div className="app-cockpit-top">
+                  <h3 className="app-cockpit-title">
+                    📊 Performance Summary
                   </h3>
-
-                  {/* View Mode Switcher */}
-                  <div className="app-view-switcher no-print">
-                    <button
-                      type="button"
-                      className={`app-view-tab ${viewMode === 'cards' ? 'app-view-tab-active' : ''}`}
-                      onClick={() => setViewMode('cards')}
-                    >
-                      📱 Cards
-                    </button>
-                    <button
-                      type="button"
-                      className={`app-view-tab ${viewMode === 'table' ? 'app-view-tab-active' : ''}`}
-                      onClick={() => setViewMode('table')}
-                    >
-                      📋 Table
-                    </button>
+                  <div className={`app-net-score-pill ${totScore < 0 ? 'app-net-score-neg' : 'app-net-score-pos'}`}>
+                    <span>Marks:</span>
+                    <strong>{totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}</strong>
                   </div>
                 </div>
 
-                {/* VIEW A: APP CARDS (Default on mobile) */}
-                {viewMode === 'cards' && (
-                  <div className="app-subject-cards-stack">
-                    {resultData.sections.map((sec, idx) => {
-                      const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
-                      const secAttempted = sec.total - sec.unattempted;
-                      const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
-                      const secAcc = secAttempted > 0 ? ((sec.correct / secAttempted) * 100).toFixed(1) : '0.0';
-                      const secAccNum = Math.min(100, Math.max(0, parseFloat(secAcc) || 0));
+                {/* Segmented Distribution Bar */}
+                <div className="app-seg-bar-track" title={`Correct: ${pctCorrect}%, Wrong: ${pctWrong}%, Unattempted: ${pctUnattempted}%`}>
+                  <div className="app-seg-correct" style={{ width: `${pctCorrect}%` }} />
+                  <div className="app-seg-wrong" style={{ width: `${pctWrong}%` }} />
+                  <div className="app-seg-unatt" style={{ width: `${pctUnattempted}%` }} />
+                </div>
 
-                      return (
-                        <div key={idx} className="app-subject-brick">
-                          <div className="app-subject-brick-top">
-                            <h4 className="app-subject-brick-name">{sec.name}</h4>
-                            <span className={`app-subject-brick-score ${secScore < 0 ? 'app-brick-score-neg' : 'app-brick-score-pos'}`}>
-                              {secScore >= 0 ? `+${secScore.toFixed(2)}` : secScore.toFixed(2)}
-                            </span>
-                          </div>
+                {/* 4-KPI Grid */}
+                <div className="app-kpi-quad-grid">
+                  <div className="app-kpi-quad-item">
+                    <span className="app-kpi-quad-label">Correct</span>
+                    <span className="app-kpi-quad-val app-kpi-val-correct">✓ {totCorrect}</span>
+                  </div>
+                  <div className="app-kpi-quad-item">
+                    <span className="app-kpi-quad-label">Wrong</span>
+                    <span className="app-kpi-quad-val app-kpi-val-wrong">✕ {totWrong}</span>
+                  </div>
+                  <div className="app-kpi-quad-item">
+                    <span className="app-kpi-quad-label">Skipped</span>
+                    <span className="app-kpi-quad-val app-kpi-val-unatt">– {totUnattempted}</span>
+                  </div>
+                  <div className="app-kpi-quad-item">
+                    <span className="app-kpi-quad-label">Accuracy</span>
+                    <span className="app-kpi-quad-val app-kpi-val-acc">🎯 {overallAccuracy}%</span>
+                  </div>
+                </div>
+              </div>
 
-                          {/* Micro Progress Bar */}
-                          <div className="app-subject-micro-bar">
-                            <span>Accuracy: <strong>{secAcc}%</strong></span>
-                            <div className="app-micro-track">
-                              <div className="app-micro-fill" style={{ width: `${secAccNum}%` }} />
-                            </div>
-                          </div>
+              {/* 6. SUBJECT-WISE BREAKDOWN SECTION (Hidden on mobile) */}
+              {resultData.sections && resultData.sections.length > 0 && (
+                <div className="app-subjects-card app-hide-on-mobile">
+                  <div className="app-subjects-header">
+                    <h3 className="app-subjects-title">
+                      📑 Section-Wise Breakdown
+                    </h3>
 
-                          {/* Stat Chips */}
-                          <div className="app-subject-chips-row">
-                            <span className="app-mini-chip app-chip-total">Total: {sec.total}</span>
-                            <span className="app-mini-chip app-chip-correct">✓ {sec.correct} Correct</span>
-                            <span className="app-mini-chip app-chip-wrong">✕ {sec.wrong} Wrong</span>
-                            <span className="app-mini-chip app-chip-skip">– {sec.unattempted} Left</span>
-                            {hasBonus && (
-                              <span className="app-mini-chip app-chip-bonus">★ {secBonus || 0} Bonus</span>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-
-                    {/* Overall Summary Brick */}
-                    <div className="app-total-brick">
-                      <div className="app-subject-brick-top">
-                        <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>🎯 Overall Aggregate Total</strong>
-                        <span className={`app-subject-brick-score ${totScore < 0 ? 'app-brick-score-neg' : 'app-brick-score-pos'}`}>
-                          Total Marks: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="app-subject-chips-row">
-                        <span className="app-mini-chip app-chip-total">Questions: {totQuestions}</span>
-                        <span className="app-mini-chip app-chip-correct">✓ {totCorrect} Correct</span>
-                        <span className="app-mini-chip app-chip-wrong">✕ {totWrong} Wrong</span>
-                        <span className="app-mini-chip app-chip-skip">– {totUnattempted} Left</span>
-                        {hasBonus && (
-                          <span className="app-mini-chip app-chip-bonus">★ {totBonus} Bonus</span>
-                        )}
-                        <span className="app-mini-chip" style={{ background: '#dbeafe', color: '#1d4ed8' }}>🎯 {overallAccuracy}% Accuracy</span>
-                      </div>
+                    {/* View Mode Switcher */}
+                    <div className="app-view-switcher no-print">
+                      <button
+                        type="button"
+                        className={`app-view-tab ${viewMode === 'cards' ? 'app-view-tab-active' : ''}`}
+                        onClick={() => setViewMode('cards')}
+                      >
+                        📱 Cards
+                      </button>
+                      <button
+                        type="button"
+                        className={`app-view-tab ${viewMode === 'table' ? 'app-view-tab-active' : ''}`}
+                        onClick={() => setViewMode('table')}
+                      >
+                        📋 Table
+                      </button>
                     </div>
                   </div>
-                )}
 
-                {/* VIEW B: FULL DATA TABLE (Shown when Table tab is clicked, or always on print) */}
-                {(viewMode === 'table' || typeof window === 'undefined') && (
-                  <div className="app-table-scroll-container">
-                    <table className="app-pro-table">
-                      <thead>
-                        <tr>
-                          <th style={{ textAlign: 'left', minWidth: '110px' }}>Section / Subject</th>
-                          <th>Total</th>
-                          <th>Attempted</th>
-                          <th>Correct</th>
-                          <th>Wrong</th>
-                          {hasBonus && <th>Bonus</th>}
-                          <th>Skipped</th>
-                          <th style={{ textAlign: 'right' }}>Score</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {resultData.sections.map((sec, idx) => {
-                          const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
-                          const secAttempted = sec.total - sec.unattempted;
-                          const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
+                  {/* VIEW A: APP CARDS */}
+                  {viewMode === 'cards' && (
+                    <div className="app-subject-cards-stack">
+                      {resultData.sections.map((sec, idx) => {
+                        const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
+                        const secAttempted = sec.total - sec.unattempted;
+                        const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
+                        const secAcc = secAttempted > 0 ? ((sec.correct / secAttempted) * 100).toFixed(1) : '0.0';
+                        const secAccNum = Math.min(100, Math.max(0, parseFloat(secAcc) || 0));
 
-                          return (
-                            <tr key={idx}>
-                              <td style={{ textAlign: 'left', fontWeight: 800, color: '#0f172a' }}>
-                                {sec.name}
-                              </td>
-                              <td style={{ fontWeight: 700 }}>{sec.total}</td>
-                              <td style={{ fontWeight: 700 }}>{secAttempted}</td>
-                              <td>
-                                <span className="app-mini-chip app-chip-correct">+{sec.correct}</span>
-                              </td>
-                              <td>
-                                <span className="app-mini-chip app-chip-wrong">-{sec.wrong}</span>
-                              </td>
+                        return (
+                          <div key={idx} className="app-subject-brick">
+                            <div className="app-subject-brick-top">
+                              <h4 className="app-subject-brick-name">{sec.name}</h4>
+                              <span className={`app-subject-brick-score ${secScore < 0 ? 'app-brick-score-neg' : 'app-brick-score-pos'}`}>
+                                {secScore >= 0 ? `+${secScore.toFixed(2)}` : secScore.toFixed(2)}
+                              </span>
+                            </div>
+
+                            {/* Micro Progress Bar */}
+                            <div className="app-subject-micro-bar">
+                              <span>Accuracy: <strong>{secAcc}%</strong></span>
+                              <div className="app-micro-track">
+                                <div className="app-micro-fill" style={{ width: `${secAccNum}%` }} />
+                              </div>
+                            </div>
+
+                            {/* Stat Chips */}
+                            <div className="app-subject-chips-row">
+                              <span className="app-mini-chip app-chip-total">Total: {sec.total}</span>
+                              <span className="app-mini-chip app-chip-correct">✓ {sec.correct} Correct</span>
+                              <span className="app-mini-chip app-chip-wrong">✕ {sec.wrong} Wrong</span>
+                              <span className="app-mini-chip app-chip-skip">– {sec.unattempted} Left</span>
                               {hasBonus && (
-                                <td>
-                                  <span className="app-mini-chip app-chip-bonus">{secBonus || 0}</span>
-                                </td>
+                                <span className="app-mini-chip app-chip-bonus">★ {secBonus || 0} Bonus</span>
                               )}
-                              <td>
-                                <span className="app-mini-chip app-chip-skip">{sec.unattempted}</span>
-                              </td>
-                              <td style={{ textAlign: 'right', fontWeight: 900, color: secScore < 0 ? '#dc2626' : '#0f172a' }}>
-                                {secScore.toFixed(2)}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                      <tfoot>
-                        <tr style={{ background: '#f8fafc', borderTop: '2px solid #cbd5e1', fontWeight: 900, color: '#0f172a', fontSize: '0.84rem' }}>
-                          <td style={{ textAlign: 'left', fontWeight: 900, color: '#0f172a' }}>Total</td>
-                          <td style={{ fontWeight: 900 }}>{totQuestions}</td>
-                          <td style={{ fontWeight: 900 }}>{totAttempted}</td>
-                          <td style={{ fontWeight: 900, color: '#15803d' }}>{totCorrect}</td>
-                          <td style={{ fontWeight: 900, color: '#dc2626' }}>{totWrong}</td>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {/* Overall Summary Brick */}
+                      <div className="app-total-brick">
+                        <div className="app-subject-brick-top">
+                          <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>🎯 Overall Aggregate Total</strong>
+                          <span className={`app-subject-brick-score ${totScore < 0 ? 'app-brick-score-neg' : 'app-brick-score-pos'}`}>
+                            Total Marks: {totScore >= 0 ? `+${totScore.toFixed(2)}` : totScore.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="app-subject-chips-row">
+                          <span className="app-mini-chip app-chip-total">Questions: {totQuestions}</span>
+                          <span className="app-mini-chip app-chip-correct">✓ {totCorrect} Correct</span>
+                          <span className="app-mini-chip app-chip-wrong">✕ {totWrong} Wrong</span>
+                          <span className="app-mini-chip app-chip-skip">– {totUnattempted} Left</span>
                           {hasBonus && (
-                            <td style={{ fontWeight: 900, color: '#7e22ce' }}>{totBonus}</td>
+                            <span className="app-mini-chip app-chip-bonus">★ {totBonus} Bonus</span>
                           )}
-                          <td style={{ fontWeight: 900, color: '#b45309' }}>{totUnattempted}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 900, color: totScore < 0 ? '#dc2626' : '#0044cc' }}>
-                            {totScore.toFixed(2)}
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
+                          <span className="app-mini-chip" style={{ background: '#dbeafe', color: '#1d4ed8' }}>🎯 {overallAccuracy}% Accuracy</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* VIEW B: FULL DATA TABLE */}
+                  {(viewMode === 'table' || typeof window === 'undefined') && (
+                    <div className="app-table-scroll-container">
+                      <table className="app-pro-table">
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: 'left', minWidth: '110px' }}>Section / Subject</th>
+                            <th>Total</th>
+                            <th>Attempted</th>
+                            <th>Correct</th>
+                            <th>Wrong</th>
+                            {hasBonus && <th>Bonus</th>}
+                            <th>Skipped</th>
+                            <th style={{ textAlign: 'right' }}>Score</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {resultData.sections.map((sec, idx) => {
+                            const secBonus = (sec.bonus !== undefined && sec.bonus !== null) ? sec.bonus : fallbackBonus;
+                            const secAttempted = sec.total - sec.unattempted;
+                            const secScore = ((sec.correct + (secBonus || 0)) * rightVal) - (sec.wrong * wrongVal);
+
+                            return (
+                              <tr key={idx}>
+                                <td style={{ textAlign: 'left', fontWeight: 800, color: '#0f172a' }}>
+                                  {sec.name}
+                                </td>
+                                <td style={{ fontWeight: 700 }}>{sec.total}</td>
+                                <td style={{ fontWeight: 700 }}>{secAttempted}</td>
+                                <td>
+                                  <span className="app-mini-chip app-chip-correct">+{sec.correct}</span>
+                                </td>
+                                <td>
+                                  <span className="app-mini-chip app-chip-wrong">-{sec.wrong}</span>
+                                </td>
+                                {hasBonus && (
+                                  <td>
+                                    <span className="app-mini-chip app-chip-bonus">{secBonus || 0}</span>
+                                  </td>
+                                )}
+                                <td>
+                                  <span className="app-mini-chip app-chip-skip">{sec.unattempted}</span>
+                                </td>
+                                <td style={{ textAlign: 'right', fontWeight: 900, color: secScore < 0 ? '#dc2626' : '#0f172a' }}>
+                                  {secScore.toFixed(2)}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                        <tfoot>
+                          <tr style={{ background: '#f8fafc', borderTop: '2px solid #cbd5e1', fontWeight: 900, color: '#0f172a', fontSize: '0.84rem' }}>
+                            <td style={{ textAlign: 'left', fontWeight: 900, color: '#0f172a' }}>Total</td>
+                            <td style={{ fontWeight: 900 }}>{totQuestions}</td>
+                            <td style={{ fontWeight: 900 }}>{totAttempted}</td>
+                            <td style={{ fontWeight: 900, color: '#15803d' }}>{totCorrect}</td>
+                            <td style={{ fontWeight: 900, color: '#dc2626' }}>{totWrong}</td>
+                            {hasBonus && (
+                              <td style={{ fontWeight: 900, color: '#7e22ce' }}>{totBonus}</td>
+                            )}
+                            <td style={{ fontWeight: 900, color: '#b45309' }}>{totUnattempted}</td>
+                            <td style={{ textAlign: 'right', fontWeight: 900, color: totScore < 0 ? '#dc2626' : '#0044cc' }}>
+                              {totScore.toFixed(2)}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </div>
 
           </div>
 
@@ -1432,7 +1351,6 @@ export default function RankPage() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a' }}>{candidateName}</h2>
-                    <span style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.65rem', fontWeight: 800, padding: '2px 6px', borderRadius: '999px' }}>✓</span>
                   </div>
                   {rollNumber && (
                     <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace' }}>Roll: {rollNumber}</span>
