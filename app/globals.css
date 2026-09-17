@@ -1182,14 +1182,19 @@ footer {
   font-size: 0.78rem;
 }
 
-.ak-paste-btn:hover {
-  background-color: #f8fafc !important;
-  border-color: #94a3b8 !important;
-  color: #002244 !important;
+.ak-paste-icon-btn {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #64748b;
 }
 
-.ak-paste-btn:active {
-  transform: translateY(-50%) scale(0.96) !important;
+.ak-paste-icon-btn:hover {
+  color: #003366 !important;
+}
+
+.ak-paste-icon-btn:active {
+  transform: translateY(-50%) scale(0.9) !important;
 }
 
 .help-text {

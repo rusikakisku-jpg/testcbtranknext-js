@@ -782,59 +782,48 @@ export default function AnswerkeyCalculator({
               {/* Answer Key URL */}
               <div className="ak-form-group">
                 <label htmlFor="ans_key_url">Answer Key URL <span className="star">*</span></label>
-                <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+                <div style={{ position: 'relative', width: '100%' }}>
                   <input
                     type="url" id="ans_key_url" className="ak-form-input font-mono"
                     placeholder="Paste your official Answerkey Link" required
                     value={formData.ans_key_url}
                     onChange={e => setFormData(prev => ({ ...prev, ans_key_url: e.target.value }))}
-                    style={{ paddingRight: '76px' }}
+                    style={{ paddingRight: '36px' }}
                   />
                   <button
                     type="button"
                     onClick={handlePasteUrl}
-                    title={pastedStatus ? "Pasted!" : "Paste URL from clipboard"}
-                    aria-label="Paste URL from clipboard"
-                    className="ak-paste-btn"
+                    title="Paste from clipboard"
+                    aria-label="Paste from clipboard"
+                    className="ak-paste-icon-btn"
                     style={{
                       position: 'absolute',
-                      right: '4px',
+                      right: '8px',
                       top: '50%',
                       transform: 'translateY(-50%)',
-                      height: '28px',
-                      padding: '0 8px',
-                      display: 'inline-flex',
+                      background: 'none',
+                      border: 'none',
+                      boxShadow: 'none',
+                      padding: '4px',
+                      cursor: 'pointer',
+                      display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '4px',
-                      background: pastedStatus ? '#dcfce7' : '#ffffff',
-                      border: pastedStatus ? '1.5px solid #16a34a' : '1.5px solid #cbd5e1',
-                      borderRadius: '6px',
-                      color: pastedStatus ? '#16a34a' : '#003366',
-                      cursor: 'pointer',
-                      fontSize: '0.74rem',
-                      fontWeight: 800,
-                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                      transition: 'all 0.15s ease',
-                      whiteSpace: 'nowrap',
-                      zIndex: 2
+                      color: pastedStatus ? '#16a34a' : '#64748b',
+                      transition: 'color 0.2s ease, transform 0.15s ease',
+                      outline: 'none',
+                      lineHeight: 1
                     }}
                   >
                     {pastedStatus ? (
-                      <>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        <span>Pasted</span>
-                      </>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     ) : (
-                      <>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                        </svg>
-                        <span>Paste</span>
-                      </>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                      </svg>
                     )}
                   </button>
                 </div>
