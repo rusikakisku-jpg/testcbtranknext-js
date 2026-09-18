@@ -1064,16 +1064,16 @@ export default function ResultPage() {
                     <span className="th-mobile-label">TQ</span>
                   </th>
                   <th className="scorecard-subj-th" style={{ color: '#4ade80' }}>
-                    <span className="th-desktop-label">Right (+{rightVal})</span>
+                    <span className="th-desktop-label">Right</span>
                     <span className="th-mobile-label">R</span>
                   </th>
                   <th className="scorecard-subj-th" style={{ color: '#f87171' }}>
-                    <span className="th-desktop-label">Wrong (-{wrongVal})</span>
+                    <span className="th-desktop-label">Wrong</span>
                     <span className="th-mobile-label">W</span>
                   </th>
                   {hasBonus && (
                     <th className="scorecard-subj-th" style={{ color: '#c084fc' }}>
-                      <span className="th-desktop-label">Bonus (+{rightVal})</span>
+                      <span className="th-desktop-label">Bonus</span>
                       <span className="th-mobile-label">B</span>
                     </th>
                   )}
