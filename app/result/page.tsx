@@ -613,17 +613,18 @@ export default function ResultPage() {
           .scorecard-cand-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             border-bottom: 2px solid #0044cc;
           }
 
           .scorecard-cand-th {
             width: 38%;
             background: #f8fafc;
-            padding: 7px 12px;
+            padding: 6px 12px;
             text-align: left;
             font-weight: 700;
             color: #475569;
+            font-size: 0.77rem;
             border-right: 1px solid #cbd5e1;
             box-sizing: border-box;
           }
@@ -631,9 +632,10 @@ export default function ResultPage() {
           .scorecard-cand-td {
             width: 62%;
             background: #ffffff;
-            padding: 7px 12px;
+            padding: 6px 12px;
             font-weight: 800;
             color: #0f172a;
+            font-size: 0.78rem;
             text-align: left;
             box-sizing: border-box;
           }
@@ -645,7 +647,7 @@ export default function ResultPage() {
           }
 
           .scorecard-cand-td.is-venue {
-            font-size: 0.78rem;
+            font-size: 0.74rem;
           }
 
           /* Interactive Recalculate Controls Bar */
@@ -779,22 +781,22 @@ export default function ResultPage() {
           @media (max-width: 640px) {
             /* Compact User Info (Candidate Details Table) on Mobile */
             .scorecard-cand-table {
-              font-size: 0.72rem !important;
+              font-size: 0.68rem !important;
             }
             .scorecard-cand-th {
-              font-size: 0.70rem !important;
-              padding: 5px 8px !important;
+              font-size: 0.67rem !important;
+              padding: 4.5px 8px !important;
               width: 36% !important;
               line-height: 1.3 !important;
             }
             .scorecard-cand-td {
-              font-size: 0.72rem !important;
-              padding: 5px 8px !important;
+              font-size: 0.68rem !important;
+              padding: 4.5px 8px !important;
               width: 64% !important;
               line-height: 1.3 !important;
             }
             .scorecard-cand-td.is-venue {
-              font-size: 0.67rem !important;
+              font-size: 0.63rem !important;
               line-height: 1.25 !important;
             }
 
