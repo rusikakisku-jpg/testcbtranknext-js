@@ -488,10 +488,159 @@ export default function ResultPage() {
         />
       )}
 
-      <main>
+      <main style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
+        <style>{`
+          /* ============================================================
+             UNIFIED SINGLE CONTAINER DESIGN SYSTEM FOR /result
+             Matches the modern app-card style of /rank
+             ============================================================ */
+          .result-main {
+            flex: 1;
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px 12px 60px;
+            box-sizing: border-box;
+          }
+
+          /* Single Unified Card Container */
+          .scorecard-card {
+            background: #ffffff !important;
+            border-radius: 16px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04) !important;
+            padding: 20px 18px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 16px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+
+          @media (max-width: 768px) {
+            .result-main {
+              padding: 12px 8px 50px !important;
+            }
+            .scorecard-card {
+              padding: 16px 14px !important;
+              border-radius: 14px !important;
+              gap: 14px !important;
+            }
+          }
+
+          /* 1. Exam Header */
+          .result-unified-header {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .result-exam-logo {
+            max-height: 65px;
+            max-width: 100%;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+          }
+
+          .result-exam-title {
+            margin: 0;
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.35;
+          }
+
+          /* 2. Candidate Info Section */
+          .result-candidate-section {
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .result-candidate-box {
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            background: #ffffff;
+          }
+
+          /* 3. Subject-Wise Performance Section */
+          .result-breakdown-section {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .result-recalc-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+          }
+
+          .result-recalc-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #475569;
+          }
+
+          @media (max-width: 640px) {
+            .result-recalc-bar {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 8px;
+            }
+            .result-recalc-pill {
+              width: 100%;
+              justify-content: space-between;
+              box-sizing: border-box;
+            }
+          }
+
+          .result-table-box {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            box-sizing: border-box;
+          }
+
+          /* 4. Action Buttons (Inside Unified Container) */
+          .result-unified-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            padding-top: 4px;
+          }
+
+          @media (max-width: 768px) {
+            .result-unified-actions {
+              grid-template-columns: 1fr;
+              gap: 10px;
+            }
+          }
+        `}</style>
+
       <div className="result-main">
 
-        {/* Main Scorecard Card */}
+        {/* UNIFIED SINGLE CARD CONTAINER (All content in ONE container) */}
         <div className="scorecard-card" id="cbrank-scorecard-card" style={{ position: 'relative', overflow: 'hidden', width: '100%', boxSizing: 'border-box' }}>
 
           {/* Watermark */}
@@ -505,31 +654,25 @@ export default function ResultPage() {
             CBT RANK
           </div>
 
-          {/* 1. Exam & Candidate Info Header */}
-          <div className="info-section-header" style={{ position: 'relative', zIndex: 1, width: '100%', boxSizing: 'border-box' }}>
+          {/* 1. Exam Header (Banner or Logo) */}
+          <div className="result-unified-header" style={{ position: 'relative', zIndex: 1 }}>
             {resultData.headerImgUrl ? (
               <div style={{ width: '100%', textAlign: 'center' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={resultData.headerImgUrl} alt="Exam Header Logo" className="exam-logo" style={{ margin: '0 auto' }} />
+                <img src={resultData.headerImgUrl} alt="Exam Header Logo" className="result-exam-logo" />
               </div>
             ) : resultData.headerBannerText ? (
-              <h1 className="exam-name-title" style={{ width: '100%', textAlign: 'center' }}>{resultData.headerBannerText}</h1>
+              <h1 className="result-exam-title">{resultData.headerBannerText}</h1>
             ) : (
               resultData.examName && (
-                <h1 className="exam-name-title" style={{ width: '100%', textAlign: 'center' }}>{resultData.examName}</h1>
+                <h1 className="result-exam-title">{resultData.examName}</h1>
               )
             )}
+          </div>
 
-            {/* Candidate & Examination Info Table (2-Column Format: Label | Value) */}
-            <div style={{
-              width: '100%',
-              boxSizing: 'border-box',
-              borderRadius: '10px',
-              border: '1.5px solid #e2e8f0',
-              overflow: 'hidden',
-              marginTop: '12px',
-              background: '#ffffff'
-            }}>
+          {/* 2. Candidate & Examination Info Table */}
+          <div className="result-candidate-section" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="result-candidate-box">
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem', textAlign: 'left' }}>
                 <tbody>
                   {displayRows.map((row, idx) => {
@@ -560,11 +703,11 @@ export default function ResultPage() {
             </div>
           </div>
 
-          {/* 2. Section Performance Table with Recalc Controls */}
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div className="recalc-header">
-              <h3 style={{ fontSize: '0.78rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Subject-Wise Performance Breakdown</h3>
-              <div className="recalc-controls no-print">
+          {/* 3. Section Performance Table with Recalc Controls */}
+          <div className="result-breakdown-section">
+            <div className="result-recalc-bar">
+              <h3 style={{ fontSize: '0.78rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>Subject-Wise Performance Breakdown</h3>
+              <div className="result-recalc-pill no-print">
                 <label>
                   Right (+):{' '}
                   <input
@@ -631,7 +774,7 @@ export default function ResultPage() {
             </div>
 
             {/* Subject-Wise Performance Table: Section | Total | Attempted | Unattempted | Right | Wrong | [Bonus] | Marks */}
-            <div className="table-responsive" style={{ marginTop: '10px' }}>
+            <div className="result-table-box table-responsive">
               <table className="sec-table">
                 <thead>
                   <tr>
@@ -689,8 +832,8 @@ export default function ResultPage() {
             </div>
           </div>
 
-          {/* Action Buttons under Subject Breakdown (Hidden on Print / Hidden on Downloaded Image) */}
-          <div className="result-action-buttons no-print">
+          {/* 4. Action Buttons (Inside Unified Container) */}
+          <div className="result-unified-actions result-action-buttons no-print">
             {/* Button 1: Review Answerkey */}
             {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
               <Link
