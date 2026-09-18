@@ -492,32 +492,34 @@ export default function ResultPage() {
       <main style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
         <style>{`
           /* ============================================================
-             PREMIUM MOBILE APP-STYLE DESIGN SYSTEM FOR /result
-             Matches the modern app-card style of /rank
+             DEDICATED FULL-BLEED SCORECARD DESIGN SYSTEM FOR /result
+             Matches the authentic official scorecard UI 1:1 with download template
              ============================================================ */
           .result-main {
             flex: 1;
             width: 100%;
-            max-width: 960px;
+            max-width: 680px;
             margin: 0 auto;
-            padding: 16px 12px 60px;
+            padding: 18px 12px 60px;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: #0f172a;
           }
 
-          /* Single Unified App Container */
+          /* Single Unified Scorecard Card (1:1 with Download Template) */
           .scorecard-card {
             background: #ffffff !important;
-            border-radius: 18px !important;
-            border: 1px solid #e2e8f0 !important;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04) !important;
-            padding: 20px 18px !important;
+            border-radius: 14px !important;
+            border: 4px solid #0044cc !important;
+            box-shadow: 0 4px 24px rgba(0, 68, 204, 0.10), 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+            padding: 0 !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 16px !important;
+            gap: 0 !important;
             width: 100% !important;
             box-sizing: border-box !important;
+            overflow: hidden !important;
+            position: relative !important;
           }
 
           @media (max-width: 768px) {
@@ -525,228 +527,224 @@ export default function ResultPage() {
               padding: 12px 8px 50px !important;
             }
             .scorecard-card {
-              padding: 16px 14px !important;
-              border-radius: 16px !important;
-              gap: 14px !important;
+              border-width: 3.5px !important;
+              border-radius: 12px !important;
             }
           }
 
-          /* 1. Exam Header */
-          .result-unified-header {
-            text-align: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #f1f5f9;
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          .result-exam-logo {
-            max-height: 60px;
-            max-width: 100%;
-            object-fit: contain;
-            margin: 0 auto;
-            display: block;
-          }
-
-          .result-exam-title {
-            margin: 0;
-            font-size: 1.06rem;
-            font-weight: 800;
-            color: #0f172a;
-            line-height: 1.35;
-          }
-
-          /* 2. Candidate Profile Row (App Style) */
-          .app-unified-profile {
-            display: flex;
+          /* Security Watermark Grid */
+          .scorecard-watermark-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 24px 10px;
             align-items: center;
-            gap: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #f1f5f9;
-            width: 100%;
-            box-sizing: border-box;
+            justify-items: center;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            overflow: hidden;
+            padding: 16px;
           }
 
-          .app-hero-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0044cc 0%, #2563eb 100%);
-            color: #ffffff;
+          .scorecard-watermark-item {
+            transform: rotate(-25deg);
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: #0044cc;
+            opacity: 0.055;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: system-ui, -apple-system, sans-serif;
+          }
+
+          /* Header Section */
+          .scorecard-header-box {
+            position: relative;
+            z-index: 1;
+            background: #ffffff;
+            padding: 10px 16px;
+            text-align: center;
+            border-bottom: 2px solid #0044cc;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            min-height: 48px;
+            box-sizing: border-box;
+          }
+
+          .scorecard-header-box.text-banner {
+            background: #0044cc;
+            color: #ffffff;
+            padding: 12px 16px;
+          }
+
+          .scorecard-header-logo {
+            max-height: 65px;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+          }
+
+          .scorecard-header-title {
+            font-size: 1.08rem;
             font-weight: 900;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0, 68, 204, 0.25);
+            margin: 0;
+            line-height: 1.3;
+            color: #ffffff;
           }
 
-          /* 3. App Score Cockpit (At-A-Glance Mobile Summary) */
-          .app-score-cockpit {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 12px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          .app-cockpit-score-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-          }
-
-          .app-cockpit-label {
-            font-size: 0.76rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #475569;
-          }
-
-          .app-cockpit-score-val {
-            font-size: 1.22rem;
-            font-weight: 900;
-            padding: 3px 12px;
-            border-radius: 8px;
-            line-height: 1.2;
-          }
-
-          .app-cockpit-score-val.pos {
-            background: #ecfdf5;
-            color: #059669;
-            border: 1px solid #a7f3d0;
-          }
-
-          .app-cockpit-score-val.neg {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-          }
-
-          .app-kpi-quad-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          @media (max-width: 480px) {
-            .app-kpi-quad-grid {
-              grid-template-columns: repeat(2, 1fr);
-              gap: 6px;
-            }
-          }
-
-          .app-kpi-quad-item {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 7px 6px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-          }
-
-          .app-kpi-quad-label {
-            font-size: 0.62rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #64748b;
-          }
-
-          .app-kpi-quad-val {
-            font-size: 0.96rem;
-            font-weight: 900;
-          }
-
-          .app-kpi-val-correct { color: #15803d; }
-          .app-kpi-val-wrong   { color: #b91c1c; }
-          .app-kpi-val-unatt   { color: #475569; }
-
-          /* 4. Candidate Info Section */
-          .result-candidate-section {
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          .result-candidate-box {
-            width: 100%;
-            box-sizing: border-box;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            background: #ffffff;
-          }
-
-          /* 5. Subject-Wise Performance Section */
-          .result-breakdown-section {
+          /* Candidate Examination Details Table */
+          .scorecard-table-wrapper {
             position: relative;
             z-index: 1;
             width: 100%;
+            overflow-x: auto;
             box-sizing: border-box;
           }
 
-          .result-recalc-bar {
+          .scorecard-cand-table {
+            width: 100%;
+            border-collapse: collapse;
+            fontSize: 0.82rem;
+            border-bottom: 2px solid #0044cc;
+          }
+
+          .scorecard-cand-th {
+            width: 38%;
+            background: #f8fafc;
+            padding: 7px 12px;
+            text-align: left;
+            font-weight: 700;
+            color: #475569;
+            border-right: 1px solid #cbd5e1;
+            box-sizing: border-box;
+          }
+
+          .scorecard-cand-td {
+            width: 62%;
+            background: #ffffff;
+            padding: 7px 12px;
+            font-weight: 800;
+            color: #0f172a;
+            text-align: left;
+            box-sizing: border-box;
+          }
+
+          .scorecard-cand-td.is-roll {
+            font-weight: 900;
+            color: #0044cc;
+            font-family: monospace;
+          }
+
+          /* Interactive Recalculate Controls Bar */
+          .scorecard-recalc-bar {
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-          }
-
-          .result-recalc-pill {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 8px;
+            padding: 8px 12px;
             background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #475569;
-          }
-
-          @media (max-width: 640px) {
-            .result-recalc-bar {
-              flex-direction: column;
-              align-items: flex-start;
-              gap: 8px;
-            }
-            .result-recalc-pill {
-              width: 100%;
-              justify-content: space-between;
-              box-sizing: border-box;
-            }
-          }
-
-          .result-table-box {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
+            border-bottom: 1px solid #cbd5e1;
             box-sizing: border-box;
           }
 
-          /* 6. App Style Action Button Stack */
-          .app-unified-actions {
+          .scorecard-recalc-title {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin: 0;
+          }
+
+          .scorecard-recalc-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #334155;
+          }
+
+          @media (max-width: 520px) {
+            .scorecard-recalc-bar {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 6px;
+            }
+            .scorecard-recalc-inputs {
+              width: 100%;
+              justify-content: space-between;
+            }
+          }
+
+          /* Subject-Wise Performance Table */
+          .scorecard-subject-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.80rem;
+            text-align: center;
+            border-bottom: 1px solid #cbd5e1;
+          }
+
+          .scorecard-subj-head {
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+          }
+
+          .scorecard-subj-th {
+            padding: 8px 5px;
+            border-right: 1px solid #334155;
+            white-space: nowrap;
+          }
+
+          .scorecard-subj-th:last-child {
+            border-right: none;
+          }
+
+          .scorecard-subj-td {
+            padding: 8px 5px;
+            border-right: 1px solid #cbd5e1;
+            white-space: nowrap;
+          }
+
+          .scorecard-subj-td:last-child {
+            border-right: none;
+          }
+
+          .scorecard-subj-tfoot {
+            background: #eff6ff;
+            border-top: 2px solid #3b82f6;
+            font-weight: 900;
+            font-size: 0.84rem;
+          }
+
+          /* Bottom Action Buttons Stack */
+          .scorecard-actions-panel {
+            position: relative;
+            z-index: 1;
+            padding: 14px 14px;
+            background: #f8fafc;
+            border-top: 2px solid #0044cc;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            width: 100%;
             box-sizing: border-box;
-            padding-top: 4px;
           }
 
           .app-btn-main {
@@ -757,8 +755,8 @@ export default function ResultPage() {
             width: 100%;
             background: linear-gradient(135deg, #0044cc 0%, #2563eb 100%);
             color: #ffffff;
-            padding: 13px 18px;
-            border-radius: 14px;
+            padding: 12px 18px;
+            border-radius: 12px;
             font-weight: 800;
             font-size: 0.92rem;
             text-decoration: none;
@@ -794,19 +792,19 @@ export default function ResultPage() {
             background: #ffffff;
             color: #0f172a;
             border: 1.5px solid #cbd5e1;
-            padding: 11px 14px;
-            border-radius: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
             font-weight: 800;
             font-size: 0.82rem;
             text-decoration: none;
             cursor: pointer;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             transition: all 0.2s ease;
             box-sizing: border-box;
           }
 
           .app-btn-sub:hover {
-            background: #f8fafc;
+            background: #f1f5f9;
             border-color: #94a3b8;
           }
 
@@ -817,267 +815,194 @@ export default function ResultPage() {
 
       <div className="result-main">
 
-        {/* UNIFIED SINGLE CARD CONTAINER (All content in ONE container) */}
-        <div className="scorecard-card" id="cbrank-scorecard-card" style={{ position: 'relative', overflow: 'hidden', width: '100%', boxSizing: 'border-box' }}>
+        {/* UNIFIED SCORECARD CONTAINER (1:1 with Download Template UI) */}
+        <div className="scorecard-card" id="cbrank-scorecard-card">
 
-          {/* Watermark */}
-          <div style={{
-            position: 'absolute', top: '40%', left: '50%',
-            transform: 'translate(-50%, -50%) rotate(-25deg)',
-            fontSize: '6rem', fontWeight: 900, color: 'rgba(0, 68, 204, 0.025)',
-            letterSpacing: '12px', pointerEvents: 'none', userSelect: 'none',
-            zIndex: 0, whiteSpace: 'nowrap', textTransform: 'uppercase'
-          }}>
-            CBT RANK
+          {/* Multiple Repeating Security Watermarks: CBT Rank */}
+          <div className="scorecard-watermark-grid">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="scorecard-watermark-item">
+                CBT Rank
+              </div>
+            ))}
           </div>
 
-          {/* 1. Exam Header (Banner or Logo) */}
-          <div className="result-unified-header" style={{ position: 'relative', zIndex: 1 }}>
-            {resultData.headerImgUrl ? (
-              <div style={{ width: '100%', textAlign: 'center' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={resultData.headerImgUrl} alt="Exam Header Logo" className="result-exam-logo" />
-              </div>
-            ) : resultData.headerBannerText ? (
-              <h1 className="result-exam-title">{resultData.headerBannerText}</h1>
-            ) : (
-              resultData.examName && (
-                <h1 className="result-exam-title">{resultData.examName}</h1>
-              )
-            )}
+          {/* 1. Header Section (Logo OR Blue Text Banner) */}
+          {resultData.headerImgUrl ? (
+            <div className="scorecard-header-box">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={resultData.headerImgUrl}
+                alt="Exam Header Logo"
+                className="scorecard-header-logo"
+              />
+            </div>
+          ) : (
+            <div className="scorecard-header-box text-banner">
+              <h2 className="scorecard-header-title">
+                {resultData.headerBannerText || resultData.examName || 'CBT Competitive Examination'}
+              </h2>
+            </div>
+          )}
+
+          {/* 2. Candidate Examination Details Table (Edge to Edge, 2 Columns) */}
+          <div className="scorecard-table-wrapper">
+            <table className="scorecard-cand-table">
+              <tbody>
+                {displayRows.map((row, idx) => {
+                  const isLast = idx === displayRows.length - 1;
+                  const isRoll = /roll|registration|id|participant\s*id|applicant/i.test(row.label);
+                  return (
+                    <tr key={idx} style={{ borderBottom: isLast ? 'none' : '1px solid #cbd5e1' }}>
+                      <th className="scorecard-cand-th">
+                        {row.label}
+                      </th>
+                      <td
+                        className={`scorecard-cand-td ${isRoll ? 'is-roll' : ''}`}
+                        style={{
+                          fontSize: row.label.toLowerCase().includes('center') || row.label.toLowerCase().includes('venue') ? '0.76rem' : 'inherit'
+                        }}
+                      >
+                        {row.value}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
-          {/* 2. Candidate Profile Bar (App Style) */}
-          <div className="app-unified-profile" style={{ position: 'relative', zIndex: 1 }}>
-            <div className="app-hero-avatar">
-              {candidateInitial}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', lineHeight: 1.3 }}>{candidateName}</h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                {candidateRollNo && (
-                  <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace', background: '#eff6ff', padding: '2px 8px', borderRadius: '6px' }}>
-                    Roll: {candidateRollNo}
-                  </span>
-                )}
-                {candidateTestDate && (
-                  <span style={{ fontSize: '0.74rem', color: '#475569', fontWeight: 600, background: '#f8fafc', border: '1px solid #e2e8f0', padding: '2px 7px', borderRadius: '6px' }}>
-                    📅 {candidateTestDate}
-                  </span>
-                )}
-                {candidateCategory && (
-                  <span style={{ fontSize: '0.74rem', color: '#b45309', fontWeight: 700, background: '#fffbeb', border: '1px solid #fef3c7', padding: '2px 7px', borderRadius: '6px' }}>
-                    🏷️ {candidateCategory}
-                  </span>
-                )}
-                {candidateTestTime && (
-                  <span style={{ fontSize: '0.74rem', color: '#047857', fontWeight: 600, background: '#ecfdf5', border: '1px solid #d1fae5', padding: '2px 7px', borderRadius: '6px' }}>
-                    ⏱️ {candidateTestTime}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 3. Score Cockpit (At-A-Glance App Performance Summary) */}
-          <div className="app-score-cockpit" style={{ position: 'relative', zIndex: 1 }}>
-            <div className="app-cockpit-score-row">
-              <div className="app-cockpit-label">Total Raw Score</div>
-              <div className={`app-cockpit-score-val ${raw >= 0 ? 'pos' : 'neg'}`}>
-                {raw.toFixed(2)}
-              </div>
-            </div>
-            <div className="app-kpi-quad-grid">
-              <div className="app-kpi-quad-item">
-                <span className="app-kpi-quad-label">Right (+{rightVal})</span>
-                <span className="app-kpi-quad-val app-kpi-val-correct">{totalRight}</span>
-              </div>
-              <div className="app-kpi-quad-item">
-                <span className="app-kpi-quad-label">Wrong (-{wrongVal})</span>
-                <span className="app-kpi-quad-val app-kpi-val-wrong">{totalWrong}</span>
-              </div>
-              <div className="app-kpi-quad-item">
-                <span className="app-kpi-quad-label">Unattempted</span>
-                <span className="app-kpi-quad-val app-kpi-val-unatt">{totalUnattempted}</span>
-              </div>
-              {hasBonus ? (
-                <div className="app-kpi-quad-item">
-                  <span className="app-kpi-quad-label">Bonus (+{rightVal})</span>
-                  <span className="app-kpi-quad-val" style={{ color: '#9333ea' }}>{totalBonus}</span>
-                </div>
-              ) : (
-                <div className="app-kpi-quad-item">
-                  <span className="app-kpi-quad-label">Questions</span>
-                  <span className="app-kpi-quad-val" style={{ color: '#2563eb' }}>{totalQuestions}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* 4. Complete Candidate & Examination Info Table */}
-          <div className="result-candidate-section" style={{ position: 'relative', zIndex: 1 }}>
-            <div className="result-candidate-box">
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem', textAlign: 'left' }}>
-                <tbody>
-                  {displayRows.map((row, idx) => {
-                    const isLast = idx === displayRows.length - 1;
-                    const isRoll = /roll|registration|id|participant\s*id|applicant/i.test(row.label);
-                    return (
-                      <tr key={idx} style={{ borderBottom: isLast ? 'none' : '1px solid #e2e8f0' }}>
-                        <th style={{ width: '35%', background: '#f8fafc', padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', borderRight: '1px solid #e2e8f0' }}>
-                          {row.label}
-                        </th>
-                        <td style={{
-                          width: '65%',
-                          background: '#ffffff',
-                          padding: '8px 12px',
-                          fontWeight: isRoll ? 900 : 800,
-                          color: isRoll ? '#0044cc' : '#0f172a',
-                          fontFamily: isRoll ? 'monospace' : 'inherit',
-                          textAlign: 'left',
-                          fontSize: row.label.toLowerCase().includes('center') || row.label.toLowerCase().includes('venue') ? '0.8rem' : 'inherit'
-                        }}>
-                          {row.value}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* 5. Section Performance Table with Recalc Controls */}
-          <div className="result-breakdown-section">
-            <div className="result-recalc-bar">
-              <h3 style={{ fontSize: '0.78rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>Subject-Wise Performance Breakdown</h3>
-              <div className="result-recalc-pill no-print">
-                <label>
-                  Right (+):{' '}
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    id="right-val-input"
-                    value={rightVal === 0 ? '' : rightVal}
-                    placeholder="0"
-                    step="any"
-                    min="0"
-                    style={{ width: '64px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '4px 6px', textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: '0.88rem', outline: 'none' }}
-                    onChange={e => {
-                      const v = e.target.value;
-                      let n = 0;
-                      if (v !== '') {
-                        const parsed = parseFloat(v);
-                        if (!isNaN(parsed)) n = parsed;
+          {/* 3. Interactive Recalculate Controls Bar (no-print) */}
+          <div className="scorecard-recalc-bar no-print">
+            <h3 className="scorecard-recalc-title">Subject-Wise Performance Breakdown</h3>
+            <div className="scorecard-recalc-inputs">
+              <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                Right (+):{' '}
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  id="right-val-input"
+                  value={rightVal === 0 ? '' : rightVal}
+                  placeholder="0"
+                  step="any"
+                  min="0"
+                  style={{ width: '56px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '3px 6px', textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: '0.85rem', outline: 'none' }}
+                  onChange={e => {
+                    const v = e.target.value;
+                    let n = 0;
+                    if (v !== '') {
+                      const parsed = parseFloat(v);
+                      if (!isNaN(parsed)) n = parsed;
+                    }
+                    setRightVal(n);
+                    try {
+                      cbtSaveString(STORAGE_KEYS.MARKS_RIGHT, n.toString());
+                      const parsedForm = cbtGet<FormData>(STORAGE_KEYS.FORM_DATA);
+                      if (parsedForm) {
+                        parsedForm.marks_right = n;
+                        cbtSave(STORAGE_KEYS.FORM_DATA, parsedForm);
+                        setFormData(parsedForm);
                       }
-                      setRightVal(n);
-                      try {
-                        cbtSaveString(STORAGE_KEYS.MARKS_RIGHT, n.toString());
-                        const parsedForm = cbtGet<FormData>(STORAGE_KEYS.FORM_DATA);
-                        if (parsedForm) {
-                          parsedForm.marks_right = n;
-                          cbtSave(STORAGE_KEYS.FORM_DATA, parsedForm);
-                          setFormData(parsedForm);
-                        }
-                      } catch (err) {}
-                    }}
-                  />
-                </label>
-                <label>
-                  Wrong (-):{' '}
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    id="wrong-val-input"
-                    value={wrongVal === 0 ? '' : wrongVal}
-                    placeholder="0"
-                    step="any"
-                    min="0"
-                    style={{ width: '64px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '4px 6px', textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: '0.88rem', outline: 'none' }}
-                    onChange={e => {
-                      const v = e.target.value;
-                      let n = 0;
-                      if (v !== '') {
-                        const parsed = parseFloat(v);
-                        if (!isNaN(parsed)) n = parsed;
+                    } catch (err) {
+                      console.error('Error saving recalculated right val:', err);
+                    }
+                  }}
+                />
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                Wrong (-):{' '}
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  id="wrong-val-input"
+                  value={wrongVal === 0 ? '' : wrongVal}
+                  placeholder="0"
+                  step="any"
+                  min="0"
+                  style={{ width: '56px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '3px 6px', textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: '0.85rem', outline: 'none' }}
+                  onChange={e => {
+                    const v = e.target.value;
+                    let n = 0;
+                    if (v !== '') {
+                      const parsed = parseFloat(v);
+                      if (!isNaN(parsed)) n = parsed;
+                    }
+                    setWrongVal(n);
+                    try {
+                      cbtSaveString(STORAGE_KEYS.MARKS_WRONG, n.toString());
+                      const parsedForm = cbtGet<FormData>(STORAGE_KEYS.FORM_DATA);
+                      if (parsedForm) {
+                        parsedForm.marks_wrong = n;
+                        cbtSave(STORAGE_KEYS.FORM_DATA, parsedForm);
+                        setFormData(parsedForm);
                       }
-                      setWrongVal(n);
-                      try {
-                        cbtSaveString(STORAGE_KEYS.MARKS_WRONG, n.toString());
-                        const parsedForm = cbtGet<FormData>(STORAGE_KEYS.FORM_DATA);
-                        if (parsedForm) {
-                          parsedForm.marks_wrong = n;
-                          cbtSave(STORAGE_KEYS.FORM_DATA, parsedForm);
-                          setFormData(parsedForm);
-                        }
-                      } catch (err) {}
-                    }}
-                  />
-                </label>
-              </div>
-            </div>
-
-            {/* Subject-Wise Performance Table: Section | Total | Attempted | Unattempted | Right | Wrong | [Bonus] | Marks */}
-            <div className="result-table-box table-responsive">
-              <table className="sec-table">
-                <thead>
-                  <tr>
-                    <th className="th-sec-name" style={{ textAlign: 'left', minWidth: '110px' }}>Section</th>
-                    <th className="th-total" style={{ textAlign: 'center' }}>Total</th>
-                    <th className="th-att" style={{ textAlign: 'center' }}>Attempted</th>
-                    <th className="th-unatt" style={{ textAlign: 'center' }}>Unattempted</th>
-                    <th className="th-right" style={{ textAlign: 'center', color: '#16a34a' }}>Right (+{rightVal})</th>
-                    <th className="th-wrong" style={{ textAlign: 'center', color: '#dc2626' }}>Wrong (-{wrongVal})</th>
-                    {hasBonus && (
-                      <th className="th-bonus" style={{ textAlign: 'center', color: '#9333ea', fontWeight: 800 }}>Bonus (+{rightVal})</th>
-                    )}
-                    <th className="th-marks" style={{ textAlign: 'right' }}>Marks</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {resultData.sections.map((sec, idx) => {
-                    const sm = calcSectionMarks(sec, rightVal, wrongVal, fallbackBonus);
-                    const secAttempted = sec.correct + sec.wrong + (sec.bonus || fallbackBonus || 0);
-                    return (
-                      <tr key={idx}>
-                        <td className="td-sec-name" style={{ textAlign: 'left', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: 1.35 }}>{sec.name}</td>
-                        <td className="td-total" style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>{sec.total}</td>
-                        <td className="td-att" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 800 }}>{secAttempted}</td>
-                        <td className="td-unatt" style={{ textAlign: 'center', whiteSpace: 'nowrap', color: '#d97706' }}>{sec.unattempted}</td>
-                        <td className="td-right" style={{ textAlign: 'center', whiteSpace: 'nowrap', color: '#16a34a', fontWeight: 800 }}>{sec.correct}</td>
-                        <td className="td-wrong" style={{ textAlign: 'center', whiteSpace: 'nowrap', color: '#dc2626', fontWeight: 800 }}>{sec.wrong}</td>
-                        {hasBonus && (
-                          <td className="td-bonus" style={{ textAlign: 'center', whiteSpace: 'nowrap', color: '#9333ea', fontWeight: 800 }}>{sec.bonus !== undefined ? sec.bonus : fallbackBonus}</td>
-                        )}
-                        <td className={`td-marks ${sm < 0 ? 'neg' : ''}`} style={{ textAlign: 'right', whiteSpace: 'nowrap', fontWeight: 900, color: sm < 0 ? '#dc2626' : '#0f172a' }}>
-                          {sm.toFixed(2)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot>
-                  <tr className="tfoot-row">
-                    <td className="td-sec-name" style={{ textAlign: 'left', fontWeight: 900, whiteSpace: 'normal' }}>Total</td>
-                    <td className="td-total" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 900 }}>{totalQuestions}</td>
-                    <td className="td-att" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 900 }}>{totalAttempted}</td>
-                    <td className="td-unatt" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 900, color: '#d97706' }}>{totalUnattempted}</td>
-                    <td className="td-right" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 900, color: '#16a34a' }}>{totalRight}</td>
-                    <td className="td-wrong" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 900, color: '#dc2626' }}>{totalWrong}</td>
-                    {hasBonus && (
-                      <td className="td-bonus" style={{ textAlign: 'center', whiteSpace: 'nowrap', fontWeight: 900, color: '#9333ea' }}>{totalBonus}</td>
-                    )}
-                    <td className={`td-marks ${raw < 0 ? 'neg' : ''}`} style={{ textAlign: 'right', whiteSpace: 'nowrap', fontWeight: 900, color: raw < 0 ? '#dc2626' : '#0044cc', fontSize: '0.92rem' }}>
-                      {raw.toFixed(2)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+                    } catch (err) {
+                      console.error('Error saving recalculated wrong val:', err);
+                    }
+                  }}
+                />
+              </label>
             </div>
           </div>
 
-          {/* 6. Action Buttons (App Style Action Stack) */}
-          <div className="app-unified-actions no-print" style={{ position: 'relative', zIndex: 1 }}>
+          {/* 4. Subject-Wise Performance Table (Flush, Edge to Edge) */}
+          <div className="scorecard-table-wrapper">
+            <table className="scorecard-subject-table">
+              <thead>
+                <tr className="scorecard-subj-head">
+                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'left', minWidth: '110px' }}>Section</th>
+                  <th className="scorecard-subj-th">Total</th>
+                  <th className="scorecard-subj-th" style={{ color: '#4ade80' }}>Right (+{rightVal})</th>
+                  <th className="scorecard-subj-th" style={{ color: '#f87171' }}>Wrong (-{wrongVal})</th>
+                  {hasBonus && (
+                    <th className="scorecard-subj-th" style={{ color: '#c084fc' }}>Bonus (+{rightVal})</th>
+                  )}
+                  <th className="scorecard-subj-th" style={{ color: '#fbbf24' }}>Skip</th>
+                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'right' }}>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {resultData.sections.map((sec, idx) => {
+                  const sm = calcSectionMarks(sec, rightVal, wrongVal, fallbackBonus);
+                  return (
+                    <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                      <td className="scorecard-subj-td" style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 800, color: '#0f172a', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: 1.35 }}>
+                        {sec.name}
+                      </td>
+                      <td className="scorecard-subj-td" style={{ fontWeight: 700 }}>{sec.total}</td>
+                      <td className="scorecard-subj-td" style={{ fontWeight: 800, color: '#16a34a' }}>{sec.correct}</td>
+                      <td className="scorecard-subj-td" style={{ fontWeight: 800, color: '#dc2626' }}>{sec.wrong}</td>
+                      {hasBonus && (
+                        <td className="scorecard-subj-td" style={{ fontWeight: 800, color: '#9333ea' }}>{sec.bonus !== undefined ? sec.bonus : fallbackBonus}</td>
+                      )}
+                      <td className="scorecard-subj-td" style={{ fontWeight: 700, color: '#d97706' }}>{sec.unattempted}</td>
+                      <td className="scorecard-subj-td" style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, color: sm >= 0 ? '#0f172a' : '#dc2626' }}>
+                        {sm.toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <tfoot>
+                <tr className="scorecard-subj-tfoot">
+                  <td className="scorecard-subj-td" style={{ padding: '9px 10px', textAlign: 'left', color: '#1e3a8a', whiteSpace: 'normal' }}>GRAND TOTAL</td>
+                  <td className="scorecard-subj-td" style={{ color: '#0f172a' }}>{totalQuestions}</td>
+                  <td className="scorecard-subj-td" style={{ color: '#16a34a' }}>{totalRight}</td>
+                  <td className="scorecard-subj-td" style={{ color: '#dc2626' }}>{totalWrong}</td>
+                  {hasBonus && (
+                    <td className="scorecard-subj-td" style={{ color: '#9333ea' }}>{totalBonus}</td>
+                  )}
+                  <td className="scorecard-subj-td" style={{ color: '#d97706' }}>{totalUnattempted}</td>
+                  <td className="scorecard-subj-td" style={{ padding: '9px 10px', textAlign: 'right', color: raw >= 0 ? '#0044cc' : '#dc2626', fontSize: '0.95rem', fontFamily: 'monospace' }}>
+                    {raw.toFixed(2)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          {/* 5. Bottom Action Buttons Stack (no-print) */}
+          <div className="scorecard-actions-panel no-print">
             {/* Primary Full-Width CTA: View Your Rank */}
             {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
               <Link
