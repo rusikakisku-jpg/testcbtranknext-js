@@ -427,6 +427,7 @@ export default function ResultPage() {
   const totalQuestions = totalRight + totalWrong + totalUnattempted + (hasBonus ? totalBonus : 0);
 
   const candidateName = resultData.candidateName || resultData.infoRows?.find(r => /name|candidate|participant/i.test(r.label))?.value || 'Verified Candidate';
+  const candidateInitial = (candidateName || 'C').charAt(0).toUpperCase();
   const candidateRollNo = resultData.rollNo || resultData.infoRows?.find(r => /roll|registration|id|applicant|user|ticket/i.test(r.label))?.value || formData?.ans_key_url?.match(/[\/=](\d{8,12})/)?.[1] || formData?.ans_key_url?.match(/\/pub\/([^\/]+)\//i)?.[1] || '';
   const candidateCategory = resultData.infoRows?.find(r => /community|caste|category/i.test(r.label))?.value || formData?.category || 'UR';
   const candidateTestDate = resultData.testDate || resultData.infoRows?.find(r => /date/i.test(r.label))?.value || '';
@@ -491,7 +492,7 @@ export default function ResultPage() {
       <main style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
         <style>{`
           /* ============================================================
-             UNIFIED SINGLE CONTAINER DESIGN SYSTEM FOR /result
+             PREMIUM MOBILE APP-STYLE DESIGN SYSTEM FOR /result
              Matches the modern app-card style of /rank
              ============================================================ */
           .result-main {
@@ -501,12 +502,14 @@ export default function ResultPage() {
             margin: 0 auto;
             padding: 16px 12px 60px;
             box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: #0f172a;
           }
 
-          /* Single Unified Card Container */
+          /* Single Unified App Container */
           .scorecard-card {
             background: #ffffff !important;
-            border-radius: 16px !important;
+            border-radius: 18px !important;
             border: 1px solid #e2e8f0 !important;
             box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04) !important;
             padding: 20px 18px !important;
@@ -523,7 +526,7 @@ export default function ResultPage() {
             }
             .scorecard-card {
               padding: 16px 14px !important;
-              border-radius: 14px !important;
+              border-radius: 16px !important;
               gap: 14px !important;
             }
           }
@@ -538,7 +541,7 @@ export default function ResultPage() {
           }
 
           .result-exam-logo {
-            max-height: 65px;
+            max-height: 60px;
             max-width: 100%;
             object-fit: contain;
             margin: 0 auto;
@@ -547,13 +550,129 @@ export default function ResultPage() {
 
           .result-exam-title {
             margin: 0;
-            font-size: 1.08rem;
+            font-size: 1.06rem;
             font-weight: 800;
             color: #0f172a;
             line-height: 1.35;
           }
 
-          /* 2. Candidate Info Section */
+          /* 2. Candidate Profile Row (App Style) */
+          .app-unified-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .app-hero-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0044cc 0%, #2563eb 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 68, 204, 0.25);
+          }
+
+          /* 3. App Score Cockpit (At-A-Glance Mobile Summary) */
+          .app-score-cockpit {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .app-cockpit-score-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+          }
+
+          .app-cockpit-label {
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #475569;
+          }
+
+          .app-cockpit-score-val {
+            font-size: 1.22rem;
+            font-weight: 900;
+            padding: 3px 12px;
+            border-radius: 8px;
+            line-height: 1.2;
+          }
+
+          .app-cockpit-score-val.pos {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+          }
+
+          .app-cockpit-score-val.neg {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+          }
+
+          .app-kpi-quad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          @media (max-width: 480px) {
+            .app-kpi-quad-grid {
+              grid-template-columns: repeat(2, 1fr);
+              gap: 6px;
+            }
+          }
+
+          .app-kpi-quad-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 7px 6px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+          }
+
+          .app-kpi-quad-label {
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #64748b;
+          }
+
+          .app-kpi-quad-val {
+            font-size: 0.96rem;
+            font-weight: 900;
+          }
+
+          .app-kpi-val-correct { color: #15803d; }
+          .app-kpi-val-wrong   { color: #b91c1c; }
+          .app-kpi-val-unatt   { color: #475569; }
+
+          /* 4. Candidate Info Section */
           .result-candidate-section {
             width: 100%;
             box-sizing: border-box;
@@ -562,13 +681,13 @@ export default function ResultPage() {
           .result-candidate-box {
             width: 100%;
             box-sizing: border-box;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid #e2e8f0;
             overflow: hidden;
             background: #ffffff;
           }
 
-          /* 3. Subject-Wise Performance Section */
+          /* 5. Subject-Wise Performance Section */
           .result-breakdown-section {
             position: relative;
             z-index: 1;
@@ -614,27 +733,85 @@ export default function ResultPage() {
           .result-table-box {
             width: 100%;
             overflow-x: auto;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid #e2e8f0;
             background: #ffffff;
             box-sizing: border-box;
           }
 
-          /* 4. Action Buttons (Inside Unified Container) */
-          .result-unified-actions {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
+          /* 6. App Style Action Button Stack */
+          .app-unified-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             width: 100%;
             box-sizing: border-box;
             padding-top: 4px;
           }
 
-          @media (max-width: 768px) {
-            .result-unified-actions {
-              grid-template-columns: 1fr;
-              gap: 10px;
-            }
+          .app-btn-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: linear-gradient(135deg, #0044cc 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 13px 18px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.92rem;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(0, 68, 204, 0.28);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+          }
+
+          .app-btn-main:hover {
+            filter: brightness(1.06);
+            box-shadow: 0 6px 18px rgba(0, 68, 204, 0.35);
+          }
+
+          .app-btn-main:active {
+            transform: scale(0.98);
+          }
+
+          .app-btn-duo-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .app-btn-sub {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #ffffff;
+            color: #0f172a;
+            border: 1.5px solid #cbd5e1;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.82rem;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+          }
+
+          .app-btn-sub:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+          }
+
+          .app-btn-sub:active {
+            transform: scale(0.98);
           }
         `}</style>
 
@@ -670,7 +847,74 @@ export default function ResultPage() {
             )}
           </div>
 
-          {/* 2. Candidate & Examination Info Table */}
+          {/* 2. Candidate Profile Bar (App Style) */}
+          <div className="app-unified-profile" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="app-hero-avatar">
+              {candidateInitial}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', lineHeight: 1.3 }}>{candidateName}</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                {candidateRollNo && (
+                  <span style={{ fontSize: '0.76rem', color: '#2563eb', fontWeight: 700, fontFamily: 'monospace', background: '#eff6ff', padding: '2px 8px', borderRadius: '6px' }}>
+                    Roll: {candidateRollNo}
+                  </span>
+                )}
+                {candidateTestDate && (
+                  <span style={{ fontSize: '0.74rem', color: '#475569', fontWeight: 600, background: '#f8fafc', border: '1px solid #e2e8f0', padding: '2px 7px', borderRadius: '6px' }}>
+                    📅 {candidateTestDate}
+                  </span>
+                )}
+                {candidateCategory && (
+                  <span style={{ fontSize: '0.74rem', color: '#b45309', fontWeight: 700, background: '#fffbeb', border: '1px solid #fef3c7', padding: '2px 7px', borderRadius: '6px' }}>
+                    🏷️ {candidateCategory}
+                  </span>
+                )}
+                {candidateTestTime && (
+                  <span style={{ fontSize: '0.74rem', color: '#047857', fontWeight: 600, background: '#ecfdf5', border: '1px solid #d1fae5', padding: '2px 7px', borderRadius: '6px' }}>
+                    ⏱️ {candidateTestTime}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Score Cockpit (At-A-Glance App Performance Summary) */}
+          <div className="app-score-cockpit" style={{ position: 'relative', zIndex: 1 }}>
+            <div className="app-cockpit-score-row">
+              <div className="app-cockpit-label">Total Raw Score</div>
+              <div className={`app-cockpit-score-val ${raw >= 0 ? 'pos' : 'neg'}`}>
+                {raw.toFixed(2)}
+              </div>
+            </div>
+            <div className="app-kpi-quad-grid">
+              <div className="app-kpi-quad-item">
+                <span className="app-kpi-quad-label">Right (+{rightVal})</span>
+                <span className="app-kpi-quad-val app-kpi-val-correct">{totalRight}</span>
+              </div>
+              <div className="app-kpi-quad-item">
+                <span className="app-kpi-quad-label">Wrong (-{wrongVal})</span>
+                <span className="app-kpi-quad-val app-kpi-val-wrong">{totalWrong}</span>
+              </div>
+              <div className="app-kpi-quad-item">
+                <span className="app-kpi-quad-label">Unattempted</span>
+                <span className="app-kpi-quad-val app-kpi-val-unatt">{totalUnattempted}</span>
+              </div>
+              {hasBonus ? (
+                <div className="app-kpi-quad-item">
+                  <span className="app-kpi-quad-label">Bonus (+{rightVal})</span>
+                  <span className="app-kpi-quad-val" style={{ color: '#9333ea' }}>{totalBonus}</span>
+                </div>
+              ) : (
+                <div className="app-kpi-quad-item">
+                  <span className="app-kpi-quad-label">Questions</span>
+                  <span className="app-kpi-quad-val" style={{ color: '#2563eb' }}>{totalQuestions}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 4. Complete Candidate & Examination Info Table */}
           <div className="result-candidate-section" style={{ position: 'relative', zIndex: 1 }}>
             <div className="result-candidate-box">
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem', textAlign: 'left' }}>
@@ -703,7 +947,7 @@ export default function ResultPage() {
             </div>
           </div>
 
-          {/* 3. Section Performance Table with Recalc Controls */}
+          {/* 5. Section Performance Table with Recalc Controls */}
           <div className="result-breakdown-section">
             <div className="result-recalc-bar">
               <h3 style={{ fontSize: '0.78rem', fontWeight: 900, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>Subject-Wise Performance Breakdown</h3>
@@ -832,54 +1076,56 @@ export default function ResultPage() {
             </div>
           </div>
 
-          {/* 4. Action Buttons (Inside Unified Container) */}
-          <div className="result-unified-actions result-action-buttons no-print">
-            {/* Button 1: Review Answerkey */}
-            {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
-              <Link
-                href="/review-answerkey"
-                className="btn-result-action btn-review-ak"
-              >
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-                <span>Review Answerkey</span>
-              </Link>
-            )}
-
-            {/* Button 2: Download Scorecard */}
-            {APP_FEATURE_FLAGS.SHOW_DOWNLOAD_SCORECARD && (
-              <button
-                type="button"
-                disabled={isGeneratingImg}
-                onClick={handleDownloadImageScorecard}
-                className={`btn-result-action btn-download-sc ${isGeneratingImg ? 'loading' : ''}`}
-              >
-                {isGeneratingImg ? (
-                  <span>Generating Scorecard...</span>
-                ) : (
-                  <>
-                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>Download Scorecard</span>
-                  </>
-                )}
-              </button>
-            )}
-
-            {/* Button 3: View Your Rank */}
+          {/* 6. Action Buttons (App Style Action Stack) */}
+          <div className="app-unified-actions no-print" style={{ position: 'relative', zIndex: 1 }}>
+            {/* Primary Full-Width CTA: View Your Rank */}
             {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
               <Link
                 href="/rank"
-                className="btn-result-action btn-view-rank"
+                className="app-btn-main"
               >
                 <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
-                <span>View Your Rank</span>
+                <span>View Your Live Rank</span>
+                <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
               </Link>
             )}
+
+            {/* Secondary Duo Row: Review Answerkey & Download Scorecard */}
+            <div className="app-btn-duo-row">
+              {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
+                <Link
+                  href="/review-answerkey"
+                  className="app-btn-sub"
+                >
+                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                  <span>Review Answerkey</span>
+                </Link>
+              )}
+
+              {APP_FEATURE_FLAGS.SHOW_DOWNLOAD_SCORECARD && (
+                <button
+                  type="button"
+                  disabled={isGeneratingImg}
+                  onClick={handleDownloadImageScorecard}
+                  className="app-btn-sub"
+                >
+                  {isGeneratingImg ? (
+                    <span>Generating...</span>
+                  ) : (
+                    <>
+                      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>Download Scorecard</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
 
         </div>
