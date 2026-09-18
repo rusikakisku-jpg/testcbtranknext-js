@@ -384,7 +384,7 @@ export default function ResultPage() {
       const html2canvas = html2canvasModule.default || html2canvasModule;
 
       const canvas = await html2canvas(templateEl, {
-        scale: 2.5,
+        scale: 3,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -1202,7 +1202,8 @@ export default function ResultPage() {
     </main>
 
     {/* ─────────────────────────────────────────────────────────── */}
-    {/* Dedicated Full-Bleed Table Scorecard (RankGuruji Design)    */}
+    {/* ─────────────────────────────────────────────────────────── */}
+    {/* Dedicated Full-Bleed Table Scorecard (1:1 Mobile Portrait)  */}
     {/* Captured by html2canvas when "Download Scorecard" is clicked */}
     {/* ─────────────────────────────────────────────────────────── */}
     <div
@@ -1211,17 +1212,14 @@ export default function ResultPage() {
         position: 'fixed',
         left: '-9999px',
         top: 0,
-        width: '520px',
+        width: '380px',
         background: '#ffffff',
         fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         color: '#0f172a',
         padding: 0,
         boxSizing: 'border-box',
-        border: '5px solid #0044cc',
-        borderTop: '5px solid #0044cc',
-        borderRight: '5px solid #0044cc',
-        borderBottom: '5px solid #0044cc',
-        borderLeft: '5px solid #0044cc',
+        border: '3.5px solid #0044cc',
+        borderRadius: '12px',
         overflow: 'hidden'
       }}
     >
@@ -1241,7 +1239,7 @@ export default function ResultPage() {
           justifyItems: 'center',
           pointerEvents: 'none',
           userSelect: 'none',
-          zIndex: 99,
+          zIndex: 10,
           overflow: 'hidden',
           padding: '16px'
         }}
@@ -1251,10 +1249,10 @@ export default function ResultPage() {
             key={i}
             style={{
               transform: 'rotate(-25deg)',
-              fontSize: '1.12rem',
+              fontSize: '0.98rem',
               fontWeight: 800,
               color: '#0044cc',
-              opacity: 0.06,
+              opacity: 0.062,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               whiteSpace: 'nowrap',
@@ -1272,20 +1270,20 @@ export default function ResultPage() {
           position: 'relative',
           zIndex: 1,
           background: '#ffffff',
-          padding: '10px 16px',
+          padding: '8px 14px',
           textAlign: 'center',
           borderBottom: '2px solid #0044cc',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '48px'
+          minHeight: '44px'
         }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={resultData.headerImgUrl}
             alt="Exam Header Logo"
             style={{
-              maxHeight: '65px',
+              maxHeight: '55px',
               maxWidth: '100%',
               objectFit: 'contain',
               display: 'block',
@@ -1299,43 +1297,60 @@ export default function ResultPage() {
           zIndex: 1,
           background: '#0044cc',
           color: '#ffffff',
-          padding: '12px 16px',
+          padding: '10px 14px',
           textAlign: 'center',
           borderBottom: '2px solid #0044cc'
         }}>
-          <h2 style={{ fontSize: '1.08rem', fontWeight: 900, margin: 0, lineHeight: 1.3, color: '#ffffff' }}>
+          <h2 style={{ fontSize: '1rem', fontWeight: 900, margin: 0, lineHeight: 1.3, color: '#ffffff' }}>
             {resultData.headerBannerText || resultData.examName || 'CBT Competitive Examination'}
           </h2>
         </div>
       )}
 
-      {/* Candidate Details Table (Edge to Edge, 2 Columns: Label | Value) */}
+      {/* 2. Candidate Examination Details Table (Edge to Edge, 2 Columns: Label | Value) */}
       <table style={{
         position: 'relative',
         zIndex: 1,
         width: '100%',
+        tableLayout: 'fixed',
         borderCollapse: 'collapse',
-        fontSize: '0.78rem',
+        fontSize: '0.68rem',
         borderBottom: '2px solid #0044cc'
       }}>
         <tbody>
           {displayRows.map((row, idx) => {
             const isLast = idx === displayRows.length - 1;
             const isRoll = /roll|registration|id|participant\s*id|applicant/i.test(row.label);
+            const isVenue = row.label.toLowerCase().includes('center') || row.label.toLowerCase().includes('venue');
             return (
               <tr key={idx} style={{ borderBottom: isLast ? 'none' : '1px solid #cbd5e1' }}>
-                <th style={{ width: '38%', background: '#f8fafc', padding: '6px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', borderRight: '1px solid #cbd5e1' }}>
+                <th style={{
+                  width: '36%',
+                  background: '#f8fafc',
+                  padding: '4.5px 8px',
+                  textAlign: 'left',
+                  fontWeight: 700,
+                  color: '#475569',
+                  fontSize: '0.67rem',
+                  lineHeight: 1.3,
+                  borderRight: '1px solid #cbd5e1',
+                  boxSizing: 'border-box'
+                }}>
                   {row.label}
                 </th>
                 <td style={{
-                  width: '62%',
+                  width: '64%',
                   background: '#ffffff',
-                  padding: '6px 12px',
+                  padding: '4.5px 8px',
                   fontWeight: isRoll ? 900 : 800,
                   color: isRoll ? '#0044cc' : '#0f172a',
                   fontFamily: isRoll ? 'monospace' : 'inherit',
                   textAlign: 'left',
-                  fontSize: row.label.toLowerCase().includes('center') || row.label.toLowerCase().includes('venue') ? '0.75rem' : 'inherit'
+                  fontSize: isVenue ? '0.63rem' : '0.68rem',
+                  lineHeight: isVenue ? 1.25 : 1.3,
+                  boxSizing: 'border-box',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere'
                 }}>
                   {row.value}
                 </td>
@@ -1345,27 +1360,82 @@ export default function ResultPage() {
         </tbody>
       </table>
 
-      {/* Subject-Wise Performance Table (Edge to Edge, 100% Flush) */}
+      {/* 3. Right (+) / Wrong (-) Marks Row (Clean Static Bar 1:1 with Mobile UI) */}
+      <div style={{
+        position: 'relative',
+        zIndex: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        padding: '5px 10px',
+        background: '#f8fafc',
+        borderBottom: '1px solid #cbd5e1',
+        boxSizing: 'border-box',
+        fontSize: '0.74rem',
+        fontWeight: 700,
+        color: '#334155'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          Right (+):{' '}
+          <span style={{
+            display: 'inline-block',
+            width: '46px',
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '5px',
+            padding: '2px 4px',
+            textAlign: 'center',
+            fontFamily: 'monospace',
+            fontWeight: 900,
+            fontSize: '0.80rem',
+            color: '#0f172a'
+          }}>
+            {rightVal}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          Wrong (-):{' '}
+          <span style={{
+            display: 'inline-block',
+            width: '46px',
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '5px',
+            padding: '2px 4px',
+            textAlign: 'center',
+            fontFamily: 'monospace',
+            fontWeight: 900,
+            fontSize: '0.80rem',
+            color: '#0f172a'
+          }}>
+            {wrongVal}
+          </span>
+        </div>
+      </div>
+
+      {/* 4. Subject-Wise Performance Table (Edge to Edge, 1:1 Mobile Portrait) */}
       <table style={{
         position: 'relative',
         zIndex: 1,
         width: '100%',
+        tableLayout: 'fixed',
         borderCollapse: 'collapse',
-        fontSize: '0.78rem',
+        fontSize: '0.70rem',
         textAlign: 'center',
         borderBottom: '1px solid #cbd5e1'
       }}>
         <thead>
-          <tr style={{ background: '#0f172a', color: '#ffffff', fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-            <th style={{ padding: '8px 10px', textAlign: 'left', borderRight: '1px solid #334155', whiteSpace: 'normal', minWidth: '110px' }}>Section</th>
-            <th style={{ padding: '8px 4px', borderRight: '1px solid #334155' }}>Total</th>
-            <th style={{ padding: '8px 4px', color: '#4ade80', borderRight: '1px solid #334155' }}>Right (+{rightVal})</th>
-            <th style={{ padding: '8px 4px', color: '#f87171', borderRight: '1px solid #334155' }}>Wrong (-{wrongVal})</th>
+          <tr style={{ background: '#0f172a', color: '#ffffff', fontWeight: 800, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+            <th style={{ width: '36%', padding: '6px 6px', textAlign: 'left', borderRight: '1px solid #334155', boxSizing: 'border-box' }}>Section</th>
+            <th style={{ padding: '6px 3px', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>TQ</th>
+            <th style={{ padding: '6px 3px', color: '#4ade80', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>R</th>
+            <th style={{ padding: '6px 3px', color: '#f87171', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>W</th>
             {hasBonus && (
-              <th style={{ padding: '8px 4px', color: '#c084fc', borderRight: '1px solid #334155' }}>Bonus (+{rightVal})</th>
+              <th style={{ padding: '6px 3px', color: '#c084fc', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>B</th>
             )}
-            <th style={{ padding: '8px 4px', color: '#fbbf24', borderRight: '1px solid #334155' }}>Skip</th>
-            <th style={{ padding: '8px 10px', textAlign: 'right' }}>Score</th>
+            <th style={{ padding: '6px 3px', color: '#fbbf24', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>S</th>
+            <th style={{ width: '16%', padding: '6px 3px', textAlign: 'right', boxSizing: 'border-box' }}>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -1373,15 +1443,15 @@ export default function ResultPage() {
             const sm = calcSectionMarks(sec, rightVal, wrongVal, fallbackBonus);
             return (
               <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
-                <td style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 800, color: '#0f172a', borderRight: '1px solid #cbd5e1', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: 1.35 }}>{sec.name}</td>
-                <td style={{ padding: '8px 4px', fontWeight: 700, borderRight: '1px solid #cbd5e1', whiteSpace: 'nowrap' }}>{sec.total}</td>
-                <td style={{ padding: '8px 4px', fontWeight: 800, color: '#16a34a', borderRight: '1px solid #cbd5e1', whiteSpace: 'nowrap' }}>{sec.correct}</td>
-                <td style={{ padding: '8px 4px', fontWeight: 800, color: '#dc2626', borderRight: '1px solid #cbd5e1', whiteSpace: 'nowrap' }}>{sec.wrong}</td>
+                <td style={{ width: '36%', padding: '6px 6px', textAlign: 'left', fontWeight: 800, color: '#0f172a', borderRight: '1px solid #cbd5e1', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere', fontSize: '0.69rem', lineHeight: 1.25, boxSizing: 'border-box' }}>{sec.name}</td>
+                <td style={{ padding: '6px 3px', fontWeight: 700, borderRight: '1px solid #cbd5e1', boxSizing: 'border-box' }}>{sec.total}</td>
+                <td style={{ padding: '6px 3px', fontWeight: 800, color: '#16a34a', borderRight: '1px solid #cbd5e1', boxSizing: 'border-box' }}>{sec.correct}</td>
+                <td style={{ padding: '6px 3px', fontWeight: 800, color: '#dc2626', borderRight: '1px solid #cbd5e1', boxSizing: 'border-box' }}>{sec.wrong}</td>
                 {hasBonus && (
-                  <td style={{ padding: '8px 4px', fontWeight: 800, color: '#9333ea', borderRight: '1px solid #cbd5e1', whiteSpace: 'nowrap' }}>{sec.bonus !== undefined ? sec.bonus : fallbackBonus}</td>
+                  <td style={{ padding: '6px 3px', fontWeight: 800, color: '#9333ea', borderRight: '1px solid #cbd5e1', boxSizing: 'border-box' }}>{sec.bonus !== undefined ? sec.bonus : fallbackBonus}</td>
                 )}
-                <td style={{ padding: '8px 4px', fontWeight: 700, color: '#d97706', borderRight: '1px solid #cbd5e1', whiteSpace: 'nowrap' }}>{sec.unattempted}</td>
-                <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, color: sm >= 0 ? '#0f172a' : '#dc2626', whiteSpace: 'nowrap' }}>
+                <td style={{ padding: '6px 3px', fontWeight: 700, color: '#d97706', borderRight: '1px solid #cbd5e1', boxSizing: 'border-box' }}>{sec.unattempted}</td>
+                <td style={{ width: '16%', padding: '6px 3px', textAlign: 'right', fontWeight: 900, color: sm >= 0 ? '#0f172a' : '#dc2626', boxSizing: 'border-box' }}>
                   {sm.toFixed(2)}
                 </td>
               </tr>
@@ -1389,21 +1459,46 @@ export default function ResultPage() {
           })}
         </tbody>
         <tfoot>
-          <tr style={{ background: '#eff6ff', borderTop: '2px solid #3b82f6', fontWeight: 900, fontSize: '0.82rem' }}>
-            <td style={{ padding: '9px 10px', textAlign: 'left', color: '#1e3a8a', borderRight: '1px solid #cbd5e1', whiteSpace: 'normal' }}>GRAND TOTAL</td>
-            <td style={{ padding: '9px 4px', color: '#0f172a', borderRight: '1px solid #cbd5e1' }}>{totalQuestions}</td>
-            <td style={{ padding: '9px 4px', color: '#16a34a', borderRight: '1px solid #cbd5e1' }}>{totalRight}</td>
-            <td style={{ padding: '9px 4px', color: '#dc2626', borderRight: '1px solid #cbd5e1' }}>{totalWrong}</td>
+          <tr style={{ background: '#eff6ff', borderTop: '2px solid #3b82f6', fontWeight: 900 }}>
+            <td style={{ width: '36%', padding: '7px 6px', textAlign: 'left', color: '#1e3a8a', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>TOTAL</td>
+            <td style={{ padding: '7px 3px', color: '#0f172a', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalQuestions}</td>
+            <td style={{ padding: '7px 3px', color: '#16a34a', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalRight}</td>
+            <td style={{ padding: '7px 3px', color: '#dc2626', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalWrong}</td>
             {hasBonus && (
-              <td style={{ padding: '9px 4px', color: '#9333ea', borderRight: '1px solid #cbd5e1' }}>{totalBonus}</td>
+              <td style={{ padding: '7px 3px', color: '#9333ea', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalBonus}</td>
             )}
-            <td style={{ padding: '9px 4px', color: '#d97706', borderRight: '1px solid #cbd5e1' }}>{totalUnattempted}</td>
-            <td style={{ padding: '9px 10px', textAlign: 'right', color: raw >= 0 ? '#0044cc' : '#dc2626', fontSize: '0.95rem', fontFamily: 'monospace' }}>
+            <td style={{ padding: '7px 3px', color: '#d97706', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalUnattempted}</td>
+            <td style={{ width: '16%', padding: '7px 3px', textAlign: 'right', color: raw >= 0 ? '#0044cc' : '#dc2626', fontSize: '0.78rem', fontFamily: 'monospace', boxSizing: 'border-box' }}>
               {raw.toFixed(2)}
             </td>
           </tr>
         </tfoot>
       </table>
+
+      {/* 5. Note / Legend Bar (1:1 with Mobile UI) */}
+      <div style={{
+        position: 'relative',
+        zIndex: 1,
+        padding: '6px 8px',
+        background: '#f8fafc',
+        fontSize: '0.68rem',
+        color: '#475569',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: '4px 8px',
+        lineHeight: 1.4,
+        boxSizing: 'border-box'
+      }}>
+        <span style={{ fontWeight: 900, color: '#1e293b', fontSize: '0.88rem', lineHeight: 1 }}>*</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#2563eb' }}>TQ</strong> = Total Questions</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#16a34a' }}>R</strong> = Right</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#dc2626' }}>W</strong> = Wrong</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#d97706' }}>S</strong> = Skip</span>
+        {hasBonus && (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#9333ea' }}>B</strong> = Bonus</span>
+        )}
+      </div>
     </div>
     </>
   );
