@@ -755,7 +755,6 @@ export default function ResultPage() {
             z-index: 1;
             padding: 8px 12px;
             background: #f8fafc;
-            border-bottom: 1px solid #cbd5e1;
             font-size: 0.74rem;
             color: #475569;
             display: flex;
@@ -839,16 +838,15 @@ export default function ResultPage() {
             }
           }
 
-          /* Bottom Action Buttons Stack */
+          /* Bottom Action Buttons Stack (Below the Scorecard Container) */
           .scorecard-actions-panel {
             position: relative;
             z-index: 1;
-            padding: 14px 14px;
-            background: #f8fafc;
-            border-top: 2px solid #0044cc;
+            padding: 14px 0 0;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            width: 100%;
             box-sizing: border-box;
           }
 
@@ -1129,59 +1127,61 @@ export default function ResultPage() {
             )}
           </div>
 
-          {/* 6. Bottom Action Buttons Stack (no-print) */}
-          <div className="scorecard-actions-panel no-print">
-            {/* Primary Full-Width CTA: View Your Rank */}
-            {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
+        </div>
+        {/* END OF BLUE-BORDERED SCORECARD CONTAINER */}
+
+        {/* 6. Action Buttons Stack (Placed outside the scorecard container) */}
+        <div className="scorecard-actions-panel no-print">
+          {/* Primary Full-Width CTA: View Your Rank */}
+          {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
+            <Link
+              href="/rank"
+              className="app-btn-main"
+            >
+              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              <span>View Your Live Rank</span>
+              <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
+            </Link>
+          )}
+
+          {/* Secondary Duo Row: Review Answerkey & Download Scorecard */}
+          <div className="app-btn-duo-row">
+            {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
               <Link
-                href="/rank"
-                className="app-btn-main"
+                href="/review-answerkey"
+                className="app-btn-sub"
               >
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
-                <span>View Your Live Rank</span>
-                <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
+                <span>Review Answerkey</span>
               </Link>
             )}
 
-            {/* Secondary Duo Row: Review Answerkey & Download Scorecard */}
-            <div className="app-btn-duo-row">
-              {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
-                <Link
-                  href="/review-answerkey"
-                  className="app-btn-sub"
-                >
-                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                  </svg>
-                  <span>Review Answerkey</span>
-                </Link>
-              )}
-
-              {APP_FEATURE_FLAGS.SHOW_DOWNLOAD_SCORECARD && (
-                <button
-                  type="button"
-                  disabled={isGeneratingImg}
-                  onClick={handleDownloadImageScorecard}
-                  className="app-btn-sub"
-                >
-                  {isGeneratingImg ? (
-                    <span>Generating...</span>
-                  ) : (
-                    <>
-                      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>Download Scorecard</span>
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
+            {APP_FEATURE_FLAGS.SHOW_DOWNLOAD_SCORECARD && (
+              <button
+                type="button"
+                disabled={isGeneratingImg}
+                onClick={handleDownloadImageScorecard}
+                className="app-btn-sub"
+              >
+                {isGeneratingImg ? (
+                  <span>Generating...</span>
+                ) : (
+                  <>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>Download Scorecard</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
-
         </div>
+
       </div>
     </main>
 
