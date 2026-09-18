@@ -767,8 +767,10 @@ export default function ResultPage() {
           }
 
           .scorecard-subj-legend .legend-title {
-            font-weight: 800;
+            font-weight: 900;
             color: #1e293b;
+            font-size: 0.88rem;
+            line-height: 1;
           }
 
           .scorecard-subj-legend .legend-item {
@@ -1127,7 +1129,7 @@ export default function ResultPage() {
 
           {/* 5. Note / Legend Bar (Explaining TQ, R, W, S, B) */}
           <div className="scorecard-subj-legend">
-            <span className="legend-title">📌 Note:</span>
+            <span className="legend-title">*</span>
             <span className="legend-item"><strong style={{ color: '#2563eb' }}>TQ</strong> = Total Questions</span>
             <span className="legend-item"><strong style={{ color: '#16a34a' }}>R</strong> = Right</span>
             <span className="legend-item"><strong style={{ color: '#dc2626' }}>W</strong> = Wrong</span>
