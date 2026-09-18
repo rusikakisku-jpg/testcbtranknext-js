@@ -1212,14 +1212,14 @@ export default function ResultPage() {
         position: 'fixed',
         left: '-9999px',
         top: 0,
-        width: '380px',
+        width: '420px',
         background: '#ffffff',
         fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         color: '#0f172a',
         padding: 0,
         boxSizing: 'border-box',
         border: '3.5px solid #0044cc',
-        borderRadius: '12px',
+        borderRadius: 0,
         overflow: 'hidden'
       }}
     >
@@ -1360,61 +1360,7 @@ export default function ResultPage() {
         </tbody>
       </table>
 
-      {/* 3. Right (+) / Wrong (-) Marks Row (Clean Static Bar 1:1 with Mobile UI) */}
-      <div style={{
-        position: 'relative',
-        zIndex: 1,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        padding: '5px 10px',
-        background: '#f8fafc',
-        borderBottom: '1px solid #cbd5e1',
-        boxSizing: 'border-box',
-        fontSize: '0.74rem',
-        fontWeight: 700,
-        color: '#334155'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          Right (+):{' '}
-          <span style={{
-            display: 'inline-block',
-            width: '46px',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderRadius: '5px',
-            padding: '2px 4px',
-            textAlign: 'center',
-            fontFamily: 'monospace',
-            fontWeight: 900,
-            fontSize: '0.80rem',
-            color: '#0f172a'
-          }}>
-            {rightVal}
-          </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          Wrong (-):{' '}
-          <span style={{
-            display: 'inline-block',
-            width: '46px',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderRadius: '5px',
-            padding: '2px 4px',
-            textAlign: 'center',
-            fontFamily: 'monospace',
-            fontWeight: 900,
-            fontSize: '0.80rem',
-            color: '#0f172a'
-          }}>
-            {wrongVal}
-          </span>
-        </div>
-      </div>
-
-      {/* 4. Subject-Wise Performance Table (Edge to Edge, 1:1 Mobile Portrait) */}
+      {/* 3. Subject-Wise Performance Table (Edge to Edge, 1:1 Mobile Portrait) */}
       <table style={{
         position: 'relative',
         zIndex: 1,
@@ -1428,14 +1374,14 @@ export default function ResultPage() {
         <thead>
           <tr style={{ background: '#0f172a', color: '#ffffff', fontWeight: 800, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
             <th style={{ width: '36%', padding: '6px 6px', textAlign: 'left', borderRight: '1px solid #334155', boxSizing: 'border-box' }}>Section</th>
-            <th style={{ padding: '6px 3px', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>TQ</th>
-            <th style={{ padding: '6px 3px', color: '#4ade80', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>R</th>
-            <th style={{ padding: '6px 3px', color: '#f87171', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>W</th>
+            <th style={{ padding: '6px 2px', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.72rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>TQ</th>
+            <th style={{ padding: '6px 2px', color: '#4ade80', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.67rem', letterSpacing: '0.01em', boxSizing: 'border-box', lineHeight: 1.25 }}>Right (+{rightVal})</th>
+            <th style={{ padding: '6px 2px', color: '#f87171', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.67rem', letterSpacing: '0.01em', boxSizing: 'border-box', lineHeight: 1.25 }}>Wrong (-{wrongVal})</th>
             {hasBonus && (
-              <th style={{ padding: '6px 3px', color: '#c084fc', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>B</th>
+              <th style={{ padding: '6px 2px', color: '#c084fc', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.67rem', letterSpacing: '0.01em', boxSizing: 'border-box', lineHeight: 1.25 }}>Bonus (+{rightVal})</th>
             )}
-            <th style={{ padding: '6px 3px', color: '#fbbf24', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.76rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>S</th>
-            <th style={{ width: '16%', padding: '6px 3px', textAlign: 'right', boxSizing: 'border-box' }}>Total</th>
+            <th style={{ padding: '6px 2px', color: '#fbbf24', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.70rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>Skip</th>
+            <th style={{ width: '16%', padding: '6px 4px', textAlign: 'right', fontWeight: 900, fontSize: '0.72rem', boxSizing: 'border-box' }}>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -1475,7 +1421,7 @@ export default function ResultPage() {
         </tfoot>
       </table>
 
-      {/* 5. Note / Legend Bar (1:1 with Mobile UI) */}
+      {/* 4. Note / Legend Bar */}
       <div style={{
         position: 'relative',
         zIndex: 1,
@@ -1492,12 +1438,6 @@ export default function ResultPage() {
       }}>
         <span style={{ fontWeight: 900, color: '#1e293b', fontSize: '0.88rem', lineHeight: 1 }}>*</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#2563eb' }}>TQ</strong> = Total Questions</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#16a34a' }}>R</strong> = Right</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#dc2626' }}>W</strong> = Wrong</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#d97706' }}>S</strong> = Skip</span>
-        {hasBonus && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#9333ea' }}>B</strong> = Bonus</span>
-        )}
       </div>
     </div>
     </>
