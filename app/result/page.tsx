@@ -613,7 +613,7 @@ export default function ResultPage() {
           .scorecard-cand-table {
             width: 100%;
             border-collapse: collapse;
-            fontSize: 0.82rem;
+            font-size: 0.82rem;
             border-bottom: 2px solid #0044cc;
           }
 
@@ -642,6 +642,10 @@ export default function ResultPage() {
             font-weight: 900;
             color: #0044cc;
             font-family: monospace;
+          }
+
+          .scorecard-cand-td.is-venue {
+            font-size: 0.78rem;
           }
 
           /* Interactive Recalculate Controls Bar */
@@ -727,6 +731,10 @@ export default function ResultPage() {
             border-right: none;
           }
 
+          .scorecard-sec-name {
+            padding: 8px 10px;
+          }
+
           .scorecard-subj-tfoot {
             background: #eff6ff;
             border-top: 2px solid #3b82f6;
@@ -770,24 +778,64 @@ export default function ResultPage() {
           }
 
           @media (max-width: 640px) {
-            .scorecard-subject-table .scorecard-subj-th,
-            .scorecard-subject-table .scorecard-subj-td {
-              padding: 7px 4px !important;
-              font-size: 0.76rem !important;
+            /* Compact User Info (Candidate Details Table) on Mobile */
+            .scorecard-cand-table {
+              font-size: 0.72rem !important;
+            }
+            .scorecard-cand-th {
+              font-size: 0.70rem !important;
+              padding: 5px 8px !important;
+              width: 36% !important;
+              line-height: 1.3 !important;
+            }
+            .scorecard-cand-td {
+              font-size: 0.72rem !important;
+              padding: 5px 8px !important;
+              width: 64% !important;
+              line-height: 1.3 !important;
+            }
+            .scorecard-cand-td.is-venue {
+              font-size: 0.67rem !important;
+              line-height: 1.25 !important;
+            }
+
+            /* Compact Subject-Wise Performance Table on Mobile */
+            .scorecard-subject-table {
+              font-size: 0.70rem !important;
+            }
+            .scorecard-subj-head .scorecard-subj-th {
+              font-size: 0.68rem !important;
+              padding: 6px 3px !important;
+            }
+            .scorecard-subj-td {
+              font-size: 0.70rem !important;
+              padding: 6px 3px !important;
+            }
+            .scorecard-sec-name {
+              font-size: 0.69rem !important;
+              padding: 6px 6px !important;
+              line-height: 1.25 !important;
+            }
+            .scorecard-subj-tfoot td {
+              font-size: 0.71rem !important;
+              padding: 7px 3px !important;
+            }
+            .scorecard-subj-tfoot td:last-child {
+              font-size: 0.78rem !important;
             }
             .scorecard-subject-table .th-desktop-label {
               display: none !important;
             }
             .scorecard-subject-table .th-mobile-label {
               display: inline !important;
-              font-size: 0.82rem !important;
+              font-size: 0.76rem !important;
               font-weight: 900 !important;
               letter-spacing: 0.02em !important;
             }
             .scorecard-subj-legend {
-              font-size: 0.72rem !important;
-              padding: 7px 10px !important;
-              gap: 4px 10px !important;
+              font-size: 0.68rem !important;
+              padding: 6px 8px !important;
+              gap: 4px 8px !important;
             }
           }
 
@@ -915,10 +963,7 @@ export default function ResultPage() {
                         {row.label}
                       </th>
                       <td
-                        className={`scorecard-cand-td ${isRoll ? 'is-roll' : ''}`}
-                        style={{
-                          fontSize: row.label.toLowerCase().includes('center') || row.label.toLowerCase().includes('venue') ? '0.76rem' : 'inherit'
-                        }}
+                        className={`scorecard-cand-td ${isRoll ? 'is-roll' : ''} ${row.label.toLowerCase().includes('center') || row.label.toLowerCase().includes('venue') ? 'is-venue' : ''}`}
                       >
                         {row.value}
                       </td>
@@ -1035,7 +1080,7 @@ export default function ResultPage() {
                   const sm = calcSectionMarks(sec, rightVal, wrongVal, fallbackBonus);
                   return (
                     <tr key={idx} style={{ borderBottom: '1px solid #cbd5e1', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
-                      <td className="scorecard-subj-td" style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 800, color: '#0f172a', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: 1.35 }}>
+                      <td className="scorecard-subj-td scorecard-sec-name" style={{ textAlign: 'left', fontWeight: 800, color: '#0f172a', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: 1.35 }}>
                         {sec.name}
                       </td>
                       <td className="scorecard-subj-td" style={{ fontWeight: 700 }}>{sec.total}</td>
@@ -1054,7 +1099,7 @@ export default function ResultPage() {
               </tbody>
               <tfoot>
                 <tr className="scorecard-subj-tfoot">
-                  <td className="scorecard-subj-td" style={{ padding: '9px 10px', textAlign: 'left', color: '#1e3a8a', whiteSpace: 'normal' }}>
+                  <td className="scorecard-subj-td scorecard-sec-name" style={{ textAlign: 'left', color: '#1e3a8a', whiteSpace: 'normal' }}>
                     <span className="th-desktop-label">GRAND TOTAL</span>
                     <span className="th-mobile-label">TOTAL</span>
                   </td>
