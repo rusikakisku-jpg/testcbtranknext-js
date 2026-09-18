@@ -541,13 +541,13 @@ export default function ResultPage() {
             bottom: 0;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(5, 1fr);
+            grid-template-rows: repeat(6, 1fr);
             gap: 24px 10px;
             align-items: center;
             justify-items: center;
             pointer-events: none;
             user-select: none;
-            z-index: 0;
+            z-index: 10;
             overflow: hidden;
             padding: 16px;
           }
@@ -557,7 +557,7 @@ export default function ResultPage() {
             font-size: 1.45rem;
             font-weight: 900;
             color: #0044cc;
-            opacity: 0.055;
+            opacity: 0.075;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             white-space: nowrap;
@@ -845,6 +845,10 @@ export default function ResultPage() {
               padding: 6px 8px !important;
               gap: 4px 8px !important;
             }
+            .scorecard-watermark-item {
+              font-size: 1.22rem !important;
+              opacity: 0.08 !important;
+            }
           }
 
           /* Bottom Action Buttons Stack (Below the Scorecard Container) */
@@ -932,7 +936,7 @@ export default function ResultPage() {
 
           {/* Multiple Repeating Security Watermarks: CBT Rank */}
           <div className="scorecard-watermark-grid">
-            {Array.from({ length: 10 }).map((_, i) => (
+            {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="scorecard-watermark-item">
                 CBT Rank
               </div>
@@ -1231,7 +1235,7 @@ export default function ResultPage() {
           bottom: 0,
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gridTemplateRows: 'repeat(5, 1fr)',
+          gridTemplateRows: 'repeat(6, 1fr)',
           gap: '24px 10px',
           alignItems: 'center',
           justifyItems: 'center',
@@ -1242,7 +1246,7 @@ export default function ResultPage() {
           padding: '16px'
         }}
       >
-        {Array.from({ length: 10 }).map((_, i) => (
+        {Array.from({ length: 12 }).map((_, i) => (
           <div
             key={i}
             style={{
@@ -1250,7 +1254,7 @@ export default function ResultPage() {
               fontSize: '1.45rem',
               fontWeight: 900,
               color: '#0044cc',
-              opacity: 0.055,
+              opacity: 0.075,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               whiteSpace: 'nowrap',
