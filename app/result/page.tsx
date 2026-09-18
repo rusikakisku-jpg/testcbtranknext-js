@@ -734,6 +734,63 @@ export default function ResultPage() {
             font-size: 0.84rem;
           }
 
+          .scorecard-subject-table .th-desktop-label {
+            display: inline;
+          }
+
+          .scorecard-subject-table .th-mobile-label {
+            display: none;
+          }
+
+          .scorecard-subj-legend {
+            position: relative;
+            z-index: 1;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-bottom: 1px solid #cbd5e1;
+            font-size: 0.74rem;
+            color: #475569;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 14px;
+            line-height: 1.4;
+            box-sizing: border-box;
+          }
+
+          .scorecard-subj-legend .legend-title {
+            font-weight: 800;
+            color: #1e293b;
+          }
+
+          .scorecard-subj-legend .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+          }
+
+          @media (max-width: 640px) {
+            .scorecard-subject-table .scorecard-subj-th,
+            .scorecard-subject-table .scorecard-subj-td {
+              padding: 7px 4px !important;
+              font-size: 0.76rem !important;
+            }
+            .scorecard-subject-table .th-desktop-label {
+              display: none !important;
+            }
+            .scorecard-subject-table .th-mobile-label {
+              display: inline !important;
+              font-size: 0.82rem !important;
+              font-weight: 900 !important;
+              letter-spacing: 0.02em !important;
+            }
+            .scorecard-subj-legend {
+              font-size: 0.72rem !important;
+              padding: 7px 10px !important;
+              gap: 4px 10px !important;
+            }
+          }
+
           /* Bottom Action Buttons Stack */
           .scorecard-actions-panel {
             position: relative;
@@ -950,14 +1007,26 @@ export default function ResultPage() {
             <table className="scorecard-subject-table">
               <thead>
                 <tr className="scorecard-subj-head">
-                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'left', minWidth: '110px' }}>Section</th>
+                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'left', minWidth: '100px' }}>Section</th>
                   <th className="scorecard-subj-th">Total</th>
-                  <th className="scorecard-subj-th" style={{ color: '#4ade80' }}>Right (+{rightVal})</th>
-                  <th className="scorecard-subj-th" style={{ color: '#f87171' }}>Wrong (-{wrongVal})</th>
+                  <th className="scorecard-subj-th" style={{ color: '#4ade80' }}>
+                    <span className="th-desktop-label">Right (+{rightVal})</span>
+                    <span className="th-mobile-label">R</span>
+                  </th>
+                  <th className="scorecard-subj-th" style={{ color: '#f87171' }}>
+                    <span className="th-desktop-label">Wrong (-{wrongVal})</span>
+                    <span className="th-mobile-label">W</span>
+                  </th>
                   {hasBonus && (
-                    <th className="scorecard-subj-th" style={{ color: '#c084fc' }}>Bonus (+{rightVal})</th>
+                    <th className="scorecard-subj-th" style={{ color: '#c084fc' }}>
+                      <span className="th-desktop-label">Bonus (+{rightVal})</span>
+                      <span className="th-mobile-label">B</span>
+                    </th>
                   )}
-                  <th className="scorecard-subj-th" style={{ color: '#fbbf24' }}>Skip</th>
+                  <th className="scorecard-subj-th" style={{ color: '#fbbf24' }}>
+                    <span className="th-desktop-label">Skip</span>
+                    <span className="th-mobile-label">S</span>
+                  </th>
                   <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'right' }}>Score</th>
                 </tr>
               </thead>
@@ -985,7 +1054,10 @@ export default function ResultPage() {
               </tbody>
               <tfoot>
                 <tr className="scorecard-subj-tfoot">
-                  <td className="scorecard-subj-td" style={{ padding: '9px 10px', textAlign: 'left', color: '#1e3a8a', whiteSpace: 'normal' }}>GRAND TOTAL</td>
+                  <td className="scorecard-subj-td" style={{ padding: '9px 10px', textAlign: 'left', color: '#1e3a8a', whiteSpace: 'normal' }}>
+                    <span className="th-desktop-label">GRAND TOTAL</span>
+                    <span className="th-mobile-label">TOTAL</span>
+                  </td>
                   <td className="scorecard-subj-td" style={{ color: '#0f172a' }}>{totalQuestions}</td>
                   <td className="scorecard-subj-td" style={{ color: '#16a34a' }}>{totalRight}</td>
                   <td className="scorecard-subj-td" style={{ color: '#dc2626' }}>{totalWrong}</td>
@@ -1001,7 +1073,18 @@ export default function ResultPage() {
             </table>
           </div>
 
-          {/* 5. Bottom Action Buttons Stack (no-print) */}
+          {/* 5. Note / Legend Bar (Explaining R, W, S, B) */}
+          <div className="scorecard-subj-legend">
+            <span className="legend-title">📌 Note:</span>
+            <span className="legend-item"><strong style={{ color: '#16a34a' }}>R</strong> = Right (+{rightVal})</span>
+            <span className="legend-item"><strong style={{ color: '#dc2626' }}>W</strong> = Wrong (-{wrongVal})</span>
+            <span className="legend-item"><strong style={{ color: '#d97706' }}>S</strong> = Skip</span>
+            {hasBonus && (
+              <span className="legend-item"><strong style={{ color: '#9333ea' }}>B</strong> = Bonus (+{rightVal})</span>
+            )}
+          </div>
+
+          {/* 6. Bottom Action Buttons Stack (no-print) */}
           <div className="scorecard-actions-panel no-print">
             {/* Primary Full-Width CTA: View Your Rank */}
             {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
