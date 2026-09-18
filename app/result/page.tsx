@@ -1374,13 +1374,13 @@ export default function ResultPage() {
         <thead>
           <tr style={{ background: '#0f172a', color: '#ffffff', fontWeight: 800, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
             <th style={{ width: '36%', padding: '6px 6px', textAlign: 'left', borderRight: '1px solid #334155', boxSizing: 'border-box' }}>Section</th>
-            <th style={{ padding: '6px 2px', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.72rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>TQ</th>
-            <th style={{ padding: '6px 2px', color: '#4ade80', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.67rem', letterSpacing: '0.01em', boxSizing: 'border-box', lineHeight: 1.25 }}>Right (+{rightVal})</th>
-            <th style={{ padding: '6px 2px', color: '#f87171', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.67rem', letterSpacing: '0.01em', boxSizing: 'border-box', lineHeight: 1.25 }}>Wrong (-{wrongVal})</th>
+            <th style={{ padding: '6px 2px', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.74rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>TQ</th>
+            <th style={{ padding: '6px 2px', color: '#4ade80', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.70rem', letterSpacing: '0.01em', whiteSpace: 'nowrap', boxSizing: 'border-box' }}>R (+{rightVal})</th>
+            <th style={{ padding: '6px 2px', color: '#f87171', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.70rem', letterSpacing: '0.01em', whiteSpace: 'nowrap', boxSizing: 'border-box' }}>W (-{wrongVal})</th>
             {hasBonus && (
-              <th style={{ padding: '6px 2px', color: '#c084fc', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.67rem', letterSpacing: '0.01em', boxSizing: 'border-box', lineHeight: 1.25 }}>Bonus (+{rightVal})</th>
+              <th style={{ padding: '6px 2px', color: '#c084fc', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.70rem', letterSpacing: '0.01em', whiteSpace: 'nowrap', boxSizing: 'border-box' }}>B (+{rightVal})</th>
             )}
-            <th style={{ padding: '6px 2px', color: '#fbbf24', borderRight: '1px solid #334155', fontWeight: 800, fontSize: '0.70rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>Skip</th>
+            <th style={{ padding: '6px 2px', color: '#fbbf24', borderRight: '1px solid #334155', fontWeight: 900, fontSize: '0.74rem', letterSpacing: '0.02em', boxSizing: 'border-box' }}>S</th>
             <th style={{ width: '16%', padding: '6px 4px', textAlign: 'right', fontWeight: 900, fontSize: '0.72rem', boxSizing: 'border-box' }}>Total</th>
           </tr>
         </thead>
@@ -1421,7 +1421,7 @@ export default function ResultPage() {
         </tfoot>
       </table>
 
-      {/* 4. Note / Legend Bar */}
+      {/* 4. Note / Legend Bar (Explaining TQ, R, W, S, B) */}
       <div style={{
         position: 'relative',
         zIndex: 1,
@@ -1438,6 +1438,12 @@ export default function ResultPage() {
       }}>
         <span style={{ fontWeight: 900, color: '#1e293b', fontSize: '0.88rem', lineHeight: 1 }}>*</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#2563eb' }}>TQ</strong> = Total Questions</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#16a34a' }}>R</strong> = Right</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#dc2626' }}>W</strong> = Wrong</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#d97706' }}>S</strong> = Skip</span>
+        {hasBonus && (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}><strong style={{ color: '#9333ea' }}>B</strong> = Bonus</span>
+        )}
       </div>
     </div>
     </>
