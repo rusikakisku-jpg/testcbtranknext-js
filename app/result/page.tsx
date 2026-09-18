@@ -655,23 +655,13 @@ export default function ResultPage() {
             position: relative;
             z-index: 1;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             gap: 8px;
-            padding: 8px 12px;
+            padding: 6px 12px;
             background: #f8fafc;
             border-bottom: 1px solid #cbd5e1;
             box-sizing: border-box;
-          }
-
-          .scorecard-recalc-title {
-            font-size: 0.74rem;
-            font-weight: 800;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            margin: 0;
           }
 
           .scorecard-recalc-inputs {
@@ -685,13 +675,8 @@ export default function ResultPage() {
 
           @media (max-width: 520px) {
             .scorecard-recalc-bar {
-              flex-direction: column;
-              align-items: flex-start;
-              gap: 6px;
-            }
-            .scorecard-recalc-inputs {
-              width: 100%;
-              justify-content: space-between;
+              justify-content: center;
+              padding: 5px 8px;
             }
           }
 
@@ -976,7 +961,6 @@ export default function ResultPage() {
 
           {/* 3. Interactive Recalculate Controls Bar (no-print) */}
           <div className="scorecard-recalc-bar no-print">
-            <h3 className="scorecard-recalc-title">Subject-Wise Performance Breakdown</h3>
             <div className="scorecard-recalc-inputs">
               <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 Right (+):{' '}
