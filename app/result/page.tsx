@@ -658,9 +658,8 @@ export default function ResultPage() {
             position: relative;
             z-index: 1;
             display: flex;
-            justify-content: flex-end;
             align-items: center;
-            gap: 8px;
+            width: 100%;
             padding: 6px 12px;
             background: #f8fafc;
             border-bottom: 1px solid #cbd5e1;
@@ -669,8 +668,9 @@ export default function ResultPage() {
 
           .scorecard-recalc-inputs {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            width: 100%;
             font-size: 0.78rem;
             font-weight: 700;
             color: #334155;
@@ -678,8 +678,7 @@ export default function ResultPage() {
 
           @media (max-width: 520px) {
             .scorecard-recalc-bar {
-              justify-content: center;
-              padding: 5px 8px;
+              padding: 5px 10px;
             }
           }
 
@@ -1130,11 +1129,11 @@ export default function ResultPage() {
           <div className="scorecard-subj-legend">
             <span className="legend-title">📌 Note:</span>
             <span className="legend-item"><strong style={{ color: '#2563eb' }}>TQ</strong> = Total Questions</span>
-            <span className="legend-item"><strong style={{ color: '#16a34a' }}>R</strong> = Right (+{rightVal})</span>
-            <span className="legend-item"><strong style={{ color: '#dc2626' }}>W</strong> = Wrong (-{wrongVal})</span>
+            <span className="legend-item"><strong style={{ color: '#16a34a' }}>R</strong> = Right</span>
+            <span className="legend-item"><strong style={{ color: '#dc2626' }}>W</strong> = Wrong</span>
             <span className="legend-item"><strong style={{ color: '#d97706' }}>S</strong> = Skip</span>
             {hasBonus && (
-              <span className="legend-item"><strong style={{ color: '#9333ea' }}>B</strong> = Bonus (+{rightVal})</span>
+              <span className="legend-item"><strong style={{ color: '#9333ea' }}>B</strong> = Bonus</span>
             )}
           </div>
 
