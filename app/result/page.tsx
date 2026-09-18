@@ -612,6 +612,7 @@ export default function ResultPage() {
 
           .scorecard-cand-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             font-size: 0.78rem;
             border-bottom: 2px solid #0044cc;
@@ -638,6 +639,8 @@ export default function ResultPage() {
             font-size: 0.78rem;
             text-align: left;
             box-sizing: border-box;
+            word-break: break-word;
+            overflow-wrap: anywhere;
           }
 
           .scorecard-cand-td.is-roll {
@@ -683,6 +686,7 @@ export default function ResultPage() {
           /* Subject-Wise Performance Table */
           .scorecard-subject-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             font-size: 0.80rem;
             text-align: center;
@@ -702,6 +706,7 @@ export default function ResultPage() {
             padding: 8px 5px;
             border-right: 1px solid #334155;
             white-space: nowrap;
+            box-sizing: border-box;
           }
 
           .scorecard-subj-th:last-child {
@@ -712,14 +717,24 @@ export default function ResultPage() {
             padding: 8px 5px;
             border-right: 1px solid #cbd5e1;
             white-space: nowrap;
+            box-sizing: border-box;
           }
 
           .scorecard-subj-td:last-child {
             border-right: none;
           }
 
+          /* Section column width strictly matches candidate table key column */
+          .scorecard-sec-th,
           .scorecard-sec-name {
+            width: 38%;
+            box-sizing: border-box;
             padding: 8px 10px;
+          }
+
+          .scorecard-total-th {
+            width: 15%;
+            box-sizing: border-box;
           }
 
           .scorecard-subj-tfoot {
@@ -797,10 +812,16 @@ export default function ResultPage() {
               font-size: 0.70rem !important;
               padding: 6px 3px !important;
             }
+            /* Section column on mobile strictly matches candidate key column (36%) */
+            .scorecard-sec-th,
             .scorecard-sec-name {
+              width: 36% !important;
               font-size: 0.69rem !important;
               padding: 6px 6px !important;
               line-height: 1.25 !important;
+            }
+            .scorecard-total-th {
+              width: 16% !important;
             }
             .scorecard-subj-tfoot td {
               font-size: 0.71rem !important;
@@ -1036,7 +1057,7 @@ export default function ResultPage() {
             <table className="scorecard-subject-table">
               <thead>
                 <tr className="scorecard-subj-head">
-                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'left', minWidth: '100px' }}>Section</th>
+                  <th className="scorecard-subj-th scorecard-sec-th scorecard-sec-name" style={{ textAlign: 'left' }}>Section</th>
                   <th className="scorecard-subj-th">
                     <span className="th-desktop-label">Total</span>
                     <span className="th-mobile-label">TQ</span>
@@ -1059,7 +1080,7 @@ export default function ResultPage() {
                     <span className="th-desktop-label">Skip</span>
                     <span className="th-mobile-label">S</span>
                   </th>
-                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'right' }}>Total</th>
+                  <th className="scorecard-subj-th scorecard-total-th" style={{ padding: '8px 10px', textAlign: 'right' }}>Total</th>
                 </tr>
               </thead>
               <tbody>
