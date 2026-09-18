@@ -554,10 +554,10 @@ export default function ResultPage() {
 
           .scorecard-watermark-item {
             transform: rotate(-25deg);
-            font-size: 1.45rem;
-            font-weight: 900;
+            font-size: 1.10rem;
+            font-weight: 800;
             color: #0044cc;
-            opacity: 0.075;
+            opacity: 0.04;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             white-space: nowrap;
@@ -846,8 +846,8 @@ export default function ResultPage() {
               gap: 4px 8px !important;
             }
             .scorecard-watermark-item {
-              font-size: 1.22rem !important;
-              opacity: 0.08 !important;
+              font-size: 0.95rem !important;
+              opacity: 0.042 !important;
             }
           }
 
@@ -1251,10 +1251,10 @@ export default function ResultPage() {
             key={i}
             style={{
               transform: 'rotate(-25deg)',
-              fontSize: '1.45rem',
-              fontWeight: 900,
+              fontSize: '1.10rem',
+              fontWeight: 800,
               color: '#0044cc',
-              opacity: 0.075,
+              opacity: 0.04,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               whiteSpace: 'nowrap',
