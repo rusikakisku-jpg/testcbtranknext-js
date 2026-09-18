@@ -1037,7 +1037,10 @@ export default function ResultPage() {
               <thead>
                 <tr className="scorecard-subj-head">
                   <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'left', minWidth: '100px' }}>Section</th>
-                  <th className="scorecard-subj-th">Total</th>
+                  <th className="scorecard-subj-th">
+                    <span className="th-desktop-label">Total</span>
+                    <span className="th-mobile-label">TQ</span>
+                  </th>
                   <th className="scorecard-subj-th" style={{ color: '#4ade80' }}>
                     <span className="th-desktop-label">Right (+{rightVal})</span>
                     <span className="th-mobile-label">R</span>
@@ -1056,7 +1059,7 @@ export default function ResultPage() {
                     <span className="th-desktop-label">Skip</span>
                     <span className="th-mobile-label">S</span>
                   </th>
-                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'right' }}>Score</th>
+                  <th className="scorecard-subj-th" style={{ padding: '8px 10px', textAlign: 'right' }}>Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -1102,9 +1105,10 @@ export default function ResultPage() {
             </table>
           </div>
 
-          {/* 5. Note / Legend Bar (Explaining R, W, S, B) */}
+          {/* 5. Note / Legend Bar (Explaining TQ, R, W, S, B) */}
           <div className="scorecard-subj-legend">
             <span className="legend-title">📌 Note:</span>
+            <span className="legend-item"><strong style={{ color: '#2563eb' }}>TQ</strong> = Total Questions</span>
             <span className="legend-item"><strong style={{ color: '#16a34a' }}>R</strong> = Right (+{rightVal})</span>
             <span className="legend-item"><strong style={{ color: '#dc2626' }}>W</strong> = Wrong (-{wrongVal})</span>
             <span className="legend-item"><strong style={{ color: '#d97706' }}>S</strong> = Skip</span>
