@@ -1368,7 +1368,8 @@ export default function ResultPage() {
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        padding: '5px 10px',
+        minHeight: '28px',
+        padding: '0 10px',
         background: '#f8fafc',
         borderBottom: '1px solid #cbd5e1',
         boxSizing: 'border-box',
@@ -1376,22 +1377,24 @@ export default function ResultPage() {
         fontWeight: 700,
         color: '#334155'
       }}>
-        <div>
-          Right (+):{' '}
+        <div style={{ display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>
+          <span>Right (+):&nbsp;</span>
           <span style={{
             fontWeight: 800,
-            fontSize: '0.76rem',
-            color: '#0f172a'
+            fontSize: '0.74rem',
+            color: '#0f172a',
+            lineHeight: 1
           }}>
             {rightVal}
           </span>
         </div>
-        <div>
-          Wrong (-):{' '}
+        <div style={{ display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>
+          <span>Wrong (-):&nbsp;</span>
           <span style={{
             fontWeight: 800,
-            fontSize: '0.76rem',
-            color: '#0f172a'
+            fontSize: '0.74rem',
+            color: '#0f172a',
+            lineHeight: 1
           }}>
             {wrongVal}
           </span>
