@@ -14,6 +14,7 @@ export default function BottomNav() {
     try {
       router.prefetch('/');
       router.prefetch('/answerkey');
+      router.prefetch('/history');
       router.prefetch('/blog');
     } catch {
       // router.prefetch safety fallback
@@ -37,6 +38,7 @@ export default function BottomNav() {
     currentPath.startsWith('/answerkey/') ||
     currentPath.endsWith('/answerkey') ||
     currentPath.startsWith('/calculator');
+  const isHistoryActive = currentPath === '/history' || currentPath.startsWith('/history/');
   const isBlogActive = currentPath === '/blog' || currentPath.startsWith('/blog/');
 
   const handleTabPress = (path: string) => {
@@ -118,7 +120,53 @@ export default function BottomNav() {
         <span className="bottom-nav-label">Calculator</span>
       </Link>
 
-      {/* 3. Blog Tab */}
+      {/* 3. History Tab */}
+      <Link
+        href="/history"
+        prefetch={true}
+        className={`bottom-nav-tab${isHistoryActive ? ' active' : ''}`}
+        aria-label="History"
+        aria-current={isHistoryActive ? 'page' : undefined}
+        onClick={() => handleTabPress('/history')}
+        onTouchStart={() => handleTabPress('/history')}
+      >
+        <div className="bottom-nav-icon-box">
+          {isHistoryActive ? (
+            <svg
+              className="bottom-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <polyline points="12 7 12 12 15 15" />
+            </svg>
+          ) : (
+            <svg
+              className="bottom-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <polyline points="12 7 12 12 15 15" />
+            </svg>
+          )}
+        </div>
+        <span className="bottom-nav-label">History</span>
+      </Link>
+
+      {/* 4. Blog Tab */}
       <Link
         href="/blog"
         prefetch={true}

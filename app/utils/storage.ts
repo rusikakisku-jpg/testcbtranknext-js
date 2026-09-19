@@ -117,4 +117,5 @@ export const STORAGE_KEYS = {
   MARKS_WRONG:       'cbtrank_exam_marks_wrong',
   ACTIVE_EXAM:       'cbtrank_active_exam',
   SHOW_TG_POPUP:     'cbtrank_show_tg_popup',
+  SEARCH_HISTORY:    'cbtrank_search_history',
 } as const;

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { processAnswerKeyAction, logUserRankAction, logValidUrlAction, fetchLiveRankAction } from '../actions/calculate';
 import { cbtSave, cbtGet, cbtRemove, cbtSaveString, cbtGetString, STORAGE_KEYS } from '../utils/storage';
+import { addToSearchHistory } from '../utils/history';
 import { trackEvent } from './GoogleAnalytics';
 import { CustomField } from '../data/exams';
 
@@ -694,7 +695,7 @@ export default function AnswerkeyCalculator({
     const providerType = isDigialm ? 'Digialm' : (isCbexams ? 'CBExams' : 'Official Portal');
 
     try {
-      cbtSave(STORAGE_KEYS.FORM_DATA, {
+      const finalFormData = {
         ans_key_url: urlVal,
         category,
         horizontal_category: formData.horizontal_category,
@@ -709,8 +710,8 @@ export default function AnswerkeyCalculator({
         exam_id: examPaperCode,
         sub_type: derivedSubType,
         custom_data: customFieldValues
-      });
-      cbtSave(STORAGE_KEYS.RESULT_DATA, {
+      };
+      const finalResultData = {
         ...parsedResult,
         examId: examPaperCode,
         gender: gender || '',
@@ -725,8 +726,12 @@ export default function AnswerkeyCalculator({
         subType: derivedSubType || liveRankObj?.subType || '',
         custom_data: customFieldValues,
         liveRank: liveRankObj,
-      });
+      };
+
+      cbtSave(STORAGE_KEYS.FORM_DATA, finalFormData);
+      cbtSave(STORAGE_KEYS.RESULT_DATA, finalResultData);
       cbtSaveString(STORAGE_KEYS.SHOW_TG_POPUP, 'true');
+      addToSearchHistory(finalResultData, finalFormData, marksRight, marksWrong);
     } catch (e) {}
 
     trackEvent('calculate_score', {

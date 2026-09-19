@@ -40,6 +40,11 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
+              <Link href="/history" className={isActive('/history') ? 'active' : ''}>
+                History
+              </Link>
+            </li>
+            <li>
               <Link href="/blog" className={isActive('/blog') ? 'active' : ''}>
                 Blog
               </Link>
@@ -79,6 +84,13 @@ export default function Navbar() {
           onClick={() => setIsOpen(false)}
         >
           Answer Key
+        </Link>
+        <Link
+          href="/history"
+          className={isActive('/history') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          History
         </Link>
         <Link
           href="/blog"
