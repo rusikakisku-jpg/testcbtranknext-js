@@ -562,24 +562,66 @@ footer {
 }
 
 .exam-card.exam-card-latest {
-  border-color: var(--red);
-  animation: latestBorderPulse 2s ease-in-out infinite;
+  position: relative;
+  border-radius: 14px;
+  border: none !important;
+  overflow: hidden;
+  padding: 2px;
+  background: transparent !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.12);
 }
 
-@keyframes latestBorderPulse {
-  0%, 100% {
-    border-color: #ef4444;
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 1px 4px rgba(15, 23, 42, 0.05);
+.exam-card.exam-card-latest::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(1600px, 200vw);
+  height: max(1600px, 200vw);
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: conic-gradient(
+    from 0deg,
+    #ef4444 0deg,
+    rgba(239, 68, 68, 0.25) 60deg,
+    #fee2e2 120deg,
+    #dc2626 150deg,
+    #ef4444 180deg,
+    rgba(239, 68, 68, 0.25) 240deg,
+    #fee2e2 300deg,
+    #dc2626 330deg,
+    #ef4444 360deg
+  );
+  animation: runningBorderRotate 3s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes runningBorderRotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
   }
-  50% {
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.25), 0 4px 14px rgba(239, 68, 68, 0.18);
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
+}
+
+.exam-card.exam-card-latest a {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border-radius: 12px;
+  width: 100%;
 }
 
 .exam-card.exam-card-latest:hover {
-  border-color: #dc2626;
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.28);
+  box-shadow: 0 6px 22px rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exam-card.exam-card-latest::before {
+    animation: none;
+  }
 }
 
 .exam-card a {
