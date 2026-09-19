@@ -1376,37 +1376,21 @@ export default function ResultPage() {
         fontWeight: 700,
         color: '#334155'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div>
           Right (+):{' '}
           <span style={{
-            display: 'inline-block',
-            width: '46px',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderRadius: '5px',
-            padding: '2px 4px',
-            textAlign: 'center',
-            fontFamily: 'monospace',
-            fontWeight: 900,
-            fontSize: '0.80rem',
+            fontWeight: 800,
+            fontSize: '0.76rem',
             color: '#0f172a'
           }}>
             {rightVal}
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div>
           Wrong (-):{' '}
           <span style={{
-            display: 'inline-block',
-            width: '46px',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderRadius: '5px',
-            padding: '2px 4px',
-            textAlign: 'center',
-            fontFamily: 'monospace',
-            fontWeight: 900,
-            fontSize: '0.80rem',
+            fontWeight: 800,
+            fontSize: '0.76rem',
             color: '#0f172a'
           }}>
             {wrongVal}
