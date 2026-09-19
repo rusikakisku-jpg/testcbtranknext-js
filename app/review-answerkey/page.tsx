@@ -2498,18 +2498,28 @@ export default function ReviewAnswerkeyPage() {
               )}
             </div>
 
-            {/* Color Legend (Authentic DigiALM Palette Guide: konsa colour kisliye use ho raha hai) */}
+            {/* Palette Color Indicator: konsa colour kisko indicate karta hai */}
             <div style={{
               background: '#f8fafc',
               borderTop: '1px solid #e2e8f0',
-              padding: '8px 12px',
+              padding: '10px 14px',
               flexShrink: 0
             }}>
               <div style={{
+                fontSize: '0.67rem',
+                fontWeight: 800,
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                marginBottom: '8px'
+              }}>
+                Color Indicator
+              </div>
+              <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '6px 8px',
-                fontSize: '0.70rem',
+                gap: '8px 10px',
+                fontSize: '0.74rem',
                 fontWeight: 700
               }}>
                 <div
@@ -2518,32 +2528,23 @@ export default function ReviewAnswerkeyPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
-                    color: '#166534',
-                    cursor: 'pointer',
-                    padding: '3px 4px',
-                    borderRadius: '4px',
-                    background: activeStatusFilter === 'Correct' ? '#dcfce7' : 'transparent',
-                    border: activeStatusFilter === 'Correct' ? '1px solid #16a34a' : '1px solid transparent',
-                    transition: 'all 0.15s ease'
+                    cursor: 'pointer'
                   }}
-                  title="Answered (Correct)"
+                  title="Green indicates Right / Correct"
                 >
                   <span style={{
-                    width: '18px',
-                    height: '18px',
+                    width: '13px',
+                    height: '13px',
                     borderRadius: '3px',
                     background: '#16a34a',
-                    color: '#ffffff',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '0.66rem',
+                    border: '1px solid #15803d',
+                    display: 'inline-block',
                     flexShrink: 0
-                  }}>
-                    {pillCorrectCount}
+                  }} />
+                  <span style={{ color: '#64748b', fontWeight: 800, fontSize: '0.70rem' }}>=</span>
+                  <span style={{ color: '#0f172a', fontWeight: 800 }}>
+                    Right <span style={{ color: '#64748b', fontWeight: 600, fontSize: '0.68rem' }}>(Correct)</span>
                   </span>
-                  <span style={{ fontSize: '0.69rem', fontWeight: 700, lineHeight: 1.2 }}>Answered (Correct)</span>
                 </div>
 
                 <div
@@ -2552,32 +2553,23 @@ export default function ReviewAnswerkeyPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
-                    color: '#991b1b',
-                    cursor: 'pointer',
-                    padding: '3px 4px',
-                    borderRadius: '4px',
-                    background: activeStatusFilter === 'Wrong' ? '#fee2e2' : 'transparent',
-                    border: activeStatusFilter === 'Wrong' ? '1px solid #dc2626' : '1px solid transparent',
-                    transition: 'all 0.15s ease'
+                    cursor: 'pointer'
                   }}
-                  title="Not Answered (Wrong)"
+                  title="Red indicates Wrong"
                 >
                   <span style={{
-                    width: '18px',
-                    height: '18px',
+                    width: '13px',
+                    height: '13px',
                     borderRadius: '3px',
                     background: '#dc2626',
-                    color: '#ffffff',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '0.66rem',
+                    border: '1px solid #b91c1c',
+                    display: 'inline-block',
                     flexShrink: 0
-                  }}>
-                    {pillWrongCount}
+                  }} />
+                  <span style={{ color: '#64748b', fontWeight: 800, fontSize: '0.70rem' }}>=</span>
+                  <span style={{ color: '#0f172a', fontWeight: 800 }}>
+                    Wrong
                   </span>
-                  <span style={{ fontSize: '0.69rem', fontWeight: 700, lineHeight: 1.2 }}>Not Answered (Wrong)</span>
                 </div>
 
                 <div
@@ -2586,32 +2578,23 @@ export default function ReviewAnswerkeyPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
-                    color: '#475569',
-                    cursor: 'pointer',
-                    padding: '3px 4px',
-                    borderRadius: '4px',
-                    background: activeStatusFilter === 'Unattempted' ? '#f1f5f9' : 'transparent',
-                    border: activeStatusFilter === 'Unattempted' ? '1px solid #94a3b8' : '1px solid transparent',
-                    transition: 'all 0.15s ease'
+                    cursor: 'pointer'
                   }}
-                  title="Not Visited (Unattempted)"
+                  title="Grey indicates Unattempted / Skip"
                 >
                   <span style={{
-                    width: '18px',
-                    height: '18px',
+                    width: '13px',
+                    height: '13px',
                     borderRadius: '3px',
-                    background: '#94a3b8',
-                    color: '#ffffff',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '0.66rem',
+                    background: '#f1f5f9',
+                    border: '1.5px solid #cbd5e1',
+                    display: 'inline-block',
                     flexShrink: 0
-                  }}>
-                    {pillUnattemptedCount}
+                  }} />
+                  <span style={{ color: '#64748b', fontWeight: 800, fontSize: '0.70rem' }}>=</span>
+                  <span style={{ color: '#0f172a', fontWeight: 800 }}>
+                    Unattempted <span style={{ color: '#64748b', fontWeight: 600, fontSize: '0.68rem' }}>(Skip)</span>
                   </span>
-                  <span style={{ fontSize: '0.69rem', fontWeight: 700, lineHeight: 1.2 }}>Not Visited</span>
                 </div>
 
                 {pillBonusCount > 0 && (
@@ -2621,32 +2604,23 @@ export default function ReviewAnswerkeyPage() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
-                      color: '#6b21a8',
-                      cursor: 'pointer',
-                      padding: '3px 4px',
-                      borderRadius: '4px',
-                      background: activeStatusFilter === 'Discarded' ? '#f3e8ff' : 'transparent',
-                      border: activeStatusFilter === 'Discarded' ? '1px solid #9333ea' : '1px solid transparent',
-                      transition: 'all 0.15s ease'
+                      cursor: 'pointer'
                     }}
-                    title="Bonus"
+                    title="Purple indicates Bonus"
                   >
                     <span style={{
-                      width: '18px',
-                      height: '18px',
+                      width: '13px',
+                      height: '13px',
                       borderRadius: '3px',
                       background: '#9333ea',
-                      color: '#ffffff',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 900,
-                      fontSize: '0.66rem',
+                      border: '1px solid #7e22ce',
+                      display: 'inline-block',
                       flexShrink: 0
-                    }}>
-                      {pillBonusCount}
+                    }} />
+                    <span style={{ color: '#64748b', fontWeight: 800, fontSize: '0.70rem' }}>=</span>
+                    <span style={{ color: '#0f172a', fontWeight: 800 }}>
+                      Bonus
                     </span>
-                    <span style={{ fontSize: '0.69rem', fontWeight: 700, lineHeight: 1.2 }}>Bonus</span>
                   </div>
                 )}
               </div>
