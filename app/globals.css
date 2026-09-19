@@ -581,17 +581,13 @@ footer {
   transform: translate(-50%, -50%) rotate(0deg);
   background: conic-gradient(
     from 0deg,
-    #ef4444 0deg,
-    rgba(239, 68, 68, 0.25) 60deg,
-    #fee2e2 120deg,
-    #dc2626 150deg,
-    #ef4444 180deg,
-    rgba(239, 68, 68, 0.25) 240deg,
-    #fee2e2 300deg,
-    #dc2626 330deg,
-    #ef4444 360deg
+    rgba(239, 68, 68, 0.2) 0deg,
+    rgba(239, 68, 68, 0.2) 260deg,
+    #fee2e2 310deg,
+    #ef4444 340deg,
+    #dc2626 360deg
   );
-  animation: runningBorderRotate 3s linear infinite;
+  animation: runningBorderRotate 3.5s linear infinite;
   pointer-events: none;
   z-index: 0;
 }
