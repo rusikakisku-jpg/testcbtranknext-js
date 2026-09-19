@@ -593,7 +593,7 @@ footer {
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-dasharray: 1000 1000;
-  animation: runBorderStroke 4s linear infinite;
+  animation: runBorderStroke 6s linear infinite;
   filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.8));
 }
 
