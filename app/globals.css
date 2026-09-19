@@ -592,20 +592,14 @@ footer {
   stroke: #ef4444;
   stroke-width: 2.2;
   stroke-linecap: round;
-  stroke-dasharray: 1000 1000;
-  animation: runBorderStroke 6s linear infinite;
-  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.8));
+  stroke-dasharray: 380 1000;
+  animation: runBorderStroke 5s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.85));
 }
 
 @keyframes runBorderStroke {
   0% {
-    stroke-dashoffset: 1000;
-  }
-  45% {
-    stroke-dashoffset: 0;
-  }
-  55% {
-    stroke-dashoffset: 0;
+    stroke-dashoffset: 380;
   }
   100% {
     stroke-dashoffset: -1000;
