@@ -4771,14 +4771,14 @@ footer {
 /* Card Exam Title: Clean & Proper, No Blue Container Box */
 .history-exam-name,
 .history-exam-tag {
-  font-size: 0.94rem;
-  font-weight: 750;
-  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
   background: transparent !important;
   border: none !important;
   padding: 0 !important;
-  margin: 0 0 4px 0;
-  line-height: 1.38;
+  margin: 0 0 3px 0;
+  line-height: 1.35;
   white-space: normal;
   word-break: break-word;
   display: block;
