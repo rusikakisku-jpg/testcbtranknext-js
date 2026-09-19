@@ -1090,11 +1090,11 @@ export default function ResultPage() {
             transform: translateX(2px);
           }
 
-          /* 2. Secondary Dual Row: Review Answerkey & Download Scorecard */
+          /* 2. Secondary Duo Row: Review Answerkey & Download Scorecard */
           .result-actions-dual-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             box-sizing: border-box;
           }
@@ -1104,36 +1104,60 @@ export default function ResultPage() {
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
             color: #0f172a;
-            padding: 12px 14px;
+            padding: 10px 10px;
             gap: 8px;
-            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
             width: 100%;
+            min-width: 0;
             justify-content: center;
-            text-align: center;
+            align-items: center;
+            text-align: left;
+            box-sizing: border-box;
+            border-radius: 12px;
           }
 
           .result-action-review .result-action-title,
           .result-action-download .result-action-title {
             color: #0f172a;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 800;
-            white-space: nowrap;
+            line-height: 1.25;
+            white-space: normal;
+            word-break: normal;
+            overflow-wrap: break-word;
           }
 
           .review-icon-pill {
-            width: 38px;
-            height: 38px;
+            width: 30px;
+            height: 30px;
             background: #f5f3ff;
             color: #7c3aed;
             border: 1px solid #ede9fe;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
           }
 
           .download-icon-pill {
-            width: 38px;
-            height: 38px;
+            width: 30px;
+            height: 30px;
             background: #f0fdf4;
             color: #16a34a;
             border: 1px solid #dcfce7;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          }
+
+          .review-icon-pill svg,
+          .download-icon-pill svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
           }
 
           .result-action-review:hover {
@@ -1193,7 +1217,7 @@ export default function ResultPage() {
           .app-btn-duo-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             box-sizing: border-box;
           }
@@ -1202,23 +1226,23 @@ export default function ResultPage() {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             background: #ffffff;
             color: #0f172a;
-            border: 1.5px solid #cbd5e1;
-            padding: 10px 12px;
-            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            padding: 10px 10px;
+            border-radius: 12px;
             font-weight: 800;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             text-decoration: none;
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
             transition: all 0.2s ease;
             box-sizing: border-box;
           }
 
           /* Responsive adjustments for narrow screens */
-          @media (max-width: 440px) {
+          @media (max-width: 480px) {
             .result-action-rank {
               padding: 12px 14px;
             }
@@ -1235,19 +1259,73 @@ export default function ResultPage() {
             .result-action-arrow-btn {
               padding: 6px 10px;
             }
+            .result-actions-dual-grid,
+            .app-btn-duo-row {
+              gap: 8px;
+            }
             .result-action-review,
             .result-action-download {
-              padding: 10px 10px;
-              gap: 8px;
+              padding: 9px 8px;
+              gap: 6px;
+              border-radius: 10px;
             }
             .review-icon-pill,
             .download-icon-pill {
-              width: 32px;
-              height: 32px;
+              width: 28px;
+              height: 28px;
+              border-radius: 7px;
+            }
+            .review-icon-pill svg,
+            .download-icon-pill svg {
+              width: 15px;
+              height: 15px;
             }
             .result-action-review .result-action-title,
             .result-action-download .result-action-title {
-              font-size: 0.80rem;
+              font-size: clamp(0.70rem, 2.7vw, 0.78rem);
+              line-height: 1.2;
+            }
+          }
+
+          @media (max-width: 360px) {
+            .result-actions-dual-grid,
+            .app-btn-duo-row {
+              gap: 6px;
+            }
+            .result-action-review,
+            .result-action-download {
+              padding: 8px 5px;
+              gap: 5px;
+            }
+            .review-icon-pill,
+            .download-icon-pill {
+              width: 24px;
+              height: 24px;
+              border-radius: 6px;
+            }
+            .review-icon-pill svg,
+            .download-icon-pill svg {
+              width: 13px;
+              height: 13px;
+            }
+            .result-action-review .result-action-title,
+            .result-action-download .result-action-title {
+              font-size: 0.68rem;
+              letter-spacing: -0.01em;
+            }
+          }
+
+          @media (max-width: 320px) {
+            .result-actions-dual-grid,
+            .app-btn-duo-row {
+              grid-template-columns: 1fr;
+              gap: 8px;
+            }
+            .result-action-review,
+            .result-action-download {
+              padding: 10px 14px;
+              justify-content: center;
+              font-size: 0.82rem;
             }
           }
         `}</style>
@@ -1540,7 +1618,7 @@ export default function ResultPage() {
                 aria-label="Review Answer Key Questions"
               >
                 <div className="result-action-icon-pill review-icon-pill" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                   </svg>
@@ -1559,11 +1637,11 @@ export default function ResultPage() {
               >
                 <div className="result-action-icon-pill download-icon-pill" aria-hidden="true">
                   {isGeneratingImg ? (
-                    <svg className="result-btn-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg className="result-btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <circle cx="12" cy="12" r="10" strokeDasharray="60" strokeDashoffset="20" strokeLinecap="round" />
                     </svg>
                   ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
