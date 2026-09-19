@@ -21,11 +21,19 @@ function formatRelativeTime(timestamp: number, formattedFallback: string): strin
   const diffDays = Math.floor(diffHours / 24);
 
   if (diffSec < 45) return 'Just now';
-  if (diffMin < 60) return `${diffMin} min${diffMin > 1 ? 's' : ''} ago`;
-  if (diffHours < 24) return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`;
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
   return formattedFallback || new Date(timestamp).toLocaleDateString();
+}
+
+function getCandidateInitials(name: string): string {
+  if (!name || name === 'Candidate' || name === 'N/A') return 'CR';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return 'CR';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 export default function HistoryPage() {
@@ -33,6 +41,7 @@ export default function HistoryPage() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'recent' | 'score'>('recent');
   const [showClearModal, setShowClearModal] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -48,10 +57,10 @@ export default function HistoryPage() {
     }
   }, []);
 
-  // Toast auto-hide
+  // Toast auto-dismiss
   useEffect(() => {
     if (!toastMessage) return;
-    const t = setTimeout(() => setToastMessage(null), 3000);
+    const t = setTimeout(() => setToastMessage(null), 2600);
     return () => clearTimeout(t);
   }, [toastMessage]);
 
@@ -59,19 +68,42 @@ export default function HistoryPage() {
     setToastMessage(msg);
   };
 
-  // Filter items by search query
-  const filteredHistory = useMemo(() => {
+  const handleCopyRoll = (e: React.MouseEvent, roll: string) => {
+    e.stopPropagation();
+    if (!roll || roll === 'N/A') return;
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(roll);
+        showToast(`Roll No copied: ${roll}`);
+      }
+    } catch {
+      showToast(`Roll: ${roll}`);
+    }
+  };
+
+  // Filter & Sort items
+  const displayHistory = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return history;
-    return history.filter(item => {
-      const name = (item.candidateName || '').toLowerCase();
-      const roll = (item.rollNo || '').toLowerCase();
-      const exam = (item.examName || '').toLowerCase();
-      const slug = (item.examSlug || '').toLowerCase();
-      const center = (item.testCenter || '').toLowerCase();
-      return name.includes(q) || roll.includes(q) || exam.includes(q) || slug.includes(q) || center.includes(q);
+    let list = history;
+
+    if (q) {
+      list = list.filter(item => {
+        const name = (item.candidateName || '').toLowerCase();
+        const roll = (item.rollNo || '').toLowerCase();
+        const exam = (item.examName || '').toLowerCase();
+        const slug = (item.examSlug || '').toLowerCase();
+        const center = (item.testCenter || '').toLowerCase();
+        return name.includes(q) || roll.includes(q) || exam.includes(q) || slug.includes(q) || center.includes(q);
+      });
+    }
+
+    return [...list].sort((a, b) => {
+      if (sortBy === 'score') {
+        return (b.rawScore ?? 0) - (a.rawScore ?? 0);
+      }
+      return (b.timestamp ?? 0) - (a.timestamp ?? 0);
     });
-  }, [history, searchQuery]);
+  }, [history, searchQuery, sortBy]);
 
   const handleOpenItem = (item: HistoryItem, destination: '/result' | '/review-answerkey' | '/rank' = '/result') => {
     try {
@@ -98,559 +130,494 @@ export default function HistoryPage() {
       clearSearchHistory();
       setHistory([]);
       setShowClearModal(false);
-      showToast('Search history cleared');
+      showToast('All search history cleared');
     } catch (err) {
       console.error('Error clearing history:', err);
     }
   };
 
   return (
-    <main className="history-page-wrapper" style={{
-      minHeight: '85vh',
-      background: '#f8fafc',
-      padding: '24px 16px calc(50px + env(safe-area-inset-bottom, 0px)) 16px'
-    }}>
-      {/* Toast Notification */}
+    <main className="history-page-wrapper">
+      {/* Dynamic Toast Feedback Pill */}
       {toastMessage && (
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: '#0f172a',
-          color: '#ffffff',
-          padding: '10px 20px',
-          borderRadius: '9999px',
-          fontSize: '0.84rem',
-          fontWeight: 700,
-          boxShadow: '0 10px 25px rgba(0,0,0,0.25)',
-          zIndex: 999999,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          animation: 'fadeIn 0.2s ease-out'
-        }}>
-          <span>✓</span>
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#0f172a',
+            color: '#ffffff',
+            padding: '9px 18px',
+            borderRadius: '9999px',
+            fontSize: '0.82rem',
+            fontWeight: 800,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.25)',
+            zIndex: 999999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            pointerEvents: 'none',
+            letterSpacing: '-0.01em',
+            animation: 'fadeIn 0.18s ease-out'
+          }}
+        >
+          <span style={{ color: '#38bdf8' }}>✓</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Main Container */}
-      <div style={{ maxWidth: '820px', margin: '0 auto' }}>
+      <div className="history-container">
 
-        {/* Header Section */}
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '16px',
-          border: '1.5px solid #e2e8f0',
-          padding: '22px 20px',
-          marginBottom: '20px',
-          boxShadow: '0 2px 12px rgba(15, 23, 42, 0.04)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #0044cc 0%, #0066ff 100%)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(0, 68, 204, 0.25)',
-                flexShrink: 0
-              }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+        {/* App Hero Header Card */}
+        <div className="history-hero-card">
+          <div className="history-header-top">
+            <div className="history-brand-group">
+              <div className="history-app-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                   <path d="M3 3v5h5" />
                   <polyline points="12 7 12 12 15 15" />
                 </svg>
               </div>
-              <div>
-                <h1 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0f172a', margin: 0, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                  Search History
+              <div className="history-title-group">
+                <h1 className="history-main-title">
+                  <span>Search History</span>
+                  <span className="history-badge-pro">Saved</span>
                 </h1>
-                <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '3px 0 0 0', fontWeight: 600 }}>
-                  Previously checked answer keys & scorecards
+                <p className="history-subtitle">
+                  Previously checked answer keys, scorecards & live ranks
                 </p>
               </div>
             </div>
 
             {history.length > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{
-                  background: '#f1f5f9',
-                  color: '#475569',
-                  fontSize: '0.74rem',
-                  fontWeight: 800,
-                  padding: '4px 10px',
-                  borderRadius: '20px',
-                  border: '1px solid #e2e8f0'
-                }}>
-                  {history.length} {history.length === 1 ? 'Paper' : 'Papers'}
-                </span>
+              <div className="history-header-actions">
+                <div className="history-count-pill">
+                  <span className="history-online-dot"></span>
+                  <span>{history.length} {history.length === 1 ? 'Paper' : 'Papers'}</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setShowClearModal(true)}
-                  style={{
-                    background: 'transparent',
-                    border: '1px solid #fecaca',
-                    color: '#dc2626',
-                    padding: '5px 12px',
-                    borderRadius: '8px',
-                    fontSize: '0.74rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
+                  className="history-clear-btn"
                   title="Clear all search history"
+                  aria-label="Clear all search history"
                 >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  Clear All
+                  <span>Clear All</span>
                 </button>
               </div>
             )}
           </div>
 
-          {/* Search Filter Bar (Only if history has 2+ items) */}
-          {history.length >= 2 && (
-            <div style={{ marginTop: '16px', position: 'relative' }}>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by candidate name, roll number, or exam..."
-                style={{
-                  width: '100%',
-                  padding: '9px 38px 9px 36px',
-                  borderRadius: '10px',
-                  border: '1.5px solid #cbd5e1',
-                  background: '#f8fafc',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  color: '#0f172a',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                  transition: 'border-color 0.15s ease'
-                }}
-              />
-              {/* Search Icon */}
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#64748b"
-                strokeWidth="2.5"
-                style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              {/* Clear search query button */}
-              {searchQuery && (
+          {/* Search Input & Quick Filter Chips */}
+          {history.length >= 1 && (
+            <div className="history-controls-bar">
+              <div className="history-search-input-box">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by candidate name, roll number, or exam..."
+                  className="history-search-input"
+                  aria-label="Search papers"
+                />
+                <svg
+                  className="history-search-icon"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="history-search-clear"
+                    title="Clear filter"
+                    aria-label="Clear filter"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Filter Sort Chips */}
+              <div className="history-filter-chips">
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
-                  style={{
-                    position: 'absolute',
-                    right: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    color: '#64748b',
-                    cursor: 'pointer',
-                    fontWeight: 900,
-                    fontSize: '1rem',
-                    padding: '4px'
-                  }}
-                  title="Clear search"
+                  onClick={() => setSortBy('recent')}
+                  className={`history-filter-chip${sortBy === 'recent' ? ' active' : ''}`}
+                  aria-label="Sort by most recent"
                 >
-                  ✕
+                  <span>⚡ Recent First</span>
                 </button>
-              )}
+
+                <button
+                  type="button"
+                  onClick={() => setSortBy('score')}
+                  className={`history-filter-chip${sortBy === 'score' ? ' active' : ''}`}
+                  aria-label="Sort by highest score"
+                >
+                  <span>🏆 Highest Score</span>
+                </button>
+
+                {searchQuery && (
+                  <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700, marginLeft: 'auto' }}>
+                    Showing {displayHistory.length} of {history.length}
+                  </span>
+                )}
+              </div>
             </div>
           )}
         </div>
 
-        {/* Content Section */}
+        {/* Papers List Area */}
         {!isLoaded ? (
           <div style={{
             background: '#ffffff',
-            borderRadius: '16px',
-            border: '1.5px solid #e2e8f0',
-            padding: '40px 20px',
+            borderRadius: '18px',
+            border: '1px solid #e2e8f0',
+            padding: '48px 20px',
             textAlign: 'center',
             color: '#64748b',
             fontSize: '0.88rem',
-            fontWeight: 700
+            fontWeight: 750
           }}>
-            Loading history...
+            <div style={{
+              width: '32px',
+              height: '32px',
+              border: '3px solid #e2e8f0',
+              borderTopColor: '#0044cc',
+              borderRadius: '50%',
+              margin: '0 auto 12px auto',
+              animation: 'spin 0.8s linear infinite'
+            }} />
+            Loading your search history...
           </div>
         ) : history.length === 0 ? (
           /* Empty State */
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '16px',
-            border: '1.5px dashed #cbd5e1',
-            padding: '48px 24px',
-            textAlign: 'center',
-            boxShadow: '0 2px 10px rgba(15, 23, 42, 0.02)'
-          }}>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              background: '#eff6ff',
-              color: '#0044cc',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '16px'
-            }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="history-empty-card">
+            <div className="history-empty-icon-wrap">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
                 <polyline points="12 7 12 12 15 15" />
               </svg>
             </div>
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: '0 0 8px 0' }}>
-              No Search History Found
+            <h2 className="history-empty-title">
+              No Checked Papers Yet
             </h2>
-            <p style={{ fontSize: '0.82rem', color: '#64748b', maxWidth: '420px', margin: '0 auto 24px auto', lineHeight: 1.5, fontWeight: 500 }}>
-              Whenever you calculate an answer key, your scorecards, response breakdown, and rank will be automatically saved here so you can revisit them anytime.
+            <p className="history-empty-desc">
+              Whenever you calculate an answer key on CBT Rank, your scorecards, category analysis, response metrics, and live ranks will automatically appear here for instant 1-tap access.
             </p>
-            <Link
-              href="/answerkey"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'linear-gradient(135deg, #0044cc 0%, #0055ff 100%)',
-                color: '#ffffff',
-                padding: '11px 24px',
-                borderRadius: '10px',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                textDecoration: 'none',
-                boxShadow: '0 4px 14px rgba(0, 68, 204, 0.28)'
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <Link href="/answerkey" className="history-empty-cta">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="4" y="2" width="16" height="20" rx="3" />
                 <line x1="8" y1="7" x2="16" y2="7" />
                 <circle cx="9" cy="12" r="1" fill="currentColor" />
                 <circle cx="15" cy="12" r="1" fill="currentColor" />
+                <circle cx="9" cy="16" r="1" fill="currentColor" />
+                <circle cx="15" cy="16" r="1" fill="currentColor" />
               </svg>
-              Calculate Answer Key Now →
+              <span>Calculate Answer Key Now →</span>
             </Link>
           </div>
-        ) : filteredHistory.length === 0 ? (
-          /* Search Empty State */
+        ) : displayHistory.length === 0 ? (
+          /* Search Filter Empty State */
           <div style={{
             background: '#ffffff',
-            borderRadius: '16px',
-            border: '1.5px solid #e2e8f0',
-            padding: '36px 20px',
-            textAlign: 'center'
+            borderRadius: '18px',
+            border: '1px solid #e2e8f0',
+            padding: '38px 20px',
+            textAlign: 'center',
+            boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)'
           }}>
-            <p style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 700, margin: '0 0 12px 0' }}>
-              No results match &quot;{searchQuery}&quot;
+            <p style={{ fontSize: '0.92rem', color: '#0f172a', fontWeight: 800, margin: '0 0 6px 0' }}>
+              No papers found matching &quot;{searchQuery}&quot;
+            </p>
+            <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 16px 0', fontWeight: 500 }}>
+              Try searching with a different candidate name, roll number, or exam.
             </p>
             <button
               type="button"
               onClick={() => setSearchQuery('')}
               style={{
-                background: '#f1f5f9',
-                border: '1px solid #cbd5e1',
-                padding: '6px 16px',
-                borderRadius: '8px',
+                background: '#0044cc',
+                color: '#ffffff',
+                border: 'none',
+                padding: '7px 18px',
+                borderRadius: '9px',
                 fontSize: '0.78rem',
-                fontWeight: 700,
-                color: '#0f172a',
+                fontWeight: 800,
                 cursor: 'pointer'
               }}
             >
-              Clear Filter
+              Clear Search
             </button>
           </div>
         ) : (
-          /* Cards List */
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {filteredHistory.map((item) => {
+          /* Paper Cards */
+          <div>
+            {displayHistory.map((item) => {
               const hasBonus = Boolean(item.bonusCount && item.bonusCount > 0);
+              const initials = getCandidateInitials(item.candidateName);
+              const rightMarks = item.marksRight ? Number((item.correctCount * item.marksRight).toFixed(1)) : item.correctCount;
+              const wrongPenalty = item.marksWrong ? Number((item.wrongCount * item.marksWrong).toFixed(1)) : item.wrongCount;
+              const bonusMarks = item.marksRight ? Number((item.bonusCount * item.marksRight).toFixed(1)) : item.bonusCount;
 
               return (
                 <div
                   key={item.id}
                   onClick={() => handleOpenItem(item, '/result')}
-                  style={{
-                    background: '#ffffff',
-                    borderRadius: '14px',
-                    border: '1.5px solid #e2e8f0',
-                    padding: '16px 16px 14px 16px',
-                    boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
-                    cursor: 'pointer',
-                    transition: 'all 0.18s ease',
-                    position: 'relative',
-                    overflow: 'hidden'
+                  className="history-paper-card"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleOpenItem(item, '/result');
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#0044cc';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 68, 204, 0.08)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#e2e8f0';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 10px rgba(15, 23, 42, 0.03)';
-                  }}
+                  aria-label={`Open scorecard for ${item.candidateName}`}
                 >
-                  {/* Top Bar: Exam Name & Timestamp */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '10px' }}>
-                    <span style={{
-                      background: '#eff6ff',
-                      color: '#0044cc',
-                      border: '1px solid #bfdbfe',
-                      padding: '3px 9px',
-                      borderRadius: '6px',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      maxWidth: '70%',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }}>
-                      {item.examName || 'CBT Answer Key'}
-                    </span>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{
-                        fontSize: '0.70rem',
-                        color: '#64748b',
-                        fontWeight: 600,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                  <div className="history-paper-card-inner">
+                    {/* Top Row: Exam Badge, Time & Delete */}
+                    <div className="history-card-top-bar">
+                      <div className="history-exam-pill">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                          <path d="M6 12v5c3 3 9 3 12 0v-5" />
                         </svg>
-                        {formatRelativeTime(item.timestamp, item.formattedDate)}
-                      </span>
+                        <span>{item.examName || 'CBT Answer Key'}</span>
+                      </div>
 
-                      {/* Delete icon button */}
+                      <div className="history-card-top-right">
+                        <span className="history-card-time">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                          </svg>
+                          <span>{formatRelativeTime(item.timestamp, item.formattedDate)}</span>
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteItem(item.id, e)}
+                          className="history-delete-btn"
+                          title="Remove from history"
+                          aria-label="Remove paper from history"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Candidate Info & Score Hero Row */}
+                    <div className="history-candidate-hero-row">
+                      <div className="history-candidate-profile">
+                        <div className="history-candidate-avatar">
+                          {initials}
+                        </div>
+                        <div className="history-candidate-details">
+                          <div className="history-candidate-name">
+                            {item.candidateName || 'Candidate'}
+                          </div>
+
+                          <div className="history-candidate-meta-pills">
+                            <button
+                              type="button"
+                              onClick={(e) => handleCopyRoll(e, item.rollNo)}
+                              className="history-roll-chip"
+                              title="Click to copy roll number"
+                              aria-label={`Copy roll number ${item.rollNo}`}
+                            >
+                              <span>Roll: <strong>{item.rollNo || 'N/A'}</strong></span>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                              </svg>
+                            </button>
+
+                            {item.testDate && (
+                              <span className="history-shift-meta">
+                                📅 {item.testDate}
+                              </span>
+                            )}
+                            {item.testTime && (
+                              <span className="history-shift-meta">
+                                ⏰ {item.testTime}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Elevated Hero Score Box */}
+                      <div className="history-score-hero-box">
+                        <div className="history-score-label">Raw Score</div>
+                        <div className="history-score-val">
+                          {item.rawScore !== undefined ? Number(item.rawScore).toFixed(2) : '--'}
+                        </div>
+                        <div className="history-score-sub">
+                          {item.totalQuestions ? `${item.totalQuestions} Questions` : 'Scorecard'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Performance Breakdown Grid */}
+                    <div className="history-breakdown-grid">
+                      {/* 1. Right */}
+                      <div className="history-stat-pill right">
+                        <span className="history-stat-pill-label">
+                          <span>✓</span> Right
+                        </span>
+                        <span className="history-stat-pill-val">
+                          {item.correctCount ?? 0}
+                        </span>
+                        <span className="history-stat-pill-sub">
+                          +{rightMarks}
+                        </span>
+                      </div>
+
+                      {/* 2. Wrong */}
+                      <div className="history-stat-pill wrong">
+                        <span className="history-stat-pill-label">
+                          <span>✕</span> Wrong
+                        </span>
+                        <span className="history-stat-pill-val">
+                          {item.wrongCount ?? 0}
+                        </span>
+                        <span className="history-stat-pill-sub">
+                          -{wrongPenalty}
+                        </span>
+                      </div>
+
+                      {/* 3. Unattempted */}
+                      <div className="history-stat-pill skip">
+                        <span className="history-stat-pill-label">
+                          <span>—</span> Skip
+                        </span>
+                        <span className="history-stat-pill-val">
+                          {item.unattemptedCount ?? 0}
+                        </span>
+                        <span className="history-stat-pill-sub">
+                          0 pts
+                        </span>
+                      </div>
+
+                      {/* 4. Bonus (If present) */}
+                      {hasBonus && (
+                        <div className="history-stat-pill bonus">
+                          <span className="history-stat-pill-label">
+                            <span>★</span> Bonus
+                          </span>
+                          <span className="history-stat-pill-val">
+                            {item.bonusCount}
+                          </span>
+                          <span className="history-stat-pill-sub">
+                            +{bonusMarks}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Rank Ribbon Banner (if rank data exists) */}
+                    {(item.shiftRank && item.shiftRank > 0) || (item.overallRank && item.overallRank > 0) ? (
+                      <div className="history-rank-banner">
+                        <div className="history-rank-left">
+                          <span>🏆</span>
+                          <span>
+                            {item.shiftRank && item.shiftRank > 0 ? 'Shift Rank:' : 'Live Rank:'}
+                          </span>
+                          <span className="history-rank-num">
+                            #{item.shiftRank || item.overallRank}
+                          </span>
+                          {item.totalShift && item.totalShift > 0 && (
+                            <span style={{ opacity: 0.85, fontSize: '0.70rem' }}>
+                              of {item.totalShift.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+
+                        {item.categoryRank && item.categoryRank > 0 && (
+                          <div style={{ fontSize: '0.70rem', fontWeight: 800, color: '#78350f' }}>
+                            Cat: #{item.categoryRank}
+                          </div>
+                        )}
+                      </div>
+                    ) : null}
+
+                    {/* Touch Friendly Action Buttons */}
+                    <div className="history-action-bar">
                       <button
                         type="button"
-                        onClick={(e) => handleDeleteItem(item.id, e)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#94a3b8',
-                          padding: '3px',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transition: 'color 0.15s ease'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenItem(item, '/result');
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-                        title="Remove from history"
-                        aria-label="Remove paper from history"
+                        className="history-btn-scorecard"
+                        aria-label="View scorecard for this paper"
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                          <polyline points="14 2 14 8 20 8" />
+                          <line x1="16" y1="13" x2="8" y2="13" />
+                          <line x1="16" y1="17" x2="8" y2="17" />
+                          <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                        <span>View Scorecard</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6" />
                         </svg>
                       </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenItem(item, '/review-answerkey');
+                        }}
+                        className="history-btn-review"
+                        aria-label="Review answer key questions"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 11l3 3L22 4" />
+                          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                        <span>Review Paper</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenItem(item, '/rank');
+                        }}
+                        className="history-btn-rank"
+                        aria-label="View live rank and cut-offs"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                          <path d="M4 22h16" />
+                          <path d="M10 14.66V17c0 .55-.45 1-1 1H7" />
+                          <path d="M14 14.66V17c0 .55.45 1 1 1h2" />
+                          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                        </svg>
+                        <span>Rank</span>
+                      </button>
                     </div>
-                  </div>
-
-                  {/* Candidate Info Strip */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>
-                    <div>
-                      <div style={{ fontSize: '0.94rem', fontWeight: 800, color: '#0f172a', lineHeight: 1.25, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span>👤</span>
-                        <span>{item.candidateName}</span>
-                      </div>
-                      <div style={{ fontSize: '0.73rem', color: '#475569', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                        <span>Roll: <strong style={{ fontFamily: 'monospace', color: '#0f172a' }}>{item.rollNo}</strong></span>
-                        {item.testDate && <span>• 📅 {item.testDate}</span>}
-                        {item.testTime && <span>• ⏰ {item.testTime}</span>}
-                      </div>
-                    </div>
-
-                    {/* Total Score Badge */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-                      color: '#ffffff',
-                      padding: '6px 12px',
-                      borderRadius: '10px',
-                      textAlign: 'right',
-                      flexShrink: 0
-                    }}>
-                      <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        Score
-                      </div>
-                      <div style={{ fontSize: '1.12rem', fontWeight: 900, color: '#38bdf8', lineHeight: 1, fontFamily: 'monospace' }}>
-                        {item.rawScore !== undefined ? Number(item.rawScore).toFixed(2) : '--'}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Breakdown Stats Badges */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    flexWrap: 'wrap',
-                    padding: '7px 10px',
-                    background: '#f8fafc',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
-                    fontSize: '0.72rem',
-                    fontWeight: 800,
-                    marginBottom: '12px'
-                  }}>
-                    <span style={{ color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a', display: 'inline-block' }}></span>
-                      Right: {item.correctCount ?? 0}
-                    </span>
-                    <span style={{ color: '#cbd5e1' }}>|</span>
-                    <span style={{ color: '#dc2626', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#dc2626', display: 'inline-block' }}></span>
-                      Wrong: {item.wrongCount ?? 0}
-                    </span>
-                    <span style={{ color: '#cbd5e1' }}>|</span>
-                    <span style={{ color: '#64748b', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#94a3b8', display: 'inline-block' }}></span>
-                      Skip: {item.unattemptedCount ?? 0}
-                    </span>
-                    {hasBonus && (
-                      <>
-                        <span style={{ color: '#cbd5e1' }}>|</span>
-                        <span style={{ color: '#9333ea', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#9333ea', display: 'inline-block' }}></span>
-                          Bonus: {item.bonusCount}
-                        </span>
-                      </>
-                    )}
-                    {item.shiftRank && item.shiftRank > 0 ? (
-                      <>
-                        <span style={{ color: '#cbd5e1' }}>|</span>
-                        <span style={{ color: '#0044cc' }}>
-                          🏆 Shift Rank: #{item.shiftRank}
-                        </span>
-                      </>
-                    ) : null}
-                  </div>
-
-                  {/* Actions Footer */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderTop: '1px solid #f1f5f9', paddingTop: '10px' }}>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenItem(item, '/result');
-                      }}
-                      style={{
-                        flex: 1.2,
-                        background: '#0044cc',
-                        color: '#ffffff',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '7px 10px',
-                        fontSize: '0.74rem',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '5px',
-                        transition: 'background 0.15s ease'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = '#0033aa'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = '#0044cc'}
-                    >
-                      <span>View Scorecard</span>
-                      <span>→</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenItem(item, '/review-answerkey');
-                      }}
-                      style={{
-                        flex: 1,
-                        background: '#ffffff',
-                        color: '#0f172a',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '8px',
-                        padding: '7px 10px',
-                        fontSize: '0.74rem',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '4px',
-                        transition: 'all 0.15s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#94a3b8';
-                        e.currentTarget.style.background = '#f8fafc';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#cbd5e1';
-                        e.currentTarget.style.background = '#ffffff';
-                      }}
-                    >
-                      <span>Review Paper</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenItem(item, '/rank');
-                      }}
-                      style={{
-                        flex: 0.8,
-                        background: '#ffffff',
-                        color: '#166534',
-                        border: '1px solid #bbf7d0',
-                        borderRadius: '8px',
-                        padding: '7px 10px',
-                        fontSize: '0.74rem',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '4px',
-                        transition: 'all 0.15s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#f0fdf4';
-                        e.currentTarget.style.borderColor = '#16a34a';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = '#ffffff';
-                        e.currentTarget.style.borderColor = '#bbf7d0';
-                      }}
-                    >
-                      <span>🏆 Rank</span>
-                    </button>
                   </div>
                 </div>
               );
@@ -670,47 +637,51 @@ export default function HistoryPage() {
             right: 0,
             bottom: 0,
             background: 'rgba(15, 23, 42, 0.65)',
-            backdropFilter: 'blur(3px)',
+            backdropFilter: 'blur(5px)',
+            WebkitBackdropFilter: 'blur(5px)',
             zIndex: 999999,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '16px'
+            padding: '16px',
+            animation: 'fadeIn 0.15s ease-out'
           }}
           onClick={() => setShowClearModal(false)}
         >
           <div
             style={{
               background: '#ffffff',
-              borderRadius: '16px',
-              padding: '24px',
+              borderRadius: '20px',
+              padding: '26px 22px',
               maxWidth: '380px',
               width: '100%',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-              boxSizing: 'border-box'
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              boxSizing: 'border-box',
+              border: '1px solid #e2e8f0'
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
+              width: '48px',
+              height: '48px',
+              borderRadius: '14px',
               background: '#fee2e2',
               color: '#dc2626',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 14px auto'
+              margin: '0 auto 16px auto',
+              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.18)'
             }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0f172a', textAlign: 'center', margin: '0 0 8px 0' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 900, color: '#0f172a', textAlign: 'center', margin: '0 0 8px 0', letterSpacing: '-0.01em' }}>
               Clear All Search History?
             </h3>
-            <p style={{ fontSize: '0.80rem', color: '#64748b', textAlign: 'center', margin: '0 0 20px 0', lineHeight: 1.45 }}>
-              This will remove all your saved scorecards and response calculations from this device. This action cannot be undone.
+            <p style={{ fontSize: '0.80rem', color: '#64748b', textAlign: 'center', margin: '0 0 22px 0', lineHeight: 1.5, fontWeight: 500 }}>
+              This will remove all {history.length} saved scorecards, response calculations, and ranks from this device. This action cannot be undone.
             </p>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
@@ -718,14 +689,15 @@ export default function HistoryPage() {
                 onClick={() => setShowClearModal(false)}
                 style={{
                   flex: 1,
-                  padding: '9px 12px',
-                  borderRadius: '8px',
+                  padding: '11px 14px',
+                  borderRadius: '11px',
                   border: '1.5px solid #cbd5e1',
                   background: '#ffffff',
                   color: '#475569',
                   fontWeight: 800,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer'
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 Cancel
@@ -735,14 +707,16 @@ export default function HistoryPage() {
                 onClick={handleClearAll}
                 style={{
                   flex: 1,
-                  padding: '9px 12px',
-                  borderRadius: '8px',
+                  padding: '11px 14px',
+                  borderRadius: '11px',
                   border: 'none',
-                  background: '#dc2626',
+                  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
                   color: '#ffffff',
-                  fontWeight: 800,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer'
+                  fontWeight: 850,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 Yes, Clear All
