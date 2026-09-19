@@ -99,7 +99,7 @@ function ExamCard({ exam }: { exam: Exam }) {
   return (
     <div className={`exam-card${isLatest ? ' exam-card-latest' : ''}`}>
       {isLatest && (
-        <svg className="exam-card-border-svg" aria-hidden="true">
+        <svg className="exam-card-border-svg" width="100%" height="100%" aria-hidden="true">
           <rect className="exam-border-bg" width="100%" height="100%" rx="14" ry="14" />
           <rect className="exam-border-runner" width="100%" height="100%" rx="14" ry="14" pathLength={1000} />
         </svg>

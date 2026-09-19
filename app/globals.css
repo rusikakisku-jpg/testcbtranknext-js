@@ -578,6 +578,7 @@ footer {
   overflow: visible;
   border-radius: 14px;
   z-index: 2;
+  display: block;
 }
 
 .exam-border-bg {
@@ -591,13 +592,19 @@ footer {
   stroke: #ef4444;
   stroke-width: 2.2;
   stroke-linecap: round;
-  stroke-dasharray: 140 860;
-  animation: runBorderStroke 3.5s linear infinite;
-  filter: drop-shadow(0 0 2.5px rgba(239, 68, 68, 0.8));
+  stroke-dasharray: 1000 1000;
+  animation: runBorderStroke 4s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.8));
 }
 
 @keyframes runBorderStroke {
   0% {
+    stroke-dashoffset: 1000;
+  }
+  45% {
+    stroke-dashoffset: 0;
+  }
+  55% {
     stroke-dashoffset: 0;
   }
   100% {
