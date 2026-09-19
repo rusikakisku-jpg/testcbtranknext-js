@@ -320,7 +320,6 @@ export default function HistoryPage() {
           /* Simple Premium Cards */
           <div>
             {displayHistory.map((item) => {
-              const hasBonus = Boolean(item.bonusCount && item.bonusCount > 0);
               const rankVal = item.shiftRank || item.overallRank;
 
               return (
@@ -381,6 +380,7 @@ export default function HistoryPage() {
 
                         {item.testDate && <span>• {item.testDate}</span>}
                         {item.testTime && <span>• {item.testTime}</span>}
+                        {rankVal && rankVal > 0 ? <span>• 🏆 #{rankVal}</span> : null}
                       </div>
                     </div>
 
@@ -390,44 +390,6 @@ export default function HistoryPage() {
                         {item.rawScore !== undefined ? Number(item.rawScore).toFixed(2) : '--'}
                       </div>
                     </div>
-                  </div>
-
-                  {/* Inline Clean Metrics Strip */}
-                  <div className="history-metrics-strip">
-                    <span className="history-metric-item">
-                      <span className="history-dot-right"></span>
-                      <span><strong>{item.correctCount ?? 0}</strong> Right</span>
-                    </span>
-
-                    <span className="history-metric-divider">•</span>
-
-                    <span className="history-metric-item">
-                      <span className="history-dot-wrong"></span>
-                      <span><strong>{item.wrongCount ?? 0}</strong> Wrong</span>
-                    </span>
-
-                    <span className="history-metric-divider">•</span>
-
-                    <span className="history-metric-item">
-                      <span className="history-dot-skip"></span>
-                      <span><strong>{item.unattemptedCount ?? 0}</strong> Skip</span>
-                    </span>
-
-                    {hasBonus && (
-                      <>
-                        <span className="history-metric-divider">•</span>
-                        <span className="history-metric-item">
-                          <span className="history-dot-bonus"></span>
-                          <span><strong>{item.bonusCount}</strong> Bonus</span>
-                        </span>
-                      </>
-                    )}
-
-                    {rankVal && rankVal > 0 ? (
-                      <span className="history-metric-rank">
-                        🏆 #{rankVal} {item.totalShift ? `of ${item.totalShift}` : 'Rank'}
-                      </span>
-                    ) : null}
                   </div>
 
                   {/* Card Footer Actions */}
