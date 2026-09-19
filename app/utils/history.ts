@@ -55,7 +55,7 @@ export function getSearchHistory(): HistoryItem[] {
 
     if (currentResult && (currentResult.candidateName || currentResult.rollNo || currentResult.rollNumber)) {
       const roll = String(currentResult.rollNo || currentResult.rollNumber || '').trim();
-      const exam = String(currentResult.examName || currentForm?.exam_slug || 'Answer Key').trim();
+      const exam = String(currentResult.examName || currentResult.infoRows?.find((r: any) => /subject|assessment|exam\s*name|post\s*name/i.test(r?.label))?.value || currentForm?.exam_slug || 'Answer Key').trim();
       const url = String(currentForm?.ans_key_url || '').trim();
 
       const exists = list.some(item =>
@@ -132,7 +132,7 @@ export function addToSearchHistory(
   try {
     const list = cbtGet<HistoryItem[]>(STORAGE_KEYS.SEARCH_HISTORY) || [];
     const roll = String(resultData.rollNo || resultData.rollNumber || '').trim();
-    const exam = String(resultData.examName || formData?.exam_slug || 'Answer Key').trim();
+    const exam = String(resultData.examName || resultData.infoRows?.find((r: any) => /subject|assessment|exam\s*name|post\s*name/i.test(r?.label))?.value || formData?.exam_slug || 'Answer Key').trim();
     const url = String(formData?.ans_key_url || '').trim();
 
     const bonus = Number(resultData.bonusCount || resultData.rawBonusQuestions || 0);

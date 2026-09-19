@@ -4771,24 +4771,25 @@ footer {
 /* Card Top: Exam & Time */
 .history-card-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 10px;
 }
 
 .history-exam-tag {
-  font-size: 0.73rem;
+  font-size: 0.74rem;
   font-weight: 750;
   color: #0044cc;
   background: #eff6ff;
   border: 1px solid #dbeafe;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 6px;
-  max-width: 70%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+  flex: 1;
+  min-width: 0;
 }
 
 .history-header-meta {
@@ -4796,6 +4797,7 @@ footer {
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+  padding-top: 2px;
 }
 
 .history-time-text {

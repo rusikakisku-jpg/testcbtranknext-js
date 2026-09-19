@@ -65,6 +65,57 @@ function getShiftText(item: HistoryItem): string {
   return '';
 }
 
+function getFullExamName(item: HistoryItem): string {
+  // 1. Check if resultData has full Subject / Exam Name / Assessment in infoRows
+  if (Array.isArray(item.resultData?.infoRows)) {
+    const row = item.resultData.infoRows.find((r: { label?: string; value?: string }) =>
+      /^(subject|assessment\s*name|post\s*name|exam\s*name|examination\s*name|exam)$/i.test(String(r?.label || '').trim())
+    );
+    if (row?.value) {
+      const val = String(row.value).trim();
+      if (val && val.length > 2 && !/^(answer\s*key|general)$/i.test(val)) {
+        return val;
+      }
+    }
+  }
+
+  // 2. Check resultData.header_banner_text or exam_info.detected_exam_name
+  if (item.resultData?.header_banner_text) {
+    const banner = String(item.resultData.header_banner_text).trim();
+    if (banner && banner.length > 2) return banner;
+  }
+
+  if (item.resultData?.exam_info?.detected_exam_name) {
+    const detected = String(item.resultData.exam_info.detected_exam_name).trim();
+    if (detected && detected.length > 2) return detected;
+  }
+
+  // 3. Check direct item.examName
+  const direct = String(item.examName || '').trim();
+  if (direct && !/^(answer\s*key|general|cbt\s*answer\s*key)$/i.test(direct)) {
+    if (direct.includes('-') && !direct.includes(' ')) {
+      return direct.split('-').map(w => w.toUpperCase()).join(' ');
+    }
+    return direct;
+  }
+
+  // 4. Check resultData.examName
+  if (item.resultData?.examName) {
+    const fromResult = String(item.resultData.examName).trim();
+    if (fromResult && !/^(answer\s*key|general|cbt\s*answer\s*key)$/i.test(fromResult)) {
+      return fromResult;
+    }
+  }
+
+  // 5. Check formData.exam_name
+  if (item.formData?.exam_name) {
+    const fromForm = String(item.formData.exam_name).trim();
+    if (fromForm) return fromForm;
+  }
+
+  return direct || 'CBT Answer Key';
+}
+
 export default function HistoryPage() {
   const router = useRouter();
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -242,6 +293,7 @@ export default function HistoryPage() {
           <div>
             {history.map((item) => {
               const shiftText = getShiftText(item);
+              const fullExamName = getFullExamName(item);
 
               return (
                 <div
@@ -257,8 +309,8 @@ export default function HistoryPage() {
                 >
                   {/* Card Header: Exam Name & Meta (Time + Delete) */}
                   <div className="history-card-header">
-                    <span className="history-exam-tag" title={item.examName || 'CBT Answer Key'}>
-                      {item.examName || 'CBT Answer Key'}
+                    <span className="history-exam-tag" title={fullExamName}>
+                      {fullExamName}
                     </span>
 
                     <div className="history-header-meta">
