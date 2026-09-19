@@ -1894,12 +1894,12 @@ export default function ReviewAnswerkeyPage() {
                         border: activeStatusFilter === 'Discarded' ? '1px solid #9333ea' : '1px solid transparent',
                         transition: 'all 0.15s ease'
                       }}
-                      title="Click to filter Marked for Review questions"
+                      title="Click to filter Bonus questions"
                     >
                       <span style={{ width: '20px', height: '20px', borderRadius: '3px', background: '#9333ea', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.68rem', flexShrink: 0 }}>
                         {pillBonusCount}
                       </span>
-                      <span>Marked for Review</span>
+                      <span>Bonus</span>
                     </div>
                   )}
                   </div>
@@ -2629,7 +2629,7 @@ export default function ReviewAnswerkeyPage() {
                       border: activeStatusFilter === 'Discarded' ? '1px solid #9333ea' : '1px solid transparent',
                       transition: 'all 0.15s ease'
                     }}
-                    title="Marked for Review (Bonus)"
+                    title="Bonus"
                   >
                     <span style={{
                       width: '18px',
@@ -2646,7 +2646,7 @@ export default function ReviewAnswerkeyPage() {
                     }}>
                       {pillBonusCount}
                     </span>
-                    <span style={{ fontSize: '0.69rem', fontWeight: 700, lineHeight: 1.2 }}>Marked for Review</span>
+                    <span style={{ fontSize: '0.69rem', fontWeight: 700, lineHeight: 1.2 }}>Bonus</span>
                   </div>
                 )}
               </div>
