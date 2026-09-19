@@ -510,7 +510,7 @@ export default function ResultPage() {
           .scorecard-card {
             background: #ffffff !important;
             border-radius: 14px !important;
-            border: 4px solid #0044cc !important;
+            border: 5px solid #0044cc !important;
             box-shadow: 0 4px 24px rgba(0, 68, 204, 0.10), 0 1px 4px rgba(0, 0, 0, 0.05) !important;
             padding: 0 !important;
             display: flex !important;
@@ -527,7 +527,7 @@ export default function ResultPage() {
               padding: 12px 8px 50px !important;
             }
             .scorecard-card {
-              border-width: 3.5px !important;
+              border-width: 4.5px !important;
               border-radius: 12px !important;
             }
           }
@@ -571,7 +571,7 @@ export default function ResultPage() {
             background: #ffffff;
             padding: 10px 16px;
             text-align: center;
-            border-bottom: 2px solid #0044cc;
+            border-bottom: 2.5px solid #0044cc;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -615,7 +615,7 @@ export default function ResultPage() {
             table-layout: fixed;
             border-collapse: collapse;
             font-size: 0.78rem;
-            border-bottom: 2px solid #0044cc;
+            border-bottom: 2.5px solid #0044cc;
           }
 
           .scorecard-cand-th {
@@ -738,7 +738,7 @@ export default function ResultPage() {
 
           .scorecard-subj-tfoot {
             background: #eff6ff;
-            border-top: 2px solid #3b82f6;
+            border-top: 2.5px solid #3b82f6;
             font-weight: 900;
             font-size: 0.84rem;
           }
@@ -1218,7 +1218,7 @@ export default function ResultPage() {
         color: '#0f172a',
         padding: 0,
         boxSizing: 'border-box',
-        border: '3.5px solid #0044cc',
+        border: '4.5px solid #0044cc',
         borderRadius: 0,
         overflow: 'hidden'
       }}
@@ -1272,7 +1272,7 @@ export default function ResultPage() {
           background: '#ffffff',
           padding: '8px 14px',
           textAlign: 'center',
-          borderBottom: '2px solid #0044cc',
+          borderBottom: '2.5px solid #0044cc',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -1299,7 +1299,7 @@ export default function ResultPage() {
           color: '#ffffff',
           padding: '10px 14px',
           textAlign: 'center',
-          borderBottom: '2px solid #0044cc'
+          borderBottom: '2.5px solid #0044cc'
         }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 900, margin: 0, lineHeight: 1.3, color: '#ffffff' }}>
             {resultData.headerBannerText || resultData.examName || 'CBT Competitive Examination'}
@@ -1315,7 +1315,7 @@ export default function ResultPage() {
         tableLayout: 'fixed',
         borderCollapse: 'collapse',
         fontSize: '0.68rem',
-        borderBottom: '2px solid #0044cc'
+        borderBottom: '2.5px solid #0044cc'
       }}>
         <tbody>
           {displayRows.map((row, idx) => {
@@ -1446,7 +1446,7 @@ export default function ResultPage() {
           })}
         </tbody>
         <tfoot>
-          <tr style={{ background: '#eff6ff', borderTop: '2px solid #3b82f6', fontWeight: 900 }}>
+          <tr style={{ background: '#eff6ff', borderTop: '2.5px solid #3b82f6', fontWeight: 900 }}>
             <td style={{ width: '36%', padding: '7px 6px', textAlign: 'left', color: '#1e3a8a', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>TOTAL</td>
             <td style={{ padding: '7px 3px', color: '#0f172a', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalQuestions}</td>
             <td style={{ padding: '7px 3px', color: '#16a34a', borderRight: '1px solid #cbd5e1', fontSize: '0.71rem', boxSizing: 'border-box' }}>{totalRight}</td>
