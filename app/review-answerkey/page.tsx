@@ -2530,7 +2530,7 @@ export default function ReviewAnswerkeyPage() {
                     gap: '6px',
                     cursor: 'pointer'
                   }}
-                  title="Green indicates Right / Correct"
+                  title="Green indicates Right"
                 >
                   <span style={{
                     width: '13px',
@@ -2543,7 +2543,7 @@ export default function ReviewAnswerkeyPage() {
                   }} />
                   <span style={{ color: '#64748b', fontWeight: 800, fontSize: '0.70rem' }}>=</span>
                   <span style={{ color: '#0f172a', fontWeight: 800 }}>
-                    Right <span style={{ color: '#64748b', fontWeight: 600, fontSize: '0.68rem' }}>(Correct)</span>
+                    Right
                   </span>
                 </div>
 
@@ -2580,7 +2580,7 @@ export default function ReviewAnswerkeyPage() {
                     gap: '6px',
                     cursor: 'pointer'
                   }}
-                  title="Grey indicates Unattempted / Skip"
+                  title="Grey indicates Unattempted"
                 >
                   <span style={{
                     width: '13px',
@@ -2593,7 +2593,7 @@ export default function ReviewAnswerkeyPage() {
                   }} />
                   <span style={{ color: '#64748b', fontWeight: 800, fontSize: '0.70rem' }}>=</span>
                   <span style={{ color: '#0f172a', fontWeight: 800 }}>
-                    Unattempted <span style={{ color: '#64748b', fontWeight: 600, fontSize: '0.68rem' }}>(Skip)</span>
+                    Unattempted
                   </span>
                 </div>
 
