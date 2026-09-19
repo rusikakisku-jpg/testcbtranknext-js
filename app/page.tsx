@@ -97,7 +97,7 @@ function ExamCard({ exam }: { exam: Exam }) {
   const href = `/${exam.slug}/answerkey`;
 
   return (
-    <div className="exam-card">
+    <div className={`exam-card${isLatest ? ' exam-card-latest' : ''}`}>
       <Link href={href} prefetch={true} aria-label={exam.title}>
         <div className="exam-card-left">
           <div className="exam-title">
