@@ -307,38 +307,14 @@ export default function HistoryPage() {
                   }}
                   aria-label={`Open scorecard for ${item.candidateName}`}
                 >
-                  {/* Card Header: Exam Name & Meta (Time + Delete) */}
-                  <div className="history-card-header">
-                    <span className="history-exam-tag" title={fullExamName}>
-                      {fullExamName}
-                    </span>
-
-                    <div className="history-header-meta">
-                      <span className="history-time-text">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }}>
-                          <circle cx="12" cy="12" r="10" />
-                          <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                        {formatRelativeTime(item.timestamp, item.formattedDate)}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleDeleteItem(item.id, e)}
-                        className="history-trash-btn"
-                        title="Remove paper"
-                        aria-label="Remove paper from history"
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+                  {/* Exam Name: Clean & Proper, No Blue Container Box */}
+                  <div className="history-exam-name">
+                    {fullExamName}
                   </div>
 
                   {/* Card Body: Candidate Info */}
                   <div className="history-card-body">
-                    <div>
+                    <div style={{ width: '100%' }}>
                       <div className="history-candidate-title">
                         {item.candidateName || 'Candidate'}
                       </div>
@@ -357,6 +333,29 @@ export default function HistoryPage() {
 
                         {item.testDate && <span>• {item.testDate}</span>}
                         {shiftText && <span>• {shiftText}</span>}
+
+                        {/* Shift ke right side me: Time & Delete Icon */}
+                        <div className="history-shift-meta">
+                          <span className="history-time-text">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '3px' }}>
+                              <circle cx="12" cy="12" r="10" />
+                              <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            {formatRelativeTime(item.timestamp, item.formattedDate)}
+                          </span>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleDeleteItem(item.id, e)}
+                            className="history-trash-btn"
+                            title="Remove paper"
+                            aria-label="Remove paper from history"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
