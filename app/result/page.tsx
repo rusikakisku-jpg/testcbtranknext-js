@@ -748,6 +748,8 @@ export default function ResultPage() {
             font-size: 0.78rem;
             font-weight: 700;
             color: #334155;
+            flex-wrap: wrap;
+            gap: 6px;
           }
 
           @media (max-width: 520px) {
@@ -1128,6 +1130,29 @@ export default function ResultPage() {
                   }}
                 />
               </label>
+              {hasBonus && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  Bonus (+):{' '}
+                  <span
+                    style={{
+                      width: '56px',
+                      background: '#fff',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '6px',
+                      padding: '3px 6px',
+                      textAlign: 'center',
+                      fontFamily: 'monospace',
+                      fontWeight: 900,
+                      fontSize: '0.85rem',
+                      color: '#0f172a',
+                      display: 'inline-block',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    {rightVal}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1475,6 +1500,19 @@ export default function ResultPage() {
             {wrongVal}
           </span>
         </div>
+        {hasBonus && (
+          <div style={{ display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>
+            <span>Bonus (+):&nbsp;</span>
+            <span style={{
+              fontWeight: 800,
+              fontSize: '0.74rem',
+              color: '#0f172a',
+              lineHeight: 1
+            }}>
+              {rightVal}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 4. Subject-Wise Performance Table (Edge to Edge, 1:1 Mobile Portrait) */}
