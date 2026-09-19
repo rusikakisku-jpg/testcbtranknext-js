@@ -1105,10 +1105,11 @@ export default function ResultPage() {
             border: 1.5px solid #e2e8f0;
             color: #0f172a;
             padding: 12px 14px;
-            gap: 10px;
+            gap: 8px;
             box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
             width: 100%;
-            text-align: left;
+            justify-content: center;
+            text-align: center;
           }
 
           .result-action-review .result-action-title,
@@ -1116,14 +1117,7 @@ export default function ResultPage() {
             color: #0f172a;
             font-size: 0.88rem;
             font-weight: 800;
-          }
-
-          .result-action-review .result-action-subtitle,
-          .result-action-download .result-action-subtitle {
-            color: #64748b;
-            font-size: 0.72rem;
-            font-weight: 500;
-            display: block;
+            white-space: nowrap;
           }
 
           .review-icon-pill {
@@ -1254,10 +1248,6 @@ export default function ResultPage() {
             .result-action-review .result-action-title,
             .result-action-download .result-action-title {
               font-size: 0.80rem;
-            }
-            .result-action-review .result-action-subtitle,
-            .result-action-download .result-action-subtitle {
-              font-size: 0.68rem;
             }
           }
         `}</style>
@@ -1529,7 +1519,7 @@ export default function ResultPage() {
                       LIVE
                     </span>
                   </div>
-                  <span className="result-action-subtitle">Check category, shift &amp; all-India rank</span>
+                  <span className="result-action-subtitle">Check category, shift &amp; overall rank</span>
                 </div>
               </div>
               <div className="result-action-arrow-btn" aria-hidden="true">
@@ -1555,10 +1545,7 @@ export default function ResultPage() {
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                   </svg>
                 </div>
-                <div className="result-action-labels">
-                  <span className="result-action-title">Review Answerkey</span>
-                  <span className="result-action-subtitle">Inspect questions &amp; answers</span>
-                </div>
+                <span className="result-action-title">Review Answerkey</span>
               </Link>
             )}
 
@@ -1583,12 +1570,9 @@ export default function ResultPage() {
                     </svg>
                   )}
                 </div>
-                <div className="result-action-labels">
-                  <span className="result-action-title">
-                    {isGeneratingImg ? 'Generating...' : 'Download Scorecard'}
-                  </span>
-                  <span className="result-action-subtitle">Save HD image to device</span>
-                </div>
+                <span className="result-action-title">
+                  {isGeneratingImg ? 'Generating...' : 'Download Scorecard'}
+                </span>
               </button>
             )}
           </div>
