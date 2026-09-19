@@ -387,11 +387,85 @@ export default function ResultPage() {
         scale: 3,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff',
+        backgroundColor: null,
         logging: false
       });
 
-      const imgData = canvas.toDataURL('image/png', 1.0);
+      // Trim any subpixel gaps outside the blue border so the image ends flush on the border
+      let finalCanvas = canvas;
+      try {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          const width = canvas.width;
+          const height = canvas.height;
+          const imgData = ctx.getImageData(0, 0, width, height);
+          const data = imgData.data;
+
+          const isBlue = (idx: number) => {
+            const r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
+            return a > 140 && b > 130 && (b - r) > 30 && (b - g) > 20;
+          };
+
+          // Scan from top down (up to 80px)
+          let minY = 0;
+          for (let y = 0; y < Math.min(height, 80); y++) {
+            let hasBlue = false;
+            for (let x = 0; x < width; x++) {
+              if (isBlue((y * width + x) * 4)) { hasBlue = true; break; }
+            }
+            if (hasBlue) { minY = y; break; }
+          }
+
+          // Scan from bottom up (up to 80px)
+          let maxY = height - 1;
+          for (let y = height - 1; y >= Math.max(0, height - 80); y--) {
+            let hasBlue = false;
+            for (let x = 0; x < width; x++) {
+              if (isBlue((y * width + x) * 4)) { hasBlue = true; break; }
+            }
+            if (hasBlue) { maxY = y; break; }
+          }
+
+          // Scan from left to right (up to 80px)
+          let minX = 0;
+          for (let x = 0; x < Math.min(width, 80); x++) {
+            let hasBlue = false;
+            for (let y = minY; y <= maxY; y++) {
+              if (isBlue((y * width + x) * 4)) { hasBlue = true; break; }
+            }
+            if (hasBlue) { minX = x; break; }
+          }
+
+          // Scan from right to left (up to 80px)
+          let maxX = width - 1;
+          for (let x = width - 1; x >= Math.max(0, width - 80); x--) {
+            let hasBlue = false;
+            for (let y = minY; y <= maxY; y++) {
+              if (isBlue((y * width + x) * 4)) { hasBlue = true; break; }
+            }
+            if (hasBlue) { maxX = x; break; }
+          }
+
+          if (minX > 0 || minY > 0 || maxX < width - 1 || maxY < height - 1) {
+            const cropW = maxX - minX + 1;
+            const cropH = maxY - minY + 1;
+            if (cropW > 100 && cropH > 100) {
+              const cropped = document.createElement('canvas');
+              cropped.width = cropW;
+              cropped.height = cropH;
+              const cropCtx = cropped.getContext('2d');
+              if (cropCtx) {
+                cropCtx.drawImage(canvas, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+                finalCanvas = cropped;
+              }
+            }
+          }
+        }
+      } catch (cropErr) {
+        console.warn('Could not auto-trim canvas borders:', cropErr);
+      }
+
+      const imgData = finalCanvas.toDataURL('image/png', 1.0);
 
       // Trigger direct download as "CBT Rank.png"
       const link = document.createElement('a');
@@ -1218,9 +1292,11 @@ export default function ResultPage() {
         color: '#0f172a',
         padding: 0,
         boxSizing: 'border-box',
-        border: '4.5px solid #0044cc',
+        border: '5px solid #0044cc',
         borderRadius: 0,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
       {/* Multiple Repeating Security Watermarks: CBT Rank */}
