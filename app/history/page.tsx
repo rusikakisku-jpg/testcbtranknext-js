@@ -140,7 +140,7 @@ export default function HistoryPage() {
         {/* Minimalist Clean Header */}
         <header className="history-header">
           <div className="history-header-top">
-            <div>
+            <div style={{ minWidth: 0, flex: 1 }}>
               <h1 className="history-title">
                 <span>History</span>
                 {history.length > 0 && (
@@ -220,32 +220,30 @@ export default function HistoryPage() {
                   }}
                   aria-label={`Open scorecard for ${item.candidateName}`}
                 >
-                  {/* Card Header: Exam Tag & Timestamp */}
+                  {/* Card Header: Timestamp & Delete */}
                   <div className="history-card-header">
-                    <span className="history-exam-tag">
-                      {item.examName || 'CBT Answer Key'}
+                    <span className="history-time-text">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }}>
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      {formatRelativeTime(item.timestamp, item.formattedDate)}
                     </span>
 
-                    <div className="history-header-meta">
-                      <span className="history-time-text">
-                        {formatRelativeTime(item.timestamp, item.formattedDate)}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleDeleteItem(item.id, e)}
-                        className="history-trash-btn"
-                        title="Remove paper"
-                        aria-label="Remove paper from history"
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteItem(item.id, e)}
+                      className="history-trash-btn"
+                      title="Remove paper"
+                      aria-label="Remove paper from history"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
 
-                  {/* Card Body: Candidate Info & Score */}
+                  {/* Card Body: Candidate Info */}
                   <div className="history-card-body">
                     <div>
                       <div className="history-candidate-title">
@@ -267,13 +265,6 @@ export default function HistoryPage() {
                         {item.testDate && <span>• {item.testDate}</span>}
                         {item.testTime && <span>• {item.testTime}</span>}
                         {rankVal && rankVal > 0 ? <span>• 🏆 #{rankVal}</span> : null}
-                      </div>
-                    </div>
-
-                    <div className="history-score-display">
-                      <div className="history-score-caption">Score</div>
-                      <div className="history-score-number">
-                        {item.rawScore !== undefined ? Number(item.rawScore).toFixed(2) : '--'}
                       </div>
                     </div>
                   </div>
