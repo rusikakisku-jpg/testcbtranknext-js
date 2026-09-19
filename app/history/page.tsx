@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -32,8 +32,6 @@ export default function HistoryPage() {
   const router = useRouter();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'recent' | 'score'>('recent');
   const [showClearModal, setShowClearModal] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -73,29 +71,7 @@ export default function HistoryPage() {
     }
   };
 
-  // Filter & Sort
-  const displayHistory = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    let list = history;
 
-    if (q) {
-      list = list.filter(item => {
-        const name = (item.candidateName || '').toLowerCase();
-        const roll = (item.rollNo || '').toLowerCase();
-        const exam = (item.examName || '').toLowerCase();
-        const slug = (item.examSlug || '').toLowerCase();
-        const center = (item.testCenter || '').toLowerCase();
-        return name.includes(q) || roll.includes(q) || exam.includes(q) || slug.includes(q) || center.includes(q);
-      });
-    }
-
-    return [...list].sort((a, b) => {
-      if (sortBy === 'score') {
-        return (b.rawScore ?? 0) - (a.rawScore ?? 0);
-      }
-      return (b.timestamp ?? 0) - (a.timestamp ?? 0);
-    });
-  }, [history, searchQuery, sortBy]);
 
   const handleOpenItem = (item: HistoryItem, destination: '/result' | '/review-answerkey' | '/rank' = '/result') => {
     try {
@@ -191,67 +167,6 @@ export default function HistoryPage() {
               </button>
             )}
           </div>
-
-          {/* Search & Sort Row */}
-          {history.length >= 1 && (
-            <div className="history-search-row">
-              <div className="history-search-box">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search candidate, roll no, or exam..."
-                  className="history-search-input"
-                  aria-label="Search papers"
-                />
-                <svg
-                  className="history-search-icon"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="history-search-clear"
-                    title="Clear filter"
-                    aria-label="Clear filter"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-
-              {/* Simple Sort Tabs */}
-              <div className="history-filter-tabs">
-                <button
-                  type="button"
-                  onClick={() => setSortBy('recent')}
-                  className={`history-filter-tab${sortBy === 'recent' ? ' active' : ''}`}
-                  aria-label="Sort by recent"
-                >
-                  Recent
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSortBy('score')}
-                  className={`history-filter-tab${sortBy === 'score' ? ' active' : ''}`}
-                  aria-label="Sort by highest score"
-                >
-                  Top Score
-                </button>
-              </div>
-            </div>
-          )}
         </header>
 
         {/* Papers List */}
@@ -287,39 +202,10 @@ export default function HistoryPage() {
               <span>→</span>
             </Link>
           </div>
-        ) : displayHistory.length === 0 ? (
-          /* Search Empty State */
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            padding: '32px 20px',
-            textAlign: 'center'
-          }}>
-            <p style={{ fontSize: '0.88rem', color: '#0f172a', fontWeight: 700, margin: '0 0 8px 0' }}>
-              No papers found matching &quot;{searchQuery}&quot;
-            </p>
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              style={{
-                background: '#f1f5f9',
-                border: '1px solid #cbd5e1',
-                padding: '6px 14px',
-                borderRadius: '7px',
-                fontSize: '0.76rem',
-                fontWeight: 700,
-                color: '#0f172a',
-                cursor: 'pointer'
-              }}
-            >
-              Clear filter
-            </button>
-          </div>
         ) : (
           /* Simple Premium Cards */
           <div>
-            {displayHistory.map((item) => {
+            {history.map((item) => {
               const rankVal = item.shiftRank || item.overallRank;
 
               return (
