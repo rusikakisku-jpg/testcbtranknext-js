@@ -931,14 +931,251 @@ export default function ResultPage() {
           .scorecard-actions-panel {
             position: relative;
             z-index: 1;
-            padding: 14px 0 0;
+            padding: 16px 0 0;
             display: flex;
             flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          /* 1. Primary Action: View Live Rank */
+          .result-action-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+          }
+
+          .result-action-rank {
+            background: linear-gradient(135deg, #003db8 0%, #0044cc 45%, #2563eb 100%);
+            color: #ffffff;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 18px rgba(0, 68, 204, 0.28), 0 1px 3px rgba(0, 0, 0, 0.08);
+            justify-content: space-between;
+            overflow: hidden;
+          }
+
+          .result-action-rank::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+          }
+
+          .result-action-rank:hover::before {
+            left: 150%;
+          }
+
+          .result-action-rank:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 26px rgba(0, 68, 204, 0.38), 0 2px 6px rgba(0, 0, 0, 0.1);
+            filter: brightness(1.03);
+          }
+
+          .result-action-rank:active {
+            transform: scale(0.985);
+          }
+
+          .result-action-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+
+          .result-action-icon-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            flex-shrink: 0;
+          }
+
+          .rank-icon-pill {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(8px);
+            color: #fbbf24;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+          }
+
+          .result-action-labels {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+          }
+
+          .result-action-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .result-action-title {
+            font-weight: 800;
+            font-size: 0.98rem;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+          }
+
+          .result-live-badge {
+            background: rgba(16, 185, 129, 0.22);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-size: 0.65rem;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            padding: 2px 7px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-transform: uppercase;
+          }
+
+          .result-live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 6px #34d399;
+            animation: liveDotPulse 1.6s ease-in-out infinite;
+          }
+
+          @keyframes liveDotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+          }
+
+          .result-action-subtitle {
+            font-size: 0.76rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.2;
+          }
+
+          .result-action-arrow-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+          }
+
+          .result-action-rank:hover .result-action-arrow-btn {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(2px);
+          }
+
+          /* 2. Secondary Dual Row: Review Answerkey & Download Scorecard */
+          .result-actions-dual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             width: 100%;
             box-sizing: border-box;
           }
 
+          .result-action-review,
+          .result-action-download {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            color: #0f172a;
+            padding: 12px 14px;
+            gap: 10px;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+            width: 100%;
+            text-align: left;
+          }
+
+          .result-action-review .result-action-title,
+          .result-action-download .result-action-title {
+            color: #0f172a;
+            font-size: 0.88rem;
+            font-weight: 800;
+          }
+
+          .result-action-review .result-action-subtitle,
+          .result-action-download .result-action-subtitle {
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 500;
+            display: block;
+          }
+
+          .review-icon-pill {
+            width: 38px;
+            height: 38px;
+            background: #f5f3ff;
+            color: #7c3aed;
+            border: 1px solid #ede9fe;
+          }
+
+          .download-icon-pill {
+            width: 38px;
+            height: 38px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #dcfce7;
+          }
+
+          .result-action-review:hover {
+            border-color: #c7d2fe;
+            background: #faf5ff;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+          }
+
+          .result-action-download:hover:not(:disabled) {
+            border-color: #bbf7d0;
+            background: #f0fdf4;
+            box-shadow: 0 4px 16px rgba(22, 163, 74, 0.1);
+            transform: translateY(-2px);
+          }
+
+          .result-action-review:active,
+          .result-action-download:active:not(:disabled) {
+            transform: scale(0.98);
+          }
+
+          .result-action-download:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+          }
+
+          .result-btn-spinner {
+            animation: spinActionIcon 0.9s linear infinite;
+          }
+
+          @keyframes spinActionIcon {
+            100% { transform: rotate(360deg); }
+          }
+
+          /* Backwards-compatible aliases */
           .app-btn-main {
             display: flex;
             align-items: center;
@@ -957,15 +1194,6 @@ export default function ResultPage() {
             cursor: pointer;
             transition: all 0.2s ease;
             box-sizing: border-box;
-          }
-
-          .app-btn-main:hover {
-            filter: brightness(1.06);
-            box-shadow: 0 6px 18px rgba(0, 68, 204, 0.35);
-          }
-
-          .app-btn-main:active {
-            transform: scale(0.98);
           }
 
           .app-btn-duo-row {
@@ -995,13 +1223,42 @@ export default function ResultPage() {
             box-sizing: border-box;
           }
 
-          .app-btn-sub:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-          }
-
-          .app-btn-sub:active {
-            transform: scale(0.98);
+          /* Responsive adjustments for narrow screens */
+          @media (max-width: 440px) {
+            .result-action-rank {
+              padding: 12px 14px;
+            }
+            .rank-icon-pill {
+              width: 36px;
+              height: 36px;
+            }
+            .result-action-title {
+              font-size: 0.90rem;
+            }
+            .result-action-arrow-btn span {
+              display: none;
+            }
+            .result-action-arrow-btn {
+              padding: 6px 10px;
+            }
+            .result-action-review,
+            .result-action-download {
+              padding: 10px 10px;
+              gap: 8px;
+            }
+            .review-icon-pill,
+            .download-icon-pill {
+              width: 32px;
+              height: 32px;
+            }
+            .result-action-review .result-action-title,
+            .result-action-download .result-action-title {
+              font-size: 0.80rem;
+            }
+            .result-action-review .result-action-subtitle,
+            .result-action-download .result-action-subtitle {
+              font-size: 0.68rem;
+            }
           }
         `}</style>
 
@@ -1247,31 +1504,61 @@ export default function ResultPage() {
 
         {/* 6. Action Buttons Stack (Placed outside the scorecard container) */}
         <div className="scorecard-actions-panel no-print">
-          {/* Primary Full-Width CTA: View Your Rank */}
+          {/* Primary Action Card: View Live Rank */}
           {APP_FEATURE_FLAGS.SHOW_VIEW_RANK && (
             <Link
               href="/rank"
-              className="app-btn-main"
+              className="result-action-card result-action-rank"
+              aria-label="View Your Live Rank"
             >
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span>View Your Live Rank</span>
-              <span style={{ marginLeft: 'auto', fontSize: '1rem' }}>→</span>
+              <div className="result-action-content">
+                <div className="result-action-icon-pill rank-icon-pill" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34" />
+                    <path d="M6 5h12v4c0 3.31-2.69 6-6 6s-6-2.69-6-6V5z" />
+                  </svg>
+                </div>
+                <div className="result-action-labels">
+                  <div className="result-action-header">
+                    <span className="result-action-title">View Live Rank</span>
+                    <span className="result-live-badge">
+                      <span className="result-live-dot" />
+                      LIVE
+                    </span>
+                  </div>
+                  <span className="result-action-subtitle">Check category, shift &amp; all-India rank</span>
+                </div>
+              </div>
+              <div className="result-action-arrow-btn" aria-hidden="true">
+                <span>View Rank</span>
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
             </Link>
           )}
 
           {/* Secondary Duo Row: Review Answerkey & Download Scorecard */}
-          <div className="app-btn-duo-row">
+          <div className="result-actions-dual-grid app-btn-duo-row">
             {APP_FEATURE_FLAGS.SHOW_REVIEW_ANSWERKEY && (
               <Link
                 href="/review-answerkey"
-                className="app-btn-sub"
+                className="result-action-card result-action-review app-btn-sub"
+                aria-label="Review Answer Key Questions"
               >
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-                <span>Review Answerkey</span>
+                <div className="result-action-icon-pill review-icon-pill" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  </svg>
+                </div>
+                <div className="result-action-labels">
+                  <span className="result-action-title">Review Answerkey</span>
+                  <span className="result-action-subtitle">Inspect questions &amp; answers</span>
+                </div>
               </Link>
             )}
 
@@ -1280,18 +1567,28 @@ export default function ResultPage() {
                 type="button"
                 disabled={isGeneratingImg}
                 onClick={handleDownloadImageScorecard}
-                className="app-btn-sub"
+                className="result-action-card result-action-download app-btn-sub"
+                aria-label="Download Scorecard Image"
               >
-                {isGeneratingImg ? (
-                  <span>Generating...</span>
-                ) : (
-                  <>
-                    <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <div className="result-action-icon-pill download-icon-pill" aria-hidden="true">
+                  {isGeneratingImg ? (
+                    <svg className="result-btn-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="10" strokeDasharray="60" strokeDashoffset="20" strokeLinecap="round" />
                     </svg>
-                    <span>Download Scorecard</span>
-                  </>
-                )}
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                  )}
+                </div>
+                <div className="result-action-labels">
+                  <span className="result-action-title">
+                    {isGeneratingImg ? 'Generating...' : 'Download Scorecard'}
+                  </span>
+                  <span className="result-action-subtitle">Save HD image to device</span>
+                </div>
               </button>
             )}
           </div>
