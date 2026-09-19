@@ -98,6 +98,12 @@ function ExamCard({ exam }: { exam: Exam }) {
 
   return (
     <div className={`exam-card${isLatest ? ' exam-card-latest' : ''}`}>
+      {isLatest && (
+        <svg className="exam-card-border-svg" aria-hidden="true">
+          <rect className="exam-border-bg" width="100%" height="100%" rx="14" ry="14" />
+          <rect className="exam-border-runner" width="100%" height="100%" rx="14" ry="14" pathLength={1000} />
+        </svg>
+      )}
       <Link href={href} prefetch={true} aria-label={exam.title}>
         <div className="exam-card-left">
           <div className="exam-title">
