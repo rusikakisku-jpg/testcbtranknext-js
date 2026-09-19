@@ -28,6 +28,43 @@ function formatRelativeTime(timestamp: number, formattedFallback: string): strin
   return formattedFallback || new Date(timestamp).toLocaleDateString();
 }
 
+function getShiftText(item: HistoryItem): string {
+  // Check infoRows for explicit shift label
+  if (Array.isArray(item.resultData?.infoRows)) {
+    const shiftRow = item.resultData.infoRows.find((r: { label?: string; value?: string }) =>
+      /^(shift|exam\s*shift|test\s*shift)$/i.test(String(r?.label || '').trim())
+    );
+    if (shiftRow?.value) {
+      const val = String(shiftRow.value).trim();
+      if (val) {
+        return /shift/i.test(val) ? val : `Shift ${val}`;
+      }
+    }
+  }
+
+  // Check resultData.shift directly
+  if (item.resultData?.shift) {
+    const val = String(item.resultData.shift).trim();
+    if (val) {
+      return /shift/i.test(val) ? val : `Shift ${val}`;
+    }
+  }
+
+  // Check item.testTime
+  const rawTime = String(item.testTime || '').trim();
+  if (rawTime) {
+    if (/shift/i.test(rawTime)) {
+      return rawTime;
+    }
+    if (/^[1-4]$/.test(rawTime)) {
+      return `Shift ${rawTime}`;
+    }
+    return `Shift: ${rawTime}`;
+  }
+
+  return '';
+}
+
 export default function HistoryPage() {
   const router = useRouter();
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -140,17 +177,12 @@ export default function HistoryPage() {
         {/* Minimalist Clean Header */}
         <header className="history-header">
           <div className="history-header-top">
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <h1 className="history-title">
-                <span>History</span>
-                {history.length > 0 && (
-                  <span className="history-count-badge">{history.length}</span>
-                )}
-              </h1>
-              <p className="history-subtitle">
-                Previously checked answer keys and scorecards
-              </p>
-            </div>
+            <h1 className="history-title">
+              <span>History</span>
+              {history.length > 0 && (
+                <span className="history-count-badge">{history.length}</span>
+              )}
+            </h1>
 
             {history.length > 0 && (
               <button
@@ -167,6 +199,9 @@ export default function HistoryPage() {
               </button>
             )}
           </div>
+          <p className="history-subtitle">
+            Previously checked answer keys and scorecards
+          </p>
         </header>
 
         {/* Papers List */}
@@ -206,7 +241,7 @@ export default function HistoryPage() {
           /* Simple Premium Cards */
           <div>
             {history.map((item) => {
-              const rankVal = item.shiftRank || item.overallRank;
+              const shiftText = getShiftText(item);
 
               return (
                 <div
@@ -220,27 +255,33 @@ export default function HistoryPage() {
                   }}
                   aria-label={`Open scorecard for ${item.candidateName}`}
                 >
-                  {/* Card Header: Timestamp & Delete */}
+                  {/* Card Header: Exam Name & Meta (Time + Delete) */}
                   <div className="history-card-header">
-                    <span className="history-time-text">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }}>
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                      {formatRelativeTime(item.timestamp, item.formattedDate)}
+                    <span className="history-exam-tag" title={item.examName || 'CBT Answer Key'}>
+                      {item.examName || 'CBT Answer Key'}
                     </span>
 
-                    <button
-                      type="button"
-                      onClick={(e) => handleDeleteItem(item.id, e)}
-                      className="history-trash-btn"
-                      title="Remove paper"
-                      aria-label="Remove paper from history"
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
+                    <div className="history-header-meta">
+                      <span className="history-time-text">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }}>
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        {formatRelativeTime(item.timestamp, item.formattedDate)}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleDeleteItem(item.id, e)}
+                        className="history-trash-btn"
+                        title="Remove paper"
+                        aria-label="Remove paper from history"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Card Body: Candidate Info */}
@@ -263,8 +304,7 @@ export default function HistoryPage() {
                         </span>
 
                         {item.testDate && <span>• {item.testDate}</span>}
-                        {item.testTime && <span>• {item.testTime}</span>}
-                        {rankVal && rankVal > 0 ? <span>• 🏆 #{rankVal}</span> : null}
+                        {shiftText && <span>• {shiftText}</span>}
                       </div>
                     </div>
                   </div>
