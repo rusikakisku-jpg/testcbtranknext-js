@@ -106,7 +106,6 @@ function ExamCard({ exam }: { exam: Exam }) {
           {exam.subtitle && <p className="exam-subtitle">{exam.subtitle}</p>}
         </div>
         <div className="exam-card-right">
-          {isLatest && <span className="badge-latest">Latest</span>}
           <div className="exam-arrow" aria-hidden="true">
             <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
