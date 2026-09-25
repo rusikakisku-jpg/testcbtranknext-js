@@ -93,17 +93,12 @@ async function getExams(): Promise<Exam[]> {
 }
 
 function ExamCard({ exam }: { exam: Exam }) {
-  const isLatest = Number(exam.is_latest) === 1 || Number(exam.set_on_top) === 1;
+  const isTop = Number(exam.set_on_top) === 1;
+  const isLatest = !isTop && (Number(exam.is_latest) === 1 || (exam as any).is_latest === true);
   const href = `/${exam.slug}/answerkey`;
 
   return (
-    <div className={`exam-card${isLatest ? ' exam-card-latest' : ''}`}>
-      {isLatest && (
-        <svg className="exam-card-border-svg" width="100%" height="100%" aria-hidden="true">
-          <rect className="exam-border-bg" width="100%" height="100%" rx="14" ry="14" />
-          <rect className="exam-border-runner" width="100%" height="100%" rx="14" ry="14" pathLength={1000} />
-        </svg>
-      )}
+    <div className="exam-card">
       <Link href={href} prefetch={true} aria-label={exam.title}>
         <div className="exam-card-left">
           <div className="exam-title">
@@ -111,13 +106,12 @@ function ExamCard({ exam }: { exam: Exam }) {
           </div>
           {exam.subtitle && <p className="exam-subtitle">{exam.subtitle}</p>}
         </div>
-        <div className="exam-card-right">
-          <div className="exam-arrow" aria-hidden="true">
-            <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+        {(isTop || isLatest) && (
+          <div className="exam-card-right">
+            {isTop && <span className="badge-top">Top</span>}
+            {isLatest && <span className="badge-latest">Latest</span>}
           </div>
-        </div>
+        )}
       </Link>
     </div>
   );

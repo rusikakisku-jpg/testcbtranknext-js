@@ -561,62 +561,6 @@ footer {
   transform: translateY(-1px);
 }
 
-.exam-card.exam-card-latest {
-  position: relative;
-  border-color: transparent !important;
-  overflow: visible;
-  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.12);
-}
-
-.exam-card-border-svg {
-  position: absolute;
-  top: -1.5px;
-  left: -1.5px;
-  width: calc(100% + 3px);
-  height: calc(100% + 3px);
-  pointer-events: none;
-  overflow: visible;
-  border-radius: 14px;
-  z-index: 2;
-  display: block;
-}
-
-.exam-border-bg {
-  fill: none;
-  stroke: rgba(239, 68, 68, 0.22);
-  stroke-width: 1.5;
-}
-
-.exam-border-runner {
-  fill: none;
-  stroke: #ef4444;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-dasharray: 380 1000;
-  animation: runBorderStroke 5s linear infinite;
-  filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.85));
-}
-
-@keyframes runBorderStroke {
-  0% {
-    stroke-dashoffset: 380;
-  }
-  100% {
-    stroke-dashoffset: -1000;
-  }
-}
-
-.exam-card.exam-card-latest:hover {
-  box-shadow: 0 6px 22px rgba(239, 68, 68, 0.25);
-  transform: translateY(-1px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .exam-border-runner {
-    animation: none;
-  }
-}
-
 .exam-card a {
   display: flex;
   align-items: center;
@@ -655,13 +599,19 @@ footer {
   padding: 2px 7px;
   border-radius: 999px;
   letter-spacing: 0.04em;
-  animation: pulse 1.8s infinite;
   white-space: nowrap;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+.badge-top {
+  background: var(--green, #10b981);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .exam-subtitle {
@@ -679,19 +629,7 @@ footer {
 }
 
 .exam-arrow {
-  color: #cbd5e1;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.exam-card:hover .exam-arrow {
-  color: var(--primary-light);
-  transform: translateX(3px);
-}
-
-.exam-arrow svg {
-  width: 20px;
-  height: 20px;
+  display: none;
 }
 
 .empty-state {
