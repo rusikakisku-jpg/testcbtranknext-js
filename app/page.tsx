@@ -97,8 +97,14 @@ function ExamCard({ exam }: { exam: Exam }) {
   const isLatest = !isTop && (Number(exam.is_latest) === 1 || (exam as any).is_latest === true);
   const href = `/${exam.slug}/answerkey`;
 
+  const cardClass = isTop
+    ? 'exam-card exam-card-top'
+    : isLatest
+    ? 'exam-card exam-card-latest'
+    : 'exam-card';
+
   return (
-    <div className="exam-card">
+    <div className={cardClass}>
       <Link href={href} prefetch={true} aria-label={exam.title}>
         <div className="exam-card-left">
           <div className="exam-title">
@@ -106,12 +112,6 @@ function ExamCard({ exam }: { exam: Exam }) {
           </div>
           {exam.subtitle && <p className="exam-subtitle">{exam.subtitle}</p>}
         </div>
-        {(isTop || isLatest) && (
-          <div className="exam-card-right">
-            {isTop && <span className="badge-top">Top</span>}
-            {isLatest && <span className="badge-latest">Latest</span>}
-          </div>
-        )}
       </Link>
     </div>
   );
