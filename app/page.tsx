@@ -4,6 +4,9 @@ export const revalidate = 60;
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import HomeSeoContent from './components/HomeSeoContent';
+import HomeBlogsSection from './components/HomeBlogsSection';
+import { fetchBlogsFromCloudflareD1, BlogPost } from './data/blogs';
+import { APP_FEATURE_FLAGS } from './config/features';
 
 export const metadata: Metadata = {
   title: 'CBT RANK - Latest Answer Keys calculator ',
@@ -118,7 +121,14 @@ function ExamCard({ exam }: { exam: Exam }) {
 }
 
 export default async function HomePage() {
-  const exams = await getExams();
+  const [exams, blogs] = await Promise.all([
+    getExams(),
+    APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS
+      ? fetchBlogsFromCloudflareD1().catch(() => [] as BlogPost[])
+      : Promise.resolve([] as BlogPost[])
+  ]);
+
+  const latestBlogs = blogs.slice(0, 5);
 
   const CalculatorIcon = () => (
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,15 +173,25 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="exam-list" id="exam-list">
-              {exams.length === 0 ? (
-                <div className="empty-state">
-                  No exams available right now. Check back soon!
+            {/* Desktop Side-by-Side Layout: Latest Exams (Left) + Latest Articles (Right) */}
+            <div className={`home-layout-columns ${APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS && latestBlogs.length > 0 ? 'has-sidebar' : ''}`}>
+              <div className="exam-list" id="exam-list">
+                {exams.length === 0 ? (
+                  <div className="empty-state">
+                    No exams available right now. Check back soon!
+                  </div>
+                ) : (
+                  exams.map((exam) => (
+                    <ExamCard key={exam.slug} exam={exam} />
+                  ))
+                )}
+              </div>
+
+              {/* Latest 5 Blog Posts Section (Toggleable via APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS) */}
+              {APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS && latestBlogs.length > 0 && (
+                <div className="home-side-articles-col">
+                  <HomeBlogsSection blogs={latestBlogs} />
                 </div>
-              ) : (
-                exams.map((exam) => (
-                  <ExamCard key={exam.slug} exam={exam} />
-                ))
               )}
             </div>
 
