@@ -4,7 +4,9 @@ import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
 import GoogleAnalytics from "./components/GoogleAnalytics";
+import GoogleAdSense from "./components/GoogleAdSense";
 import CookieConsent from "./components/CookieConsent";
+import { getAdSenseClientId } from "./config/adsense";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://cbtrank.com'),
@@ -61,6 +63,10 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
         <link rel="preconnect" href="https://api.cbtrank.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        {getAdSenseClientId() && (
+          <meta name="google-adsense-account" content={getAdSenseClientId()} />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -96,6 +102,7 @@ export default function RootLayout({
       </head>
       <body>
         <GoogleAnalytics />
+        <GoogleAdSense />
         <div className="page-body">
           <Navbar />
           {children}
