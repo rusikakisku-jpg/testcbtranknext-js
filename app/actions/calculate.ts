@@ -1,11 +1,20 @@
 'use server';
 
-const BACKEND_BASE = process.env.BACKEND_API_URL || 'https://api.cbtrank.com';
+const BACKEND_BASE = (process.env.BACKEND_API_URL || 'https://api.cbtrank.com').replace(/\/+$/, '');
 const ADMIN_KEY = process.env.ADMIN_API_KEY || 'cbtrank_admin_secret_key_2026';
+
+// ⚡ Secure Worker API Proxy Parser Endpoints (Parsed through Cloudflare Worker API)
+const DIGIALM_API_ENDPOINT = `${BACKEND_BASE}/digialm/?url=`;
+const CBEXAMS_API_ENDPOINT = `${BACKEND_BASE}/cbexams/?url=`;
+
+// Strictly use only the two dedicated Cloudflare Worker Proxy Parser Endpoints
 const PARSER_CLUSTER = [
-  'https://digialm1.cbtrank.online/api/v12/calculate?url='
+  process.env.PARSER_API_URL || DIGIALM_API_ENDPOINT
 ];
-const CBEXAMS_PARSER = 'https://cbexams.quickgift.in/?url=';
+
+const CBEXAMS_PARSER_CLUSTER = [
+  process.env.CBEXAMS_PARSER_URL || CBEXAMS_API_ENDPOINT
+];
 
 function cleanAndNormalizeUrl(raw: string): string {
   let url = (raw || '').trim();
@@ -35,9 +44,36 @@ function isCbexamsHost(raw: string): boolean {
 function isValidSmartData(data: any): boolean {
   if (!data) return false;
   if (data.success === false) return false;
-  const totalQ = Number(data.score_summary?.total_questions ?? data.questions_summary?.length ?? 0);
-  const candName = data.candidateName || data.candidate_info?.['Candidate Name'] || data.candidate_info?.['Participant Name'] || data.candidate_info?.['Applicant Name'] || data.name;
-  if (totalQ === 0 && !candName) return false;
+  const totalQ = Number(
+    data.score_summary?.total_questions ??
+    data.score_summary?.totalQuestions ??
+    data.total_questions ??
+    data.totalQuestions ??
+    data.total ??
+    data.questions_summary?.length ??
+    data.questions?.length ??
+    (Array.isArray(data.sections) ? data.sections.reduce((acc: number, s: any) => acc + Number(s.total ?? s.total_questions ?? 0), 0) : 0) ??
+    0
+  );
+  const candName =
+    data.candidateName ||
+    data.candidate_name ||
+    data.CandidateName ||
+    data.candidate_info?.['Candidate Name'] ||
+    data.candidate_info?.["Candidate's Name"] ||
+    data.candidate_info?.['Participant Name'] ||
+    data.candidate_info?.['Applicant Name'] ||
+    data.candidate_info?.['Name'] ||
+    data.name ||
+    (data.candidate_info && typeof data.candidate_info === 'object' && Object.values(data.candidate_info).find((v: any) => typeof v === 'string' && v.trim().length > 0)) ||
+    '';
+  const hasQuestions = (Array.isArray(data.questions_summary) && data.questions_summary.length > 0) || (Array.isArray(data.questions) && data.questions.length > 0);
+  const hasSections = Array.isArray(data.sections) && data.sections.length > 0;
+  const hasSectionSummary = Boolean(data.section_summary && typeof data.section_summary === 'object' && Object.keys(data.section_summary).length > 0);
+  const hasValidScore = (data.score_summary && Number(data.score_summary.total_questions || data.score_summary.totalQuestions || 0) > 0) ||
+                        (data.score && Number(data.score.total_questions || data.score.total || 0) > 0) ||
+                        (typeof data.correct_answers === 'number' && typeof data.wrong_answers === 'number' && (data.correct_answers + data.wrong_answers > 0));
+  if (totalQ === 0 && !candName && !hasQuestions && !hasSections && !hasSectionSummary && !hasValidScore) return false;
   return true;
 }
 
@@ -59,34 +95,41 @@ export async function processAnswerKeyAction(params: {
         });
       } catch (e) {}
     }
-    return { success: false, error: 'Please enter a valid official Answer Key URL.' };
+    return { success: false, error: 'Invalid or broken link. Please check your Answer Key URL and retry.' };
   }
 
   const isCbexams = isCbexamsHost(urlVal);
   const targetEndpoints = isCbexams
-    ? [`${CBEXAMS_PARSER}${encodeURIComponent(urlVal)}`]
+    ? CBEXAMS_PARSER_CLUSTER.map(base => `${base}${encodeURIComponent(urlVal)}`)
     : PARSER_CLUSTER.map(base => `${base}${encodeURIComponent(urlVal)}`);
 
   let smartData: any = null;
+  let lastErrorMessage = '';
 
-  // 1. ⚡ Fast Parallel Multi-Server Race (No timeout cancellation for CBExams)
+  // 1. ⚡ Fast Parallel Multi-Server Race (Extended timeout for CBExams)
   const fetchPromises = targetEndpoints.map(async (endpoint) => {
     const fetchOptions: RequestInit = {
       method: 'GET',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-        'Accept': 'application/json, text/plain, */*'
+        'Accept': 'application/json, text/plain, */*',
+        'x-api-key': ADMIN_KEY,
       }
     };
     if (!isCbexams) {
-      fetchOptions.signal = AbortSignal.timeout(12000);
+      fetchOptions.signal = AbortSignal.timeout(15000);
+    } else {
+      fetchOptions.signal = AbortSignal.timeout(25000);
     }
     const res = await fetch(endpoint, fetchOptions);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json().catch(() => null);
     if (data && isValidSmartData(data)) {
       return data;
     }
+    if (data && (data.error || data.message)) {
+      lastErrorMessage = data.error || data.message;
+    }
+    if (!res.ok) throw new Error(lastErrorMessage || `HTTP ${res.status}`);
     throw new Error(data?.error || 'Invalid response structure');
   });
 
@@ -100,19 +143,23 @@ export async function processAnswerKeyAction(params: {
           method: 'GET',
           headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*'
+            'Accept': 'application/json, text/plain, */*',
+            'x-api-key': ADMIN_KEY,
           }
         };
         if (!isCbexams) {
-          fetchOptions.signal = AbortSignal.timeout(10000);
+          fetchOptions.signal = AbortSignal.timeout(12000);
+        } else {
+          fetchOptions.signal = AbortSignal.timeout(20000);
         }
         const res = await fetch(endpoint, fetchOptions);
-        if (res.ok) {
-          const data = await res.json().catch(() => null);
-          if (data && isValidSmartData(data)) {
-            smartData = data;
-            break;
-          }
+        const data = await res.json().catch(() => null);
+        if (data && (data.error || data.message)) {
+          lastErrorMessage = data.error || data.message;
+        }
+        if (res.ok && data && isValidSmartData(data)) {
+          smartData = data;
+          break;
         }
       } catch (e) {}
     }
@@ -156,7 +203,7 @@ export async function processAnswerKeyAction(params: {
 
     return { 
       success: false, 
-      error: (smartData && (smartData.error || smartData.message)) || 'Failed to fetch scorecard. Please check if your response sheet link is active.' 
+      error: 'Invalid or broken link. Please check your Answer Key URL and retry.' 
     };
   }
 }

@@ -20,18 +20,49 @@
  *    - Automatically checks and adds missing columns (sub_type, custom_data on user_ranks, custom_fields on exams) in Cloudflare D1.
  * 7. 🗄️ Native Cloudflare D1 (env.DB) + REST API Fallback 100% preserved.
  * 8. 🚀 Lightning Fast Proxy:
- *    - /calculator_api tries the ultra-fast dedicated VPS (http://62.171.188.100/api_v7.php) first with automatic fallback to Render.
+ *    - /calculator_api routes directly to dedicated parser endpoints (/digialm and /cbexams).
  * 9. 🌐 Exact 100% Backward Compatibility:
  *    - All existing public endpoints (/exams, /locations, /languages, /settings, /blogs, etc.) preserved without breaking any client.
  */
 
-// ⚙️ Configuration & Fallbacks (Can also be set in Cloudflare Worker Environment Variables)
-const DEFAULT_CF_ACCOUNT_ID = "38c7d789225e89652dd6bb111403db5d";
-const DEFAULT_CF_DATABASE_ID = "fd29c541-3fd2-4fa8-8dc1-19809ab907c3";
-const DEFAULT_CF_API_TOKEN = "cfut_umhNZGH5mokB88O6AHQVSURuP6AW48AIry4wVFaW74f7f9b6";
-const DEFAULT_ADMIN_SECRET = "cbtrank_admin_secret_key_2026"; // Set in Cloudflare Env as ADMIN_API_KEY or use header
-const CALCULATOR_VPS_PRIMARY = "http://62.171.188.100/api_v7.php";
-const CALCULATOR_RENDER_BACKUP = "https://test-gpdi.onrender.com/api_v7.php";
+// ⚙️ Configuration & Fallbacks (Dynamically loaded from Cloudflare Worker Environment Variables / Bindings)
+// Configure in Cloudflare Dashboard or wrangler.toml:
+// - D1 Binding: "DB" (Native Binding - Fastest & Most Secure, zero tokens needed)
+// - Environment Secrets / Variables: ADMIN_API_KEY, CF_ACCOUNT_ID, CF_DATABASE_ID, CF_API_TOKEN, DIGIALM_API_URL, CBEXAMS_API_URL
+const DEFAULT_DIGIALM_API = "https://api.cbtrank.com/digialm/?url=";
+const DEFAULT_CBEXAMS_API = "https://api.cbtrank.com/cbexams/?url=";
+
+/**
+ * Helper: Smart Parser URL Builder
+ * Safely appends targetUrl to parser base URL without double query characters
+ */
+function buildParserUrl(baseUrl, targetUrl) {
+  if (!baseUrl) return '';
+  let base = baseUrl.trim();
+  if (base.includes('?url=')) {
+    return `${base}${encodeURIComponent(targetUrl)}`;
+  } else if (base.endsWith('=')) {
+    return `${base}${encodeURIComponent(targetUrl)}`;
+  } else if (base.includes('?')) {
+    return `${base}&url=${encodeURIComponent(targetUrl)}`;
+  } else {
+    return `${base}?url=${encodeURIComponent(targetUrl)}`;
+  }
+}
+
+/**
+ * Helper: Detect if URL is from CBExams Host
+ */
+function isCbexamsHost(raw) {
+  if (!raw) return false;
+  try {
+    const parsed = new URL(/^https?:\/\//i.test(raw) ? raw : 'https://' + raw);
+    const host = (parsed.hostname || '').toLowerCase();
+    return host === 'cbexams.com' || host.endsWith('.cbexams.com');
+  } catch (e) {
+    return (raw || '').toLowerCase().includes('cbexams');
+  }
+}
 
 // Track auto-migration state across isolate lifecycle
 let isSchemaMigrated = false;
@@ -50,15 +81,16 @@ async function ensureDynamicSchema(env) {
       try { await env.DB.prepare("ALTER TABLE user_ranks ADD COLUMN sub_type TEXT DEFAULT ''").run(); } catch (e) {}
       try { await env.DB.prepare("ALTER TABLE user_ranks ADD COLUMN custom_data TEXT DEFAULT '{}'").run(); } catch (e) {}
       try { await env.DB.prepare("ALTER TABLE exams ADD COLUMN custom_fields TEXT DEFAULT '[]'").run(); } catch (e) {}
+      try { await env.DB.prepare("ALTER TABLE blogs ADD COLUMN views INTEGER DEFAULT 0").run(); } catch (e) {}
       isSchemaMigrated = true;
       return;
     } catch (err) {}
   }
 
   // 2. Cloudflare D1 REST API Fallback
-  const accountId = (env && env.CF_ACCOUNT_ID) || DEFAULT_CF_ACCOUNT_ID;
-  const databaseId = (env && env.CF_DATABASE_ID) || DEFAULT_CF_DATABASE_ID;
-  const apiToken = (env && env.CF_API_TOKEN) || DEFAULT_CF_API_TOKEN;
+  const accountId = env && (env.CF_ACCOUNT_ID || env.ACCOUNT_ID);
+  const databaseId = env && (env.CF_DATABASE_ID || env.DATABASE_ID);
+  const apiToken = env && (env.CF_API_TOKEN || env.API_TOKEN);
 
   if (accountId && databaseId && apiToken) {
     try {
@@ -70,7 +102,7 @@ async function ensureDynamicSchema(env) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ 
-          sql: "ALTER TABLE user_ranks ADD COLUMN sub_type TEXT DEFAULT ''; ALTER TABLE user_ranks ADD COLUMN custom_data TEXT DEFAULT '{}'; ALTER TABLE exams ADD COLUMN custom_fields TEXT DEFAULT '[]';" 
+          sql: "ALTER TABLE user_ranks ADD COLUMN sub_type TEXT DEFAULT ''; ALTER TABLE user_ranks ADD COLUMN custom_data TEXT DEFAULT '{}'; ALTER TABLE exams ADD COLUMN custom_fields TEXT DEFAULT '[]'; ALTER TABLE blogs ADD COLUMN views INTEGER DEFAULT 0;" 
         })
       });
       isSchemaMigrated = true;
@@ -94,9 +126,9 @@ async function queryD1(env, sql) {
   }
 
   // 2. Cloudflare D1 REST API Fallback
-  const accountId = (env && env.CF_ACCOUNT_ID) || DEFAULT_CF_ACCOUNT_ID;
-  const databaseId = (env && env.CF_DATABASE_ID) || DEFAULT_CF_DATABASE_ID;
-  const apiToken = (env && env.CF_API_TOKEN) || DEFAULT_CF_API_TOKEN;
+  const accountId = env && (env.CF_ACCOUNT_ID || env.ACCOUNT_ID);
+  const databaseId = env && (env.CF_DATABASE_ID || env.DATABASE_ID);
+  const apiToken = env && (env.CF_API_TOKEN || env.API_TOKEN);
 
   try {
     const apiUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
@@ -137,7 +169,11 @@ function sanitizeSql(str) {
  * Helper: Verify if incoming request is from authorized Admin or Server
  */
 function isAuthorizedAdmin(request, env, url) {
-  const adminSecret = (env && (env.ADMIN_API_KEY || env.API_SECRET)) || DEFAULT_ADMIN_SECRET;
+  const adminSecret = env && (env.ADMIN_API_KEY || env.API_SECRET || env.ADMIN_KEY);
+  if (!adminSecret) {
+    console.warn("Security Warning: ADMIN_API_KEY is not set in Cloudflare Worker environment variables.");
+    return false;
+  }
   const authHeader = request.headers.get("Authorization") || "";
   const apiKeyHeader = request.headers.get("x-api-key") || request.headers.get("x-admin-key") || request.headers.get("x-api-secret") || "";
   const queryKey = url.searchParams.get("admin_key") || url.searchParams.get("api_key") || url.searchParams.get("key") || "";
@@ -311,6 +347,101 @@ export default {
     }
 
     // =========================================================================
+    // 5.5 👁️ BLOG VIEWS (GET & POST INCREMENT) ENDPOINT (Public)
+    // Supports:
+    // - POST /api/blogs/increment-view (or /blogs/view, /api/blogs/view, /blogs/increment-view)
+    // - POST /blog/:slug/view or /blogs/:slug/view
+    // - GET /api/blogs/views or /blogs/views?slug=... (Get current view count)
+    // =========================================================================
+    if (
+      pathname === '/api/blogs/increment-view' ||
+      pathname === '/api/blogs/view' ||
+      pathname === '/blogs/view' ||
+      pathname === '/blogs/increment-view' ||
+      pathname === '/api/blogs/views' ||
+      pathname === '/blogs/views' ||
+      pathname === '/blog/view' ||
+      pathname === '/blog/increment-view' ||
+      pathname.endsWith('/view') ||
+      pathname.endsWith('/increment-view')
+    ) {
+      // 1. Extract target slug or id
+      let slug = sanitizeSql((url.searchParams.get('slug') || '').trim());
+      let id = parseInt(url.searchParams.get('id') || '', 10);
+
+      // Check if slug is in pathname e.g. /blog/:slug/view or /blogs/:slug/view
+      const matchPathSlug = pathname.match(/^\/(?:api\/)?(?:blogs|blog|posts|articles)\/([a-zA-Z0-9_-]+)\/(?:view|increment-view)$/);
+      if (matchPathSlug && matchPathSlug[1] && !slug) {
+        slug = sanitizeSql(matchPathSlug[1].trim());
+      }
+
+      // Check request JSON body if POST
+      if (request.method === 'POST') {
+        try {
+          const body = await request.clone().json();
+          if (body) {
+            if (body.slug && !slug) slug = sanitizeSql(String(body.slug).trim());
+            if (body.id && isNaN(id)) id = parseInt(body.id, 10);
+          }
+        } catch (e) {}
+      }
+
+      if (slug || !isNaN(id)) {
+        const whereClause = slug ? `slug = '${slug}'` : `id = ${id}`;
+
+        if (request.method === 'POST') {
+          // 🔄 Increment views: UPDATE blogs SET views = COALESCE(views, 0) + 1
+          try {
+            await queryD1(env, `UPDATE blogs SET views = COALESCE(views, 0) + 1 WHERE ${whereClause}`);
+            const checkRows = await queryD1(env, `SELECT id, slug, views FROM blogs WHERE ${whereClause} LIMIT 1`);
+            const updatedViews = (checkRows && checkRows[0] && checkRows[0].views !== undefined) ? Number(checkRows[0].views) : 1;
+
+            return new Response(JSON.stringify({
+              success: true,
+              message: "View count recorded successfully",
+              slug: slug || (checkRows && checkRows[0] && checkRows[0].slug) || null,
+              id: !isNaN(id) ? id : (checkRows && checkRows[0] && checkRows[0].id) || null,
+              views: updatedViews
+            }), { headers: corsHeaders, status: 200 });
+          } catch (err) {
+            return new Response(JSON.stringify({
+              success: false,
+              error: "Failed to increment view count: " + (err.message || String(err))
+            }), { headers: corsHeaders, status: 500 });
+          }
+        } else {
+          // 🔍 Get current views: SELECT id, slug, views FROM blogs
+          try {
+            const checkRows = await queryD1(env, `SELECT id, slug, views FROM blogs WHERE ${whereClause} LIMIT 1`);
+            if (checkRows && checkRows.length > 0) {
+              return new Response(JSON.stringify({
+                success: true,
+                slug: checkRows[0].slug,
+                id: checkRows[0].id,
+                views: Number(checkRows[0].views || 0)
+              }), { headers: corsHeaders, status: 200 });
+            } else {
+              return new Response(JSON.stringify({
+                success: false,
+                error: `No article found matching ${slug ? 'slug: ' + slug : 'id: ' + id}`
+              }), { headers: corsHeaders, status: 404 });
+            }
+          } catch (err) {
+            return new Response(JSON.stringify({
+              success: false,
+              error: "Failed to get view count: " + (err.message || String(err))
+            }), { headers: corsHeaders, status: 500 });
+          }
+        }
+      }
+
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Missing slug or id parameter. Provide slug or id via JSON body (e.g. { \"slug\": \"...\" }) or query parameter (?slug=...)"
+      }), { headers: corsHeaders, status: 400 });
+    }
+
+    // =========================================================================
     // 6️⃣ 📰 LIVE BLOGS & ARTICLES ENDPOINT (Public)
     // =========================================================================
     if (pathname === '/blogs' || pathname === '/get_blogs' || pathname === '/api/blogs' || pathname === '/blog' || pathname.startsWith('/blog/') || pathname.startsWith('/blogs/') || pathname === '/posts' || pathname === '/articles') {
@@ -370,6 +501,30 @@ export default {
             });
           }
         } catch (e) {}
+      }
+
+      // Strictly sort results date-time wise (latest first, tie-break by id DESC)
+      if (Array.isArray(results) && results.length > 0) {
+        results.sort((a, b) => {
+          const parseTs = (item) => {
+            if (!item) return 0;
+            const raw = item.published_at || item.publish_date || item.created_at || item.date || item.updated_at || '';
+            const str = String(raw).trim();
+            if (!str) return 0;
+            const t = Date.parse(str);
+            if (!isNaN(t)) return t;
+            const m = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (m) {
+              const dt = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+              if (!isNaN(dt.getTime())) return dt.getTime();
+            }
+            return 0;
+          };
+          const tA = parseTs(a);
+          const tB = parseTs(b);
+          if (tB !== tA) return tB - tA;
+          return (Number(b.id) || 0) - (Number(a.id) || 0);
+        });
       }
 
       return new Response(JSON.stringify({
@@ -775,7 +930,8 @@ export default {
 
       const higherOverall = Number(aggRow.higher_overall) || 0;
       const overallRank = higherOverall + 1;
-      const totalOverall = Math.max(overallRank, isExistingInOverall ? rawOverall : (rawOverall + 1));
+      // 🎯 Self-Inclusive Total: rawOverall excludes the user, so adding the user (+1) ensures candidate themselves is counted
+      const totalOverall = Math.max(overallRank, rawOverall + 1);
 
       const rawShift = Number(aggRow.raw_total_shift) || 0;
       const higherShift = (examDate) ? (Number(aggRow.higher_shift) || 0) : 0;
@@ -783,7 +939,7 @@ export default {
       let totalShift = 1;
       if (rawShift > 0 || examDate) {
         shiftRank = higherShift + 1;
-        totalShift = Math.max(shiftRank, isExistingInShift ? rawShift : (rawShift + 1));
+        totalShift = Math.max(shiftRank, rawShift + 1);
       }
 
       const rawCat = Number(aggRow.raw_total_cat) || 0;
@@ -792,7 +948,7 @@ export default {
       let totalCategory = 1;
       if (rawCat > 0 || category) {
         categoryRank = higherCat + 1;
-        totalCategory = Math.max(categoryRank, isExistingInCat ? rawCat : (rawCat + 1));
+        totalCategory = Math.max(categoryRank, rawCat + 1);
       }
 
       const rawGender = Number(aggRow.raw_total_gender) || 0;
@@ -801,7 +957,7 @@ export default {
       let totalGender = 1;
       if (rawGender > 0 || gender) {
         genderRank = higherGender + 1;
-        totalGender = Math.max(genderRank, isExistingInGender ? rawGender : (rawGender + 1));
+        totalGender = Math.max(genderRank, rawGender + 1);
       }
 
       const rawSubType = Number(aggRow.raw_total_subtype) || 0;
@@ -810,7 +966,7 @@ export default {
       let totalSubType = 1;
       if (rawSubType > 0 || subType) {
         subTypeRank = higherSubType + 1;
-        totalSubType = Math.max(subTypeRank, isExistingInSubType ? rawSubType : (rawSubType + 1));
+        totalSubType = Math.max(subTypeRank, rawSubType + 1);
       }
 
       let percentile = 100.0;
@@ -1188,9 +1344,9 @@ export default {
 
     // =========================================================================
     // 1️⃣1️⃣ ⚡ CALCULATOR API PROXY ENDPOINT (/calculator_api, /api/calculator_api)
-    // Tries Dedicated Fast VPS First (Instant Response) with Fallback to Render
+    // Smart auto-routing: Uses CBEXAMS_API_URL for CBExams, DIGIALM_API_URL for DigiALM/TCS
     // =========================================================================
-    if (pathname === '/calculator_api' || pathname === '/api/calculator_api') {
+    if (pathname === '/calculator_api' || pathname === '/calculator_api/' || pathname === '/api/calculator_api' || pathname === '/api/calculator_api/' || pathname.startsWith('/calculator_api')) {
       let targetAnswerKeyUrl = url.searchParams.get('url') ? url.searchParams.get('url').trim() : '';
       if (request.method === 'POST') {
         try {
@@ -1212,57 +1368,47 @@ export default {
         }
       } catch (e) {}
 
-      const primaryApi = (env && env.CALCULATOR_API_URL) || `${CALCULATOR_VPS_PRIMARY}?url=${encodeURIComponent(targetAnswerKeyUrl)}`;
-      const backupApi = `${CALCULATOR_RENDER_BACKUP}?url=${encodeURIComponent(targetAnswerKeyUrl)}`;
+      const isCbexams = isCbexamsHost(targetAnswerKeyUrl);
+      let targetApi = "";
 
-      let vpsRes = null;
+      if (isCbexams) {
+        const cbexamsBase = (env && (env.CBEXAMS_API_URL || env.CBEXAMS_URL)) || DEFAULT_CBEXAMS_API;
+        targetApi = buildParserUrl(cbexamsBase, targetAnswerKeyUrl);
+      } else {
+        const digialmBase = (env && (env.DIGIALM_API_URL || env.CALCULATOR_API_URL || env.DIGIALM_URL)) || DEFAULT_DIGIALM_API;
+        targetApi = buildParserUrl(digialmBase, targetAnswerKeyUrl);
+      }
+
+      let parserRes = null;
       try {
-        // Try dedicated VPS API first (Fast, no cold start)
-        vpsRes = await fetch(primaryApi, {
+        parserRes = await fetch(targetApi, {
           method: "GET",
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
             "Accept": "application/json, text/plain, */*"
           },
-          signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(6000) : undefined
+          signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(12000) : undefined
         });
       } catch (e) {
-        vpsRes = null;
+        parserRes = null;
       }
 
-      // If primary VPS timed out or failed, seamlessly fallback to backup Render endpoint
-      if (!vpsRes || !vpsRes.ok) {
-        try {
-          vpsRes = await fetch(backupApi, {
-            method: "GET",
-            headers: {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-              "Accept": "application/json, text/plain, */*"
-            }
-          });
-        } catch (err) {
-          return new Response(JSON.stringify({
-            success: false,
-            error: `Failed to connect to Calculator APIs: ${err.message}`
-          }), { headers: corsHeaders, status: 502 });
-        }
-      }
-
-      if (vpsRes && vpsRes.ok) {
-        const rawText = await vpsRes.text();
+      if (parserRes && parserRes.ok) {
+        const rawText = await parserRes.text();
         return new Response(rawText, { headers: corsHeaders, status: 200 });
       } else {
         return new Response(JSON.stringify({
           success: false,
-          error: `Calculator API responded with status ${vpsRes ? vpsRes.status : 500}`
-        }), { headers: corsHeaders, status: vpsRes ? vpsRes.status : 500 });
+          error: "Invalid or broken link. Please check your Answer Key URL and retry."
+        }), { headers: corsHeaders, status: parserRes ? parserRes.status : 502 });
       }
     }
 
     // =========================================================================
-    // 1️⃣2️⃣ DIGIALM PROXY PARSER ENDPOINT (Legacy)
+    // 1️⃣2️⃣ DIGIALM PROXY PARSER ENDPOINT (/digialm, /api/digialm)
+    // Uses DIGIALM_API_URL dynamically from Cloudflare Environment Variables / Secrets
     // =========================================================================
-    if (pathname === '/digialm' || pathname === '/api/digialm') {
+    if (pathname === '/digialm' || pathname === '/digialm/' || pathname === '/api/digialm' || pathname === '/api/digialm/' || pathname.startsWith('/digialm')) {
       let legacyUrl = url.searchParams.get('url') ? url.searchParams.get('url').trim() : '';
       if (request.method === 'POST') {
         try {
@@ -1272,7 +1418,7 @@ export default {
       }
 
       if (!legacyUrl) {
-        return new Response(JSON.stringify({ success: false, error: "Please provide a valid Answer Key URL parameter (?url=...)" }, null, 2), { headers: corsHeaders, status: 400 });
+        return new Response(JSON.stringify({ success: false, error: "Invalid or broken link. Please check your Answer Key URL and retry." }, null, 2), { headers: corsHeaders, status: 400 });
       }
 
       try {
@@ -1281,43 +1427,88 @@ export default {
         }
       } catch (e) {}
 
-      const ep = `${CALCULATOR_VPS_PRIMARY}?url=${encodeURIComponent(legacyUrl)}`;
+      const digialmBase = (env && (env.DIGIALM_API_URL || env.CALCULATOR_API_URL || env.DIGIALM_URL)) || DEFAULT_DIGIALM_API;
+      const ep = buildParserUrl(digialmBase, legacyUrl);
+
       try {
-        const vpsRes = await fetch(ep, {
+        const digiRes = await fetch(ep, {
           method: "GET",
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            "Accept": "application/json"
-          }
+            "Accept": "application/json, text/plain, */*"
+          },
+          signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(15000) : undefined
         });
-        if (vpsRes.ok) {
-          const rawText = await vpsRes.text();
-          return new Response(rawText, { headers: corsHeaders, status: 200 });
+        if (digiRes) {
+          const rawText = await digiRes.text();
+          return new Response(rawText, { headers: corsHeaders, status: digiRes.status });
         }
       } catch (err) {}
 
-      // Fallback
-      try {
-        const backupEp = `${CALCULATOR_RENDER_BACKUP}?url=${encodeURIComponent(legacyUrl)}`;
-        const backupRes = await fetch(backupEp, {
-          method: "GET",
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            "Accept": "application/json"
+      return new Response(JSON.stringify({ success: false, error: "Invalid or broken link. Please check your Answer Key URL and retry." }), { headers: corsHeaders, status: 500 });
+    }
+
+    // =========================================================================
+    // 1️⃣2️⃣.5 ⚡ CBEXAMS PROXY PARSER ENDPOINT (/cbexams, /api/cbexams)
+    // Uses CBEXAMS_API_URL dynamically from Cloudflare Environment Variables / Secrets
+    // =========================================================================
+    if (pathname === '/cbexams' || pathname === '/cbexams/' || pathname === '/api/cbexams' || pathname === '/api/cbexams/' || pathname.startsWith('/cbexams')) {
+      let cbexamsUrl = url.searchParams.get('url') ? url.searchParams.get('url').trim() : '';
+      let postPayload = null;
+      if (request.method === 'POST') {
+        try {
+          const body = await request.clone().json();
+          if (body && typeof body === 'object') {
+            postPayload = body;
+            if (body.url) cbexamsUrl = body.url.trim();
           }
-        });
-        if (backupRes.ok) {
-          const rawText = await backupRes.text();
-          return new Response(rawText, { headers: corsHeaders, status: 200 });
+        } catch (e) {}
+      }
+
+      if (!cbexamsUrl) {
+        return new Response(JSON.stringify({ success: false, error: "Invalid or broken link. Please check your Answer Key URL and retry." }, null, 2), { headers: corsHeaders, status: 400 });
+      }
+
+      try {
+        if (cbexamsUrl.includes('%3A') || cbexamsUrl.includes('%2F')) {
+          cbexamsUrl = decodeURIComponent(cbexamsUrl);
         }
       } catch (e) {}
 
-      return new Response(JSON.stringify({ success: false, error: "Server error or Invalid URL" }), { headers: corsHeaders, status: 500 });
+      const cbexamsBase = (env && (env.CBEXAMS_API_URL || env.CBEXAMS_URL)) || DEFAULT_CBEXAMS_API;
+      const targetEp = buildParserUrl(cbexamsBase, cbexamsUrl);
+
+      const hasHtml = Boolean(postPayload && postPayload.html && postPayload.html.length > 50);
+
+      try {
+        const fetchOptions = {
+          method: hasHtml ? "POST" : "GET",
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Accept": "application/json, text/plain, */*",
+            ...(hasHtml ? { "Content-Type": "application/json" } : {})
+          },
+          ...(hasHtml ? { body: JSON.stringify(postPayload) } : {}),
+          signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(25000) : undefined
+        };
+
+        const fetchTarget = hasHtml ? cbexamsBase.split('?')[0] : targetEp;
+        const cbRes = await fetch(fetchTarget, fetchOptions);
+        if (cbRes) {
+          const rawText = await cbRes.text();
+          return new Response(rawText, { headers: corsHeaders, status: cbRes.status });
+        }
+      } catch (err) {}
+
+      return new Response(JSON.stringify({ success: false, error: "Invalid or broken link. Please check your Answer Key URL and retry." }), { headers: corsHeaders, status: 500 });
     }
 
     // =========================================================================
     // 1️⃣3️⃣ 🌟 MASTER API DIRECTORY (Returned for root `/`, `/api`, `/endpoints`)
     // =========================================================================
+    const isDigialmConfigured = Boolean(env && (env.DIGIALM_API_URL || env.CALCULATOR_API_URL));
+    const isCbexamsConfigured = Boolean(env && env.CBEXAMS_API_URL);
+
     return new Response(JSON.stringify({
       status: "online",
       message: "🚀 CBT RANK Live Master Cloudflare API is fully operational & strictly secured",
@@ -1328,6 +1519,22 @@ export default {
         sql_injection_protection: "Enabled (All input parameters strictly sanitized)",
         admin_authorization: "Supported via Authorization Bearer header, x-api-key, or ?admin_key="
       },
+      runtime_parsers: {
+        digialm: {
+          configured_in_env: isDigialmConfigured,
+          status: isDigialmConfigured ? "Active (Custom Cloudflare DIGIALM_API_URL)" : "Active (Default Fallback Cluster)",
+          endpoint: `${url.origin}/digialm/?url=...`
+        },
+        cbexams: {
+          configured_in_env: isCbexamsConfigured,
+          status: isCbexamsConfigured ? "Active (Custom Cloudflare CBEXAMS_API_URL)" : "Active (Default Fallback Cluster)",
+          endpoint: `${url.origin}/cbexams/?url=...`
+        },
+        smart_calculator: {
+          status: "Active (Auto-Routes between CBExams & DigiALM)",
+          endpoint: `${url.origin}/calculator_api/?url=...`
+        }
+      },
       endpoints: {
         live_rank: {
           path: "/live_rank",
@@ -1336,10 +1543,10 @@ export default {
           example: `${url.origin}/live_rank?exam_id=100576&total_marks=85.5&category=ur&gender=male&sub_type=Electrical&exam_date=2026-08-15&exam_time=09:00+-+11:00`
         },
         calculator_api: {
-          path: "/calculator_api",
+          path: "/calculator_api/",
           method: "GET | POST",
-          description: "Proxies directly to dedicated fast VPS API with seamless Render fallback to parse answer keys",
-          example: `${url.origin}/calculator_api?url=https://cdn3.digialm.com/...`
+          description: "Smart proxy that automatically routes to DigiALM or CBExams parser based on URL",
+          example: `${url.origin}/calculator_api/?url=https://cdn3.digialm.com/...`
         },
         exams: {
           path: "/exams",
@@ -1370,6 +1577,12 @@ export default {
           method: "GET",
           description: "Get specific blog post content and metadata by slug",
           example: `${url.origin}/blogs?slug=how-cbt-rank-normalization-works`
+        },
+        blog_views: {
+          path: "/api/blogs/increment-view (or /blogs/view)",
+          method: "POST (Increment) | GET (Fetch)",
+          description: "Increment view count for a blog post (POST) or fetch current view count (GET) by slug or id",
+          example: `${url.origin}/api/blogs/increment-view?slug=how-cbt-rank-normalization-works`
         },
         locations: {
           path: "/locations",
@@ -1413,11 +1626,17 @@ export default {
           description: "Insert invalid answer key URLs with duplicate prevention. Public GET is strictly restricted.",
           example: `${url.origin}/invalid_answerkey_urls`
         },
-        digialm_legacy: {
-          path: "/digialm",
+        digialm: {
+          path: "/digialm/",
           method: "GET | POST",
-          description: "Legacy DigiALM parser proxy",
-          example: `${url.origin}/digialm?url=https://cdn.digialm.com/...`
+          description: "DigiALM / TCS iON parser proxy powered by DIGIALM_API_URL",
+          example: `${url.origin}/digialm/?url=https://cdn.digialm.com/...`
+        },
+        cbexams: {
+          path: "/cbexams/",
+          method: "GET | POST",
+          description: "CBExams parser proxy powered by CBEXAMS_API_URL",
+          example: `${url.origin}/cbexams/?url=https://cbexams.com/...`
         }
       }
     }, null, 2), { headers: corsHeaders, status: 200 });
