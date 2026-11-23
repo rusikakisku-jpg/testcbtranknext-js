@@ -3,7 +3,6 @@ export const revalidate = 60;
 
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import HomeSeoContent from './components/HomeSeoContent';
 import HomeBlogsSection from './components/HomeBlogsSection';
 import { fetchBlogsFromCloudflareD1, BlogPost } from './data/blogs';
 import { APP_FEATURE_FLAGS } from './config/features';
@@ -195,9 +194,6 @@ export default async function HomePage() {
                 </div>
               )}
             </div>
-
-            {/* In-depth Informative SEO Section & FAQ */}
-            <HomeSeoContent />
           </section>
         </div>
       </div>
