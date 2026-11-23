@@ -128,6 +128,10 @@ export default function ImageBackgroundChangePage() {
           margin: 0 auto;
           box-sizing: border-box;
           width: 100%;
+          transition: max-width 0.25s ease;
+        }
+        .tool-screen-container.has-image {
+          max-width: 980px;
         }
 
         /* Tool Card */
@@ -212,8 +216,86 @@ export default function ImageBackgroundChangePage() {
           box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
         }
 
-        /* Active File Header */
-        .file-active-banner {
+        /* 2-Column Side-by-Side Grid on Desktop */
+        .editor-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 24px;
+          align-items: start;
+        }
+        @media (min-width: 769px) {
+          .editor-grid {
+            grid-template-columns: 360px 1fr;
+            gap: 28px;
+          }
+          .editor-left-col {
+            position: sticky;
+            top: 86px;
+          }
+        }
+
+        /* Left Column (Preview & Download) */
+        .editor-left-col {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .preview-card-box {
+          background: #f8fafc;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 18px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          box-sizing: border-box;
+          width: 100%;
+        }
+        .preview-img-frame {
+          max-width: 100%;
+          max-height: 250px;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          padding: 4px;
+          margin-bottom: 14px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .preview-img-frame img {
+          max-width: 100%;
+          max-height: 240px;
+          object-fit: contain;
+          display: block;
+          border-radius: 8px;
+        }
+        .preview-stats-bar {
+          display: flex;
+          gap: 6px;
+          font-size: 0.78rem;
+          font-weight: 750;
+          color: #1e293b;
+          margin-bottom: 14px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .stat-badge {
+          background: #ffffff;
+          padding: 4px 12px;
+          border-radius: 999px;
+          border: 1px solid #e2e8f0;
+        }
+        .stat-badge.highlight {
+          background: #f5f3ff;
+          color: #7c3aed;
+          border-color: #ddd6fe;
+        }
+
+        /* Active File Bar */
+        .file-info-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -221,9 +303,10 @@ export default function ImageBackgroundChangePage() {
           border: 1px solid #e2e8f0;
           border-radius: 12px;
           padding: 10px 14px;
-          margin-bottom: 20px;
-          gap: 10px;
+          gap: 8px;
           flex-wrap: wrap;
+          box-sizing: border-box;
+          width: 100%;
         }
         .file-info-text {
           font-size: 0.84rem;
@@ -240,8 +323,16 @@ export default function ImageBackgroundChangePage() {
           font-weight: 750;
           cursor: pointer;
         }
+        .btn-change-file:hover {
+          background: #f1f5f9;
+        }
 
-        /* Color Options */
+        /* Right Column (Controls / Editor) */
+        .editor-right-col {
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+        }
         .section-label {
           font-size: 0.82rem;
           font-weight: 800;
@@ -255,7 +346,6 @@ export default function ImageBackgroundChangePage() {
           gap: 8px;
           flex-wrap: wrap;
           align-items: center;
-          margin-bottom: 20px;
         }
         .color-pill-btn {
           display: inline-flex;
@@ -263,7 +353,7 @@ export default function ImageBackgroundChangePage() {
           gap: 6px;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          padding: 5px 12px 5px 7px;
+          padding: 6px 12px 6px 7px;
           border-radius: 10px;
           cursor: pointer;
           transition: all 0.15s ease;
@@ -297,7 +387,7 @@ export default function ImageBackgroundChangePage() {
           gap: 6px;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          padding: 4px 10px;
+          padding: 5px 12px;
           border-radius: 10px;
           font-size: 0.8rem;
           font-weight: 750;
@@ -311,7 +401,6 @@ export default function ImageBackgroundChangePage() {
           border: 1px solid #e2e8f0;
           border-radius: 14px;
           padding: 14px 16px;
-          margin-bottom: 20px;
         }
         .tolerance-header {
           display: flex;
@@ -347,57 +436,6 @@ export default function ImageBackgroundChangePage() {
           margin-top: 4px;
         }
 
-        /* Result Preview */
-        .preview-container {
-          background: #f8fafc;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 20px 16px;
-          margin-top: 22px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          box-sizing: border-box;
-          width: 100%;
-        }
-        .preview-img-box {
-          max-width: 240px;
-          max-height: 240px;
-          border: 1.5px solid #cbd5e1;
-          border-radius: 12px;
-          padding: 4px;
-          margin-bottom: 14px;
-          overflow: hidden;
-          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
-        }
-        .preview-img-box img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
-          border-radius: 8px;
-        }
-        .preview-stats {
-          display: flex;
-          gap: 8px;
-          font-size: 0.8rem;
-          font-weight: 750;
-          color: #1e293b;
-          margin-bottom: 16px;
-        }
-        .stat-badge {
-          background: #ffffff;
-          padding: 4px 12px;
-          border-radius: 999px;
-          border: 1px solid #e2e8f0;
-        }
-        .stat-badge.highlight {
-          background: #f5f3ff;
-          color: #7c3aed;
-          border-color: #ddd6fe;
-        }
-
         /* Download Button */
         .btn-download {
           display: inline-flex;
@@ -408,7 +446,7 @@ export default function ImageBackgroundChangePage() {
           color: #ffffff;
           font-size: 0.92rem;
           font-weight: 800;
-          padding: 12px 28px;
+          padding: 12px 20px;
           border-radius: 10px;
           text-decoration: none;
           border: none;
@@ -416,23 +454,23 @@ export default function ImageBackgroundChangePage() {
           transition: all 0.2s ease;
           box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
           box-sizing: border-box;
+          width: 100%;
           min-height: 48px;
         }
         .btn-download:hover {
           background: #6d28d9;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .tool-screen-main { padding: 16px 12px 76px; }
           .tool-card { padding: 18px 14px; border-radius: 16px; }
           .tool-title { font-size: 1.2rem; }
           .color-palette { gap: 6px; }
           .color-pill-btn { padding: 4px 8px 4px 5px; font-size: 0.74rem; }
-          .btn-download { width: 100%; }
         }
       `}</style>
 
-      <div className="tool-screen-container">
+      <div className={`tool-screen-container${bgImage ? ' has-image' : ''}`}>
         <div className="tool-card">
           <div className="tool-header-block">
             <h1 className="tool-title">Image Background Change</h1>
@@ -465,130 +503,137 @@ export default function ImageBackgroundChangePage() {
               </div>
             </div>
           ) : (
-            <div>
-              <div className="file-active-banner">
-                <span className="file-info-text">Active Photo Loaded</span>
-                <button
-                  type="button"
-                  onClick={() => bgInputRef.current?.click()}
-                  className="btn-change-file"
-                >
-                  Change Image
-                </button>
-              </div>
-
-              {/* Target Background Color */}
-              <div className="section-label">Select Background Color:</div>
-
-              <div className="color-palette">
-                {COLOR_OPTIONS.map((c) => {
-                  const isActive = !isTransparent && bgColor.toLowerCase() === c.value.toLowerCase();
-                  return (
-                    <button
-                      key={c.value}
-                      type="button"
-                      className={`color-pill-btn${isActive ? ' active' : ''}`}
-                      onClick={() => { setBgColor(c.value); setIsTransparent(false); }}
-                    >
-                      <span className="swatch-circle" style={{ backgroundColor: c.value, borderColor: c.border }}>
-                        {isActive && (
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={c.value === '#ffffff' ? '#0f172a' : '#ffffff'} strokeWidth="3.5">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        )}
-                      </span>
-                      <span>{c.name}</span>
-                    </button>
-                  );
-                })}
-
-                {/* Transparent PNG */}
-                <button
-                  type="button"
-                  className={`color-pill-btn${isTransparent ? ' active' : ''}`}
-                  onClick={() => setIsTransparent(true)}
-                >
-                  <span
-                    className="swatch-circle"
-                    style={{
-                      background: 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 5px 5px',
-                    }}
-                  >
-                    {isTransparent && (
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="3.5">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    )}
-                  </span>
-                  <span>Transparent PNG</span>
-                </button>
-
-                {/* Custom Color */}
-                <label className="custom-color-box">
-                  <span>Custom:</span>
-                  <input
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => { setBgColor(e.target.value); setIsTransparent(false); }}
-                    style={{ width: 22, height: 22, border: 'none', borderRadius: 4, cursor: 'pointer' }}
-                  />
-                  <span style={{ fontSize: '0.74rem', color: '#64748b' }}>{bgColor.toUpperCase()}</span>
-                </label>
-              </div>
-
-              {/* Edge Tolerance */}
-              <div className="tolerance-box">
-                <div className="tolerance-header">
-                  <span className="tolerance-title">Edge Sensitivity</span>
-                  <span className="tolerance-badge">{tolerance}</span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="65"
-                  value={tolerance}
-                  onChange={(e) => setTolerance(Number(e.target.value))}
-                  className="slider-range"
-                />
-                <div className="tolerance-hint">
-                  <span>Sharp (5)</span>
-                  <span>Balanced (28)</span>
-                  <span>Aggressive (65)</span>
-                </div>
-              </div>
-
-              {/* Background Result Preview */}
-              {processedBgImage && (
-                <div className="preview-container">
+            <div className="editor-grid">
+              {/* Left Column: Image Preview, Badge & Download Button */}
+              <div className="editor-left-col">
+                <div className="preview-card-box">
                   <div
-                    className="preview-img-box"
+                    className="preview-img-frame"
                     style={{
                       background: isTransparent
                         ? 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 10px 10px'
                         : bgColor,
                     }}
                   >
-                    <img src={processedBgImage} alt="Background Changed Result" />
+                    <img src={processedBgImage || bgImage} alt="Background Result" />
                   </div>
-                  <div className="preview-stats">
+                  <div className="preview-stats-bar">
                     <div className="stat-badge highlight">
                       Background: {isTransparent ? 'Transparent PNG' : bgColor.toUpperCase()}
                     </div>
                   </div>
-                  <a
-                    href={processedBgImage}
-                    download={`${bgFileName}_new_bg.png`}
-                    className="btn-download"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    <span>Download Updated Photo</span>
-                  </a>
+
+                  {processedBgImage && (
+                    <a
+                      href={processedBgImage}
+                      download={`${bgFileName}_new_bg.png`}
+                      className="btn-download"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      <span>Download Updated Photo</span>
+                    </a>
+                  )}
                 </div>
-              )}
+
+                <div className="file-info-bar">
+                  <span className="file-info-text">Active Photo Loaded</span>
+                  <button
+                    type="button"
+                    onClick={() => bgInputRef.current?.click()}
+                    className="btn-change-file"
+                  >
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Editor Controls */}
+              <div className="editor-right-col">
+                {/* Background Color Palette */}
+                <div>
+                  <div className="section-label">Select Background Color:</div>
+                  <div className="color-palette">
+                    {COLOR_OPTIONS.map((c) => {
+                      const isActive = !isTransparent && bgColor.toLowerCase() === c.value.toLowerCase();
+                      return (
+                        <button
+                          key={c.value}
+                          type="button"
+                          className={`color-pill-btn${isActive ? ' active' : ''}`}
+                          onClick={() => { setBgColor(c.value); setIsTransparent(false); }}
+                        >
+                          <span className="swatch-circle" style={{ backgroundColor: c.value, borderColor: c.border }}>
+                            {isActive && (
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={c.value === '#ffffff' ? '#0f172a' : '#ffffff'} strokeWidth="3.5">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            )}
+                          </span>
+                          <span>{c.name}</span>
+                        </button>
+                      );
+                    })}
+
+                    {/* Transparent PNG */}
+                    <button
+                      type="button"
+                      className={`color-pill-btn${isTransparent ? ' active' : ''}`}
+                      onClick={() => setIsTransparent(true)}
+                    >
+                      <span
+                        className="swatch-circle"
+                        style={{
+                          background: 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 5px 5px',
+                        }}
+                      >
+                        {isTransparent && (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="3.5">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </span>
+                      <span>Transparent PNG</span>
+                    </button>
+
+                    {/* Custom Color */}
+                    <label className="custom-color-box">
+                      <span>Custom:</span>
+                      <input
+                        type="color"
+                        value={bgColor}
+                        onChange={(e) => { setBgColor(e.target.value); setIsTransparent(false); }}
+                        style={{ width: 22, height: 22, border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                      />
+                      <span style={{ fontSize: '0.74rem', color: '#64748b' }}>{bgColor.toUpperCase()}</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Edge Tolerance */}
+                <div className="tolerance-box">
+                  <div className="tolerance-header">
+                    <span className="tolerance-title">Edge Sensitivity</span>
+                    <span className="tolerance-badge">{tolerance}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="5"
+                    max="65"
+                    value={tolerance}
+                    onChange={(e) => setTolerance(Number(e.target.value))}
+                    className="slider-range"
+                  />
+                  <div className="tolerance-hint">
+                    <span>Sharp (5)</span>
+                    <span>Balanced (28)</span>
+                    <span>Aggressive (65)</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>

@@ -156,6 +156,10 @@ export default function ImageResizePage() {
           margin: 0 auto;
           box-sizing: border-box;
           width: 100%;
+          transition: max-width 0.25s ease;
+        }
+        .tool-screen-container.has-image {
+          max-width: 980px;
         }
 
         /* Tool Card */
@@ -240,8 +244,87 @@ export default function ImageResizePage() {
           box-shadow: 0 2px 8px rgba(0, 68, 204, 0.2);
         }
 
-        /* Active File Header */
-        .file-active-banner {
+        /* 2-Column Side-by-Side Grid on Desktop */
+        .editor-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 24px;
+          align-items: start;
+        }
+        @media (min-width: 769px) {
+          .editor-grid {
+            grid-template-columns: 360px 1fr;
+            gap: 28px;
+          }
+          .editor-left-col {
+            position: sticky;
+            top: 86px;
+          }
+        }
+
+        /* Left Column (Uploaded Image & Live Output) */
+        .editor-left-col {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .preview-card-box {
+          background: #f8fafc;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 18px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          box-sizing: border-box;
+          width: 100%;
+        }
+        .preview-img-frame {
+          max-width: 100%;
+          max-height: 250px;
+          background: #ffffff;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          padding: 4px;
+          margin-bottom: 14px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .preview-img-frame img {
+          max-width: 100%;
+          max-height: 240px;
+          object-fit: contain;
+          display: block;
+          border-radius: 8px;
+        }
+        .preview-stats-bar {
+          display: flex;
+          gap: 6px;
+          font-size: 0.78rem;
+          font-weight: 750;
+          color: #1e293b;
+          margin-bottom: 14px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .stat-badge {
+          background: #ffffff;
+          padding: 4px 10px;
+          border-radius: 999px;
+          border: 1px solid #e2e8f0;
+        }
+        .stat-badge.highlight {
+          background: #eff6ff;
+          color: #0044cc;
+          border-color: #bfdbfe;
+        }
+
+        /* Active File Bar */
+        .file-info-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -249,12 +332,13 @@ export default function ImageResizePage() {
           border: 1px solid #e2e8f0;
           border-radius: 12px;
           padding: 10px 14px;
-          margin-bottom: 20px;
-          gap: 10px;
+          gap: 8px;
           flex-wrap: wrap;
+          box-sizing: border-box;
+          width: 100%;
         }
         .file-info-text {
-          font-size: 0.84rem;
+          font-size: 0.82rem;
           color: #334155;
           font-weight: 650;
           display: flex;
@@ -267,9 +351,9 @@ export default function ImageResizePage() {
           border: 1px solid #cbd5e1;
           color: #0f172a;
           font-weight: 800;
-          padding: 2px 7px;
+          padding: 2px 6px;
           border-radius: 5px;
-          font-size: 0.78rem;
+          font-size: 0.76rem;
         }
         .btn-change-file {
           background: #ffffff;
@@ -281,8 +365,16 @@ export default function ImageResizePage() {
           font-weight: 750;
           cursor: pointer;
         }
+        .btn-change-file:hover {
+          background: #f1f5f9;
+        }
 
-        /* Presets */
+        /* Right Column (Controls / Editor) */
+        .editor-right-col {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
         .section-label {
           font-size: 0.82rem;
           font-weight: 800;
@@ -293,9 +385,8 @@ export default function ImageResizePage() {
         }
         .preset-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
           gap: 10px;
-          margin-bottom: 20px;
         }
         .preset-btn {
           border: 1.5px solid #e2e8f0;
@@ -346,8 +437,7 @@ export default function ImageResizePage() {
         .form-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 14px;
-          margin-bottom: 16px;
+          gap: 12px;
         }
         .field-label {
           display: block;
@@ -386,60 +476,6 @@ export default function ImageResizePage() {
           accent-color: #0044cc;
         }
 
-        /* Result Preview */
-        .preview-container {
-          background: #f8fafc;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 20px 16px;
-          margin-top: 22px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          box-sizing: border-box;
-          width: 100%;
-        }
-        .preview-img-box {
-          max-width: 240px;
-          max-height: 240px;
-          background: #ffffff;
-          border: 1.5px solid #cbd5e1;
-          border-radius: 12px;
-          padding: 4px;
-          margin-bottom: 14px;
-          overflow: hidden;
-          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
-        }
-        .preview-img-box img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
-          border-radius: 8px;
-        }
-        .preview-stats {
-          display: flex;
-          gap: 8px;
-          font-size: 0.8rem;
-          font-weight: 750;
-          color: #1e293b;
-          margin-bottom: 16px;
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-        .stat-badge {
-          background: #ffffff;
-          padding: 4px 10px;
-          border-radius: 999px;
-          border: 1px solid #e2e8f0;
-        }
-        .stat-badge.highlight {
-          background: #eff6ff;
-          color: #0044cc;
-          border-color: #bfdbfe;
-        }
-
         /* Download Button */
         .btn-download {
           display: inline-flex;
@@ -450,7 +486,7 @@ export default function ImageResizePage() {
           color: #ffffff;
           font-size: 0.92rem;
           font-weight: 800;
-          padding: 12px 28px;
+          padding: 12px 20px;
           border-radius: 10px;
           text-decoration: none;
           border: none;
@@ -458,23 +494,23 @@ export default function ImageResizePage() {
           transition: all 0.2s ease;
           box-shadow: 0 4px 14px rgba(0, 68, 204, 0.25);
           box-sizing: border-box;
+          width: 100%;
           min-height: 48px;
         }
         .btn-download:hover {
           background: #003399;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .tool-screen-main { padding: 16px 12px 76px; }
           .tool-card { padding: 18px 14px; border-radius: 16px; }
           .tool-title { font-size: 1.2rem; }
           .form-row { grid-template-columns: 1fr; }
           .preset-grid { grid-template-columns: 1fr; }
-          .btn-download { width: 100%; }
         }
       `}</style>
 
-      <div className="tool-screen-container">
+      <div className={`tool-screen-container${resizeImage ? ' has-image' : ''}`}>
         <div className="tool-card">
           <div className="tool-header-block">
             <h1 className="tool-title">Image Resize &amp; KB Compress</h1>
@@ -507,121 +543,129 @@ export default function ImageResizePage() {
               </div>
             </div>
           ) : (
-            <div>
-              <div className="file-active-banner">
-                <div className="file-info-text">
-                  <span>Selected Image:</span>
-                  <span className="file-info-badge">{origDimensions.w} × {origDimensions.h} px</span>
-                  <span className="file-info-badge">{origDimensions.kb} KB</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => resizeInputRef.current?.click()}
-                  className="btn-change-file"
-                >
-                  Change Image
-                </button>
-              </div>
-
-              {/* Exam Presets */}
-              <div className="section-label">Select Preset:</div>
-              <div className="preset-grid">
-                {PRESETS.map((p) => (
-                  <button
-                    key={p.name}
-                    type="button"
-                    className={`preset-btn${selectedPreset === p.name ? ' active' : ''}`}
-                    onClick={() => handlePresetChange(p.name)}
-                  >
-                    <div className="preset-top">
-                      <span className="preset-name">{p.name}</span>
-                      {p.badge && <span className="preset-badge-tag">{p.badge}</span>}
-                    </div>
-                    <div className="preset-desc">{p.desc}</div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Dimension Inputs */}
-              <div className="form-row">
-                <div>
-                  <label className="field-label">Target Width (px)</label>
-                  <input
-                    type="number"
-                    className="input-text"
-                    value={targetWidth}
-                    onChange={(e) => handleWidthChange(Number(e.target.value))}
-                  />
-                </div>
-                <div>
-                  <label className="field-label">Target Height (px)</label>
-                  <input
-                    type="number"
-                    className="input-text"
-                    value={targetHeight}
-                    onChange={(e) => handleHeightChange(Number(e.target.value))}
-                  />
-                </div>
-              </div>
-
-              {/* Target KB & Format */}
-              <div className="form-row">
-                <div>
-                  <label className="field-label">Target Max Size (KB)</label>
-                  <input
-                    type="number"
-                    className="input-text"
-                    value={targetMaxKb}
-                    onChange={(e) => setTargetMaxKb(Number(e.target.value))}
-                  />
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={lockRatio}
-                      onChange={(e) => setLockRatio(e.target.checked)}
-                    />
-                    <span>Maintain original aspect ratio</span>
-                  </label>
-                </div>
-                <div>
-                  <label className="field-label">Output Format</label>
-                  <select
-                    className="select-box"
-                    value={format}
-                    onChange={(e) => setFormat(e.target.value as any)}
-                  >
-                    <option value="image/jpeg">JPEG / JPG (Standard Exam Format)</option>
-                    <option value="image/png">PNG</option>
-                    <option value="image/webp">WEBP</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Result Preview & Download */}
-              {resizedPreview && (
-                <div className="preview-container">
-                  <div className="preview-img-box">
-                    <img src={resizedPreview} alt="Resized Result" />
+            <div className="editor-grid">
+              {/* Left Column: Image Preview, Live Stats & Download Button */}
+              <div className="editor-left-col">
+                <div className="preview-card-box">
+                  <div className="preview-img-frame">
+                    <img src={resizedPreview || resizeImage} alt="Preview Result" />
                   </div>
-                  <div className="preview-stats">
+                  <div className="preview-stats-bar">
                     <div className="stat-badge">{targetWidth} × {targetHeight} px</div>
                     <div className="stat-badge highlight">Size: ~{resizedKb} KB</div>
                     <div className="stat-badge">{format.split('/')[1].toUpperCase()}</div>
                   </div>
-                  <a
-                    href={resizedPreview}
-                    download={`${resizeFileName}_resized_${targetWidth}x${targetHeight}.${format.split('/')[1]}`}
-                    className="btn-download"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    <span>Download Resized Photo</span>
-                  </a>
+
+                  {resizedPreview && (
+                    <a
+                      href={resizedPreview}
+                      download={`${resizeFileName}_resized_${targetWidth}x${targetHeight}.${format.split('/')[1]}`}
+                      className="btn-download"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      <span>Download Resized Photo</span>
+                    </a>
+                  )}
                 </div>
-              )}
+
+                <div className="file-info-bar">
+                  <div className="file-info-text">
+                    <span>Original:</span>
+                    <span className="file-info-badge">{origDimensions.w} × {origDimensions.h} px</span>
+                    <span className="file-info-badge">{origDimensions.kb} KB</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => resizeInputRef.current?.click()}
+                    className="btn-change-file"
+                  >
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Editor Controls */}
+              <div className="editor-right-col">
+                {/* Exam Presets */}
+                <div>
+                  <div className="section-label">Select Preset:</div>
+                  <div className="preset-grid">
+                    {PRESETS.map((p) => (
+                      <button
+                        key={p.name}
+                        type="button"
+                        className={`preset-btn${selectedPreset === p.name ? ' active' : ''}`}
+                        onClick={() => handlePresetChange(p.name)}
+                      >
+                        <div className="preset-top">
+                          <span className="preset-name">{p.name}</span>
+                          {p.badge && <span className="preset-badge-tag">{p.badge}</span>}
+                        </div>
+                        <div className="preset-desc">{p.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dimension Inputs */}
+                <div className="form-row">
+                  <div>
+                    <label className="field-label">Target Width (px)</label>
+                    <input
+                      type="number"
+                      className="input-text"
+                      value={targetWidth}
+                      onChange={(e) => handleWidthChange(Number(e.target.value))}
+                    />
+                  </div>
+                  <div>
+                    <label className="field-label">Target Height (px)</label>
+                    <input
+                      type="number"
+                      className="input-text"
+                      value={targetHeight}
+                      onChange={(e) => handleHeightChange(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+
+                {/* Target KB & Format */}
+                <div className="form-row">
+                  <div>
+                    <label className="field-label">Target Max Size (KB)</label>
+                    <input
+                      type="number"
+                      className="input-text"
+                      value={targetMaxKb}
+                      onChange={(e) => setTargetMaxKb(Number(e.target.value))}
+                    />
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={lockRatio}
+                        onChange={(e) => setLockRatio(e.target.checked)}
+                      />
+                      <span>Lock aspect ratio</span>
+                    </label>
+                  </div>
+                  <div>
+                    <label className="field-label">Output Format</label>
+                    <select
+                      className="select-box"
+                      value={format}
+                      onChange={(e) => setFormat(e.target.value as any)}
+                    >
+                      <option value="image/jpeg">JPEG / JPG (Standard Exam Format)</option>
+                      <option value="image/png">PNG</option>
+                      <option value="image/webp">WEBP</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
