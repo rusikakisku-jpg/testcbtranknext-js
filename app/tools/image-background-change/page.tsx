@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
 
 export default function ImageBackgroundChangePage() {
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -125,52 +124,10 @@ export default function ImageBackgroundChangePage() {
           width: 100%;
         }
         .tool-screen-container {
-          max-width: 760px;
+          max-width: 680px;
           margin: 0 auto;
           box-sizing: border-box;
           width: 100%;
-        }
-
-        /* Nav Bar */
-        .back-nav-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 18px;
-          gap: 10px;
-          flex-wrap: wrap;
-        }
-        .btn-back-tools {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.86rem;
-          font-weight: 750;
-          text-decoration: none;
-          background: #ffffff;
-          border: 1.5px solid #e2e8f0;
-          color: #1e293b;
-          padding: 7px 14px;
-          border-radius: 10px;
-          box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-          transition: all 0.2s ease;
-        }
-        .btn-back-tools:hover {
-          background: #faf5ff;
-          border-color: #ddd6fe;
-          color: #7c3aed;
-        }
-        .privacy-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.74rem;
-          font-weight: 750;
-          background: #f5f3ff;
-          color: #6d28d9;
-          border: 1px solid #ddd6fe;
-          padding: 4px 10px;
-          border-radius: 999px;
         }
 
         /* Tool Card */
@@ -178,31 +135,15 @@ export default function ImageBackgroundChangePage() {
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
           border-radius: 20px;
-          padding: 24px;
-          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-          margin-bottom: 20px;
+          padding: 28px;
+          box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
           box-sizing: border-box;
           width: 100%;
         }
         .tool-header-block {
-          display: flex;
-          align-items: center;
-          gap: 14px;
           border-bottom: 1px solid #f1f5f9;
           padding-bottom: 16px;
-          margin-bottom: 20px;
-        }
-        .tool-header-icon {
-          width: 46px;
-          height: 46px;
-          border-radius: 14px;
-          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-          color: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
-          flex-shrink: 0;
+          margin-bottom: 22px;
         }
         .tool-title {
           font-size: 1.35rem;
@@ -212,7 +153,7 @@ export default function ImageBackgroundChangePage() {
           letter-spacing: -0.02em;
         }
         .tool-desc {
-          font-size: 0.86rem;
+          font-size: 0.88rem;
           color: #64748b;
           margin: 0;
           line-height: 1.45;
@@ -220,10 +161,10 @@ export default function ImageBackgroundChangePage() {
 
         /* Upload Dropzone */
         .upload-dropzone {
-          border: 2px dashed #ddd6fe;
+          border: 2px dashed #cbd5e1;
           background: #f8fafc;
           border-radius: 16px;
-          padding: 32px 16px;
+          padding: 36px 16px;
           text-align: center;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -244,7 +185,8 @@ export default function ImageBackgroundChangePage() {
           align-items: center;
           justify-content: center;
           margin: 0 auto 12px;
-          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
+          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+          border: 1px solid #e2e8f0;
         }
         .upload-title {
           font-size: 1.05rem;
@@ -253,9 +195,9 @@ export default function ImageBackgroundChangePage() {
           margin-bottom: 4px;
         }
         .upload-hint {
-          font-size: 0.8rem;
+          font-size: 0.82rem;
           color: #64748b;
-          margin-bottom: 12px;
+          margin-bottom: 14px;
         }
         .upload-btn-fake {
           display: inline-flex;
@@ -263,14 +205,14 @@ export default function ImageBackgroundChangePage() {
           gap: 6px;
           background: #7c3aed;
           color: #ffffff;
-          font-size: 0.84rem;
+          font-size: 0.86rem;
           font-weight: 750;
-          padding: 8px 18px;
-          border-radius: 8px;
+          padding: 9px 20px;
+          border-radius: 9px;
           box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
         }
 
-        /* Active File Banner */
+        /* Active File Header */
         .file-active-banner {
           display: flex;
           align-items: center;
@@ -279,7 +221,7 @@ export default function ImageBackgroundChangePage() {
           border: 1px solid #e2e8f0;
           border-radius: 12px;
           padding: 10px 14px;
-          margin-bottom: 18px;
+          margin-bottom: 20px;
           gap: 10px;
           flex-wrap: wrap;
         }
@@ -313,7 +255,7 @@ export default function ImageBackgroundChangePage() {
           gap: 8px;
           flex-wrap: wrap;
           align-items: center;
-          margin-bottom: 18px;
+          margin-bottom: 20px;
         }
         .color-pill-btn {
           display: inline-flex;
@@ -405,32 +347,19 @@ export default function ImageBackgroundChangePage() {
           margin-top: 4px;
         }
 
-        /* Preview Container */
+        /* Result Preview */
         .preview-container {
           background: #f8fafc;
-          border: 1.5px solid #ddd6fe;
+          border: 1.5px solid #e2e8f0;
           border-radius: 16px;
-          padding: 18px 14px;
-          margin-top: 20px;
+          padding: 20px 16px;
+          margin-top: 22px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
           box-sizing: border-box;
           width: 100%;
-        }
-        .preview-header-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.74rem;
-          font-weight: 800;
-          text-transform: uppercase;
-          background: #ede9fe;
-          color: #5b21b6;
-          padding: 3px 10px;
-          border-radius: 999px;
-          margin-bottom: 12px;
         }
         .preview-img-box {
           max-width: 240px;
@@ -459,7 +388,7 @@ export default function ImageBackgroundChangePage() {
         }
         .stat-badge {
           background: #ffffff;
-          padding: 4px 10px;
+          padding: 4px 12px;
           border-radius: 999px;
           border: 1px solid #e2e8f0;
         }
@@ -479,7 +408,7 @@ export default function ImageBackgroundChangePage() {
           color: #ffffff;
           font-size: 0.92rem;
           font-weight: 800;
-          padding: 12px 24px;
+          padding: 12px 28px;
           border-radius: 10px;
           text-decoration: none;
           border: none;
@@ -493,25 +422,10 @@ export default function ImageBackgroundChangePage() {
           background: #6d28d9;
         }
 
-        /* Guidelines Card */
-        .exam-info-card {
-          background: #ffffff;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 18px;
-          font-size: 0.84rem;
-          color: #334155;
-          line-height: 1.55;
-          box-sizing: border-box;
-          width: 100%;
-        }
-        .exam-info-card strong { color: #0f172a; }
-
         @media (max-width: 640px) {
           .tool-screen-main { padding: 16px 12px 76px; }
-          .tool-card { padding: 16px 14px; border-radius: 16px; }
-          .tool-title { font-size: 1.15rem; }
-          .tool-header-icon { width: 40px; height: 40px; border-radius: 12px; }
+          .tool-card { padding: 18px 14px; border-radius: 16px; }
+          .tool-title { font-size: 1.2rem; }
           .color-palette { gap: 6px; }
           .color-pill-btn { padding: 4px 8px 4px 5px; font-size: 0.74rem; }
           .btn-download { width: 100%; }
@@ -519,32 +433,12 @@ export default function ImageBackgroundChangePage() {
       `}</style>
 
       <div className="tool-screen-container">
-        {/* Navigation Bar */}
-        <div className="back-nav-bar">
-          <Link href="/tools" prefetch={true} className="btn-back-tools">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span>Back to Tools</span>
-          </Link>
-          <span className="privacy-pill">
-            <span>🔒</span> 100% Client-Side Privacy
-          </span>
-        </div>
-
         <div className="tool-card">
           <div className="tool-header-block">
-            <div className="tool-header-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-              </svg>
-            </div>
-            <div>
-              <h1 className="tool-title">Image Background Change</h1>
-              <p className="tool-desc">
-                Convert background to pure white or light sky blue to prevent exam application rejection.
-              </p>
-            </div>
+            <h1 className="tool-title">Image Background Change</h1>
+            <p className="tool-desc">
+              Change background color to pure white or light sky blue for exam applications.
+            </p>
           </div>
 
           <input
@@ -567,7 +461,7 @@ export default function ImageBackgroundChangePage() {
               <div className="upload-title">Upload Passport Photo</div>
               <div className="upload-hint">Upload photo to convert background to plain White or Custom Color</div>
               <div className="upload-btn-fake">
-                <span>Browse Photo</span>
+                <span>Browse Image</span>
               </div>
             </div>
           ) : (
@@ -579,7 +473,7 @@ export default function ImageBackgroundChangePage() {
                   onClick={() => bgInputRef.current?.click()}
                   className="btn-change-file"
                 >
-                  Change Photo
+                  Change Image
                 </button>
               </div>
 
@@ -666,9 +560,6 @@ export default function ImageBackgroundChangePage() {
               {/* Background Result Preview */}
               {processedBgImage && (
                 <div className="preview-container">
-                  <div className="preview-header-pill">
-                    <span>✨</span> Live Replacement Output
-                  </div>
                   <div
                     className="preview-img-box"
                     style={{
@@ -700,15 +591,6 @@ export default function ImageBackgroundChangePage() {
               )}
             </div>
           )}
-        </div>
-
-        {/* Guidelines Notice */}
-        <div className="exam-info-card">
-          <strong>📌 Official Rules:</strong>
-          <ul style={{ paddingLeft: 18, marginTop: 6, marginBottom: 0 }}>
-            <li>Background must be plain white or very light color. Dark or patterned backgrounds are rejected by exam portals.</li>
-            <li>Face must cover 70-80% of photo area with direct eye contact into the camera.</li>
-          </ul>
         </div>
       </div>
     </main>

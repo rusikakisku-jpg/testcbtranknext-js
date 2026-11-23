@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
 
 interface ResizePreset {
   name: string;
@@ -13,11 +12,11 @@ interface ResizePreset {
 }
 
 const PRESETS: ResizePreset[] = [
-  { name: 'Custom', width: 0, height: 0, desc: 'Set manual width, height & KB', badge: 'Custom' },
-  { name: 'SSC / RRB Photo', width: 200, height: 230, targetKb: 45, desc: '3.5 × 4.5 cm (20 KB - 50 KB)', badge: 'Most Popular' },
+  { name: 'Custom', width: 0, height: 0, desc: 'Set your own width, height & KB', badge: 'Custom' },
+  { name: 'SSC / RRB Photo', width: 200, height: 230, targetKb: 45, desc: '3.5 × 4.5 cm (20 KB - 50 KB)', badge: 'Official' },
   { name: 'SSC / RRB Signature', width: 140, height: 60, targetKb: 18, desc: 'Scan Signature (10 KB - 20 KB)', badge: 'Official' },
-  { name: 'UPSC / State PSC Photo', width: 350, height: 450, targetKb: 80, desc: 'Standard Form (50 KB - 100 KB)', badge: 'UPSC' },
-  { name: 'Standard Passport', width: 413, height: 531, targetKb: 100, desc: '3.5 × 4.5 cm High-Res', badge: 'HD Spec' },
+  { name: 'UPSC Photo', width: 350, height: 450, targetKb: 80, desc: 'Standard Portal (50 KB - 100 KB)', badge: 'UPSC' },
+  { name: 'Standard Passport', width: 413, height: 531, targetKb: 100, desc: '3.5 × 4.5 cm (High-Res)', badge: 'HD' },
 ];
 
 export default function ImageResizePage() {
@@ -153,52 +152,10 @@ export default function ImageResizePage() {
           width: 100%;
         }
         .tool-screen-container {
-          max-width: 760px;
+          max-width: 680px;
           margin: 0 auto;
           box-sizing: border-box;
           width: 100%;
-        }
-
-        /* Nav Bar */
-        .back-nav-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 18px;
-          gap: 10px;
-          flex-wrap: wrap;
-        }
-        .btn-back-tools {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.86rem;
-          font-weight: 750;
-          text-decoration: none;
-          background: #ffffff;
-          border: 1.5px solid #e2e8f0;
-          color: #1e293b;
-          padding: 7px 14px;
-          border-radius: 10px;
-          box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
-          transition: all 0.2s ease;
-        }
-        .btn-back-tools:hover {
-          background: #eff6ff;
-          border-color: #93c5fd;
-          color: #0044cc;
-        }
-        .privacy-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.74rem;
-          font-weight: 750;
-          background: #eff6ff;
-          color: #1d4ed8;
-          border: 1px solid #bfdbfe;
-          padding: 4px 10px;
-          border-radius: 999px;
         }
 
         /* Tool Card */
@@ -206,31 +163,15 @@ export default function ImageResizePage() {
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
           border-radius: 20px;
-          padding: 24px;
-          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-          margin-bottom: 20px;
+          padding: 28px;
+          box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
           box-sizing: border-box;
           width: 100%;
         }
         .tool-header-block {
-          display: flex;
-          align-items: center;
-          gap: 14px;
           border-bottom: 1px solid #f1f5f9;
           padding-bottom: 16px;
-          margin-bottom: 20px;
-        }
-        .tool-header-icon {
-          width: 46px;
-          height: 46px;
-          border-radius: 14px;
-          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-          color: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-          flex-shrink: 0;
+          margin-bottom: 22px;
         }
         .tool-title {
           font-size: 1.35rem;
@@ -240,7 +181,7 @@ export default function ImageResizePage() {
           letter-spacing: -0.02em;
         }
         .tool-desc {
-          font-size: 0.86rem;
+          font-size: 0.88rem;
           color: #64748b;
           margin: 0;
           line-height: 1.45;
@@ -248,10 +189,10 @@ export default function ImageResizePage() {
 
         /* Upload Dropzone */
         .upload-dropzone {
-          border: 2px dashed #93c5fd;
+          border: 2px dashed #cbd5e1;
           background: #f8fafc;
           border-radius: 16px;
-          padding: 32px 16px;
+          padding: 36px 16px;
           text-align: center;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -259,8 +200,8 @@ export default function ImageResizePage() {
           width: 100%;
         }
         .upload-dropzone:hover {
-          border-color: #2563eb;
-          background: #eff6ff;
+          border-color: #0044cc;
+          background: #f0f7ff;
         }
         .upload-icon-box {
           width: 48px;
@@ -272,7 +213,8 @@ export default function ImageResizePage() {
           align-items: center;
           justify-content: center;
           margin: 0 auto 12px;
-          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.12);
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.1);
+          border: 1px solid #e2e8f0;
         }
         .upload-title {
           font-size: 1.05rem;
@@ -281,9 +223,9 @@ export default function ImageResizePage() {
           margin-bottom: 4px;
         }
         .upload-hint {
-          font-size: 0.8rem;
+          font-size: 0.82rem;
           color: #64748b;
-          margin-bottom: 12px;
+          margin-bottom: 14px;
         }
         .upload-btn-fake {
           display: inline-flex;
@@ -291,14 +233,14 @@ export default function ImageResizePage() {
           gap: 6px;
           background: #0044cc;
           color: #ffffff;
-          font-size: 0.84rem;
+          font-size: 0.86rem;
           font-weight: 750;
-          padding: 8px 18px;
-          border-radius: 8px;
+          padding: 9px 20px;
+          border-radius: 9px;
           box-shadow: 0 2px 8px rgba(0, 68, 204, 0.2);
         }
 
-        /* Active File Banner */
+        /* Active File Header */
         .file-active-banner {
           display: flex;
           align-items: center;
@@ -307,7 +249,7 @@ export default function ImageResizePage() {
           border: 1px solid #e2e8f0;
           border-radius: 12px;
           padding: 10px 14px;
-          margin-bottom: 18px;
+          margin-bottom: 20px;
           gap: 10px;
           flex-wrap: wrap;
         }
@@ -325,7 +267,7 @@ export default function ImageResizePage() {
           border: 1px solid #cbd5e1;
           color: #0f172a;
           font-weight: 800;
-          padding: 2px 6px;
+          padding: 2px 7px;
           border-radius: 5px;
           font-size: 0.78rem;
         }
@@ -340,7 +282,7 @@ export default function ImageResizePage() {
           cursor: pointer;
         }
 
-        /* Presets Grid */
+        /* Presets */
         .section-label {
           font-size: 0.82rem;
           font-weight: 800;
@@ -351,9 +293,9 @@ export default function ImageResizePage() {
         }
         .preset-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
           gap: 10px;
-          margin-bottom: 18px;
+          margin-bottom: 20px;
         }
         .preset-btn {
           border: 1.5px solid #e2e8f0;
@@ -391,7 +333,7 @@ export default function ImageResizePage() {
           font-weight: 800;
           color: #0044cc;
           background: #dbeafe;
-          padding: 1px 5px;
+          padding: 1px 6px;
           border-radius: 999px;
         }
         .preset-desc {
@@ -400,12 +342,12 @@ export default function ImageResizePage() {
           line-height: 1.35;
         }
 
-        /* Form Controls */
+        /* Inputs */
         .form-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-bottom: 14px;
+          gap: 14px;
+          margin-bottom: 16px;
         }
         .field-label {
           display: block;
@@ -419,7 +361,7 @@ export default function ImageResizePage() {
           padding: 10px 12px;
           border: 1.5px solid #cbd5e1;
           border-radius: 10px;
-          font-size: 16px; /* Prevents auto zoom in mobile Safari */
+          font-size: 16px;
           color: #0f172a;
           background: #fff;
           outline: none;
@@ -444,32 +386,19 @@ export default function ImageResizePage() {
           accent-color: #0044cc;
         }
 
-        /* Preview Container */
+        /* Result Preview */
         .preview-container {
           background: #f8fafc;
-          border: 1.5px solid #bfdbfe;
+          border: 1.5px solid #e2e8f0;
           border-radius: 16px;
-          padding: 18px 14px;
-          margin-top: 20px;
+          padding: 20px 16px;
+          margin-top: 22px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
           box-sizing: border-box;
           width: 100%;
-        }
-        .preview-header-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.74rem;
-          font-weight: 800;
-          text-transform: uppercase;
-          background: #dbeafe;
-          color: #1e40af;
-          padding: 3px 10px;
-          border-radius: 999px;
-          margin-bottom: 12px;
         }
         .preview-img-box {
           max-width: 240px;
@@ -521,7 +450,7 @@ export default function ImageResizePage() {
           color: #ffffff;
           font-size: 0.92rem;
           font-weight: 800;
-          padding: 12px 24px;
+          padding: 12px 28px;
           border-radius: 10px;
           text-decoration: none;
           border: none;
@@ -535,25 +464,10 @@ export default function ImageResizePage() {
           background: #003399;
         }
 
-        /* Guidelines Card */
-        .exam-info-card {
-          background: #ffffff;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 18px;
-          font-size: 0.84rem;
-          color: #334155;
-          line-height: 1.55;
-          box-sizing: border-box;
-          width: 100%;
-        }
-        .exam-info-card strong { color: #0f172a; }
-
         @media (max-width: 640px) {
           .tool-screen-main { padding: 16px 12px 76px; }
-          .tool-card { padding: 16px 14px; border-radius: 16px; }
-          .tool-title { font-size: 1.15rem; }
-          .tool-header-icon { width: 40px; height: 40px; border-radius: 12px; }
+          .tool-card { padding: 18px 14px; border-radius: 16px; }
+          .tool-title { font-size: 1.2rem; }
           .form-row { grid-template-columns: 1fr; }
           .preset-grid { grid-template-columns: 1fr; }
           .btn-download { width: 100%; }
@@ -561,35 +475,12 @@ export default function ImageResizePage() {
       `}</style>
 
       <div className="tool-screen-container">
-        {/* Navigation Bar */}
-        <div className="back-nav-bar">
-          <Link href="/tools" prefetch={true} className="btn-back-tools">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            <span>Back to Tools</span>
-          </Link>
-          <span className="privacy-pill">
-            <span>🔒</span> 100% Client-Side Privacy
-          </span>
-        </div>
-
         <div className="tool-card">
           <div className="tool-header-block">
-            <div className="tool-header-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <polyline points="9 21 3 21 3 15"></polyline>
-                <line x1="21" y1="3" x2="14" y2="10"></line>
-                <line x1="3" y1="21" x2="10" y2="14"></line>
-              </svg>
-            </div>
-            <div>
-              <h1 className="tool-title">Image Resize &amp; KB Compress</h1>
-              <p className="tool-desc">
-                Scale photo (20–50 KB) &amp; signature (10–20 KB) to exact pixels for SSC, RRB &amp; UPSC.
-              </p>
-            </div>
+            <h1 className="tool-title">Image Resize &amp; KB Compress</h1>
+            <p className="tool-desc">
+              Scale photo (20–50 KB) &amp; signature (10–20 KB) to exact required pixels and size.
+            </p>
           </div>
 
           <input
@@ -610,16 +501,16 @@ export default function ImageResizePage() {
                 </svg>
               </div>
               <div className="upload-title">Upload Photo or Signature</div>
-              <div className="upload-hint">Supports JPG, PNG, WEBP up to 25 MB</div>
+              <div className="upload-hint">Supports JPG, PNG, WEBP files up to 25 MB</div>
               <div className="upload-btn-fake">
-                <span>Browse File</span>
+                <span>Browse Image</span>
               </div>
             </div>
           ) : (
             <div>
               <div className="file-active-banner">
                 <div className="file-info-text">
-                  <span>Image Loaded:</span>
+                  <span>Selected Image:</span>
                   <span className="file-info-badge">{origDimensions.w} × {origDimensions.h} px</span>
                   <span className="file-info-badge">{origDimensions.kb} KB</span>
                 </div>
@@ -628,12 +519,12 @@ export default function ImageResizePage() {
                   onClick={() => resizeInputRef.current?.click()}
                   className="btn-change-file"
                 >
-                  Change Photo
+                  Change Image
                 </button>
               </div>
 
               {/* Exam Presets */}
-              <div className="section-label">Select Exam Preset:</div>
+              <div className="section-label">Select Preset:</div>
               <div className="preset-grid">
                 {PRESETS.map((p) => (
                   <button
@@ -673,10 +564,10 @@ export default function ImageResizePage() {
                 </div>
               </div>
 
-              {/* File size & format */}
+              {/* Target KB & Format */}
               <div className="form-row">
                 <div>
-                  <label className="field-label">Max Target Size (KB)</label>
+                  <label className="field-label">Target Max Size (KB)</label>
                   <input
                     type="number"
                     className="input-text"
@@ -689,7 +580,7 @@ export default function ImageResizePage() {
                       checked={lockRatio}
                       onChange={(e) => setLockRatio(e.target.checked)}
                     />
-                    <span>Lock aspect ratio</span>
+                    <span>Maintain original aspect ratio</span>
                   </label>
                 </div>
                 <div>
@@ -699,7 +590,7 @@ export default function ImageResizePage() {
                     value={format}
                     onChange={(e) => setFormat(e.target.value as any)}
                   >
-                    <option value="image/jpeg">JPEG / JPG (Official Exam Standard)</option>
+                    <option value="image/jpeg">JPEG / JPG (Standard Exam Format)</option>
                     <option value="image/png">PNG</option>
                     <option value="image/webp">WEBP</option>
                   </select>
@@ -709,9 +600,6 @@ export default function ImageResizePage() {
               {/* Result Preview & Download */}
               {resizedPreview && (
                 <div className="preview-container">
-                  <div className="preview-header-pill">
-                    <span>✨</span> Form-Ready Output
-                  </div>
                   <div className="preview-img-box">
                     <img src={resizedPreview} alt="Resized Result" />
                   </div>
@@ -736,15 +624,6 @@ export default function ImageResizePage() {
               )}
             </div>
           )}
-        </div>
-
-        {/* Guidelines Notice */}
-        <div className="exam-info-card">
-          <strong>📌 Official Photo &amp; Signature Rules:</strong>
-          <ul style={{ paddingLeft: 18, marginTop: 6, marginBottom: 0 }}>
-            <li><strong>Photo:</strong> 20 KB to 50 KB, 3.5 × 4.5 cm (approx 200 × 230 px), plain light background.</li>
-            <li><strong>Signature:</strong> 10 KB to 20 KB, approx 140 × 60 px on clean white paper.</li>
-          </ul>
         </div>
       </div>
     </main>

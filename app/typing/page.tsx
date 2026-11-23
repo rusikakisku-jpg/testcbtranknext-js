@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
 
 const TYPING_PASSAGES = [
   {
@@ -150,109 +149,70 @@ export default function TypingPage() {
           width: 100%;
         }
         .typing-container {
-          max-width: 800px;
+          max-width: 760px;
           margin: 0 auto;
           box-sizing: border-box;
           width: 100%;
         }
 
-        /* Header Card */
-        .typing-main-card {
+        /* Main Card */
+        .typing-card {
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
           border-radius: 20px;
-          padding: 24px;
-          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-          margin-bottom: 20px;
+          padding: 26px;
+          box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
           box-sizing: border-box;
           width: 100%;
         }
-        .typing-header-row {
+        .typing-header {
           display: flex;
           align-items: center;
-          gap: 14px;
+          justify-content: space-between;
           border-bottom: 1px solid #f1f5f9;
-          padding-bottom: 16px;
+          padding-bottom: 14px;
           margin-bottom: 18px;
+          gap: 12px;
+          flex-wrap: wrap;
         }
-        .typing-header-icon {
-          width: 46px;
-          height: 46px;
-          border-radius: 14px;
-          background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
-          color: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
-        }
-        .typing-header-text {
+        .typing-title-area {
           flex: 1;
           min-width: 0;
         }
-        .typing-title-h1 {
+        .typing-title {
           font-size: 1.35rem;
           font-weight: 850;
           color: #0f172a;
-          margin: 0 0 4px 0;
+          margin: 0 0 2px 0;
           letter-spacing: -0.02em;
         }
-        .typing-subtitle-p {
+        .typing-subtitle {
           font-size: 0.86rem;
           color: #64748b;
           margin: 0;
-          line-height: 1.45;
-        }
-        .exam-pattern-pill {
-          display: inline-block;
-          font-size: 0.7rem;
-          font-weight: 800;
-          color: #047857;
-          background: #ecfdf5;
-          border: 1px solid #a7f3d0;
-          padding: 2px 8px;
-          border-radius: 999px;
-          margin-bottom: 4px;
-          text-transform: uppercase;
         }
 
-        /* Tips Banner */
-        .hardware-hint-banner {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          background: #eff6ff;
-          border: 1px solid #bfdbfe;
-          border-radius: 12px;
-          padding: 10px 14px;
-          font-size: 0.82rem;
-          color: #1e40af;
-          margin-bottom: 18px;
-          line-height: 1.4;
-        }
-
-        /* Controls: Duration & Timer */
+        /* Controls Panel */
         .controls-panel {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 12px;
+          gap: 10px;
           flex-wrap: wrap;
           background: #f8fafc;
           border: 1px solid #e2e8f0;
-          padding: 12px 14px;
-          border-radius: 14px;
+          padding: 10px 14px;
+          border-radius: 12px;
           margin-bottom: 16px;
         }
-        .durations-wrap {
+        .duration-group {
           display: flex;
           align-items: center;
           gap: 6px;
           flex-wrap: wrap;
         }
         .duration-chip {
-          padding: 6px 11px;
+          padding: 6px 12px;
           border-radius: 8px;
           border: 1.5px solid #cbd5e1;
           background: #ffffff;
@@ -261,51 +221,42 @@ export default function TypingPage() {
           font-weight: 750;
           cursor: pointer;
           transition: all 0.15s ease;
-          -webkit-tap-highlight-color: transparent;
         }
         .duration-chip:hover {
           border-color: #94a3b8;
           background: #f1f5f9;
         }
         .duration-chip.active {
-          border-color: #059669;
-          background: #ecfdf5;
-          color: #047857;
-          box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+          border-color: #0044cc;
+          background: #eff6ff;
+          color: #0044cc;
         }
-        .timer-badge-box {
-          font-size: 1.25rem;
+        .timer-badge {
+          font-size: 1.2rem;
           font-weight: 850;
-          color: #059669;
-          background: #ecfdf5;
-          border: 1.5px solid #a7f3d0;
-          padding: 6px 14px;
-          border-radius: 10px;
+          color: #0f172a;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          padding: 5px 14px;
+          border-radius: 8px;
           font-variant-numeric: tabular-nums;
           display: inline-flex;
           align-items: center;
           gap: 6px;
         }
-        .timer-badge-box.warning {
+        .timer-badge.warning {
           color: #dc2626;
-          background: #fee2e2;
           border-color: #fca5a5;
+          background: #fef2f2;
         }
 
         /* Passage Selector */
-        .passage-select-label {
-          display: block;
-          font-size: 0.82rem;
-          font-weight: 750;
-          color: #334155;
-          margin-bottom: 6px;
-        }
-        .passage-select-input {
+        .passage-select {
           width: 100%;
-          padding: 10px 12px;
+          padding: 9px 12px;
           border: 1.5px solid #cbd5e1;
           border-radius: 10px;
-          font-size: 0.9rem;
+          font-size: 0.88rem;
           color: #0f172a;
           background: #ffffff;
           outline: none;
@@ -313,31 +264,30 @@ export default function TypingPage() {
           margin-bottom: 16px;
           cursor: pointer;
         }
-        .passage-select-input:focus {
-          border-color: #059669;
+        .passage-select:focus {
+          border-color: #0044cc;
         }
 
-        /* Live 4-Stats Grid (Responsive 2x2 on Mobile, 4-col on Desktop) */
-        .stats-dashboard {
+        /* Live 4 Stats */
+        .stats-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 10px;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
         }
-        .stat-tile {
+        .stat-card {
           background: #f8fafc;
           border: 1px solid #e2e8f0;
           border-radius: 12px;
-          padding: 12px 8px;
+          padding: 10px 8px;
           text-align: center;
         }
-        .stat-tile-val {
-          font-size: 1.45rem;
+        .stat-val {
+          font-size: 1.4rem;
           font-weight: 850;
           line-height: 1.1;
-          letter-spacing: -0.01em;
         }
-        .stat-tile-lbl {
+        .stat-lbl {
           font-size: 0.7rem;
           color: #64748b;
           font-weight: 750;
@@ -347,27 +297,27 @@ export default function TypingPage() {
         }
 
         /* Progress Bar */
-        .progress-bar-container {
+        .progress-track {
           width: 100%;
-          height: 4px;
+          height: 3px;
           background: #e2e8f0;
           border-radius: 999px;
           margin-bottom: 10px;
           overflow: hidden;
         }
-        .progress-bar-fill {
+        .progress-fill {
           height: 100%;
-          background: #059669;
+          background: #0044cc;
           transition: width 0.2s ease;
         }
 
-        /* Reading Passage Box */
-        .passage-card-box {
+        /* Passage Reader */
+        .passage-box {
           background: #ffffff;
           border: 1.5px solid #cbd5e1;
           border-radius: 14px;
           padding: 16px;
-          font-size: 1.02rem;
+          font-size: 1rem;
           line-height: 1.8;
           max-height: 180px;
           overflow-y: auto;
@@ -385,58 +335,57 @@ export default function TypingPage() {
         .p-word.correct { color: #16a34a; font-weight: 650; }
         .p-word.incorrect { color: #dc2626; text-decoration: line-through; background: #fee2e2; }
         .p-word.active {
-          background: #dbeafe;
-          color: #1d4ed8;
+          background: #eff6ff;
+          color: #0044cc;
           font-weight: 800;
-          outline: 1.5px solid #3b82f6;
+          outline: 1.5px solid #0044cc;
         }
         .p-word.pending { color: #64748b; }
 
-        /* Typing Input Field */
-        .typing-input-field {
+        /* Typing Input */
+        .typing-input {
           width: 100%;
-          padding: 14px 16px;
-          font-size: 16px; /* 16px prevents iOS Safari auto-zoom */
-          border: 2px solid #059669;
+          padding: 13px 16px;
+          font-size: 16px;
+          border: 2px solid #0044cc;
           border-radius: 12px;
           outline: none;
           background: #ffffff;
           color: #0f172a;
           box-sizing: border-box;
           margin-bottom: 14px;
-          box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12);
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.1);
         }
-        .typing-input-field:focus {
-          border-color: #047857;
-          box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2);
+        .typing-input:focus {
+          box-shadow: 0 4px 14px rgba(0, 68, 204, 0.2);
         }
-        .typing-input-field:disabled {
+        .typing-input:disabled {
           background: #f1f5f9;
           border-color: #cbd5e1;
           color: #94a3b8;
           box-shadow: none;
         }
 
-        /* Buttons row */
-        .actions-row {
+        /* Actions */
+        .actions-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 10px;
           flex-wrap: wrap;
         }
-        .space-hint-text {
+        .hint-text {
           font-size: 0.8rem;
           color: #64748b;
         }
-        .space-hint-kbd {
+        .hint-kbd {
           background: #f1f5f9;
           border: 1px solid #cbd5e1;
           padding: 2px 5px;
           border-radius: 4px;
           font-weight: 750;
         }
-        .btn-restart-action {
+        .btn-restart {
           background: #ffffff;
           border: 1.5px solid #cbd5e1;
           color: #334155;
@@ -446,11 +395,8 @@ export default function TypingPage() {
           font-weight: 750;
           cursor: pointer;
         }
-        .btn-restart-action:hover {
-          background: #f8fafc;
-        }
-        .btn-start-action {
-          background: #059669;
+        .btn-start {
+          background: #0044cc;
           border: none;
           color: #ffffff;
           padding: 8px 20px;
@@ -458,26 +404,26 @@ export default function TypingPage() {
           font-size: 0.86rem;
           font-weight: 800;
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.25);
         }
 
-        /* Scorecard Result */
+        /* Scorecard */
         .scorecard-box {
-          background: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 100%);
-          border: 1.5px solid #a7f3d0;
+          background: #f8fafc;
+          border: 1.5px solid #bfdbfe;
           border-radius: 16px;
           padding: 20px 16px;
           text-align: center;
           margin-top: 20px;
           box-sizing: border-box;
         }
-        .scorecard-h2 {
+        .scorecard-title {
           font-size: 1.25rem;
           font-weight: 850;
-          color: #065f46;
+          color: #0f172a;
           margin: 0 0 6px 0;
         }
-        .verdict-tag {
+        .qualification-tag {
           display: inline-block;
           font-size: 0.82rem;
           font-weight: 800;
@@ -485,30 +431,30 @@ export default function TypingPage() {
           border-radius: 999px;
           margin: 6px 0 16px;
         }
-        .verdict-tag.pass {
+        .qualification-tag.pass {
           background: #dcfce7;
           color: #15803d;
           border: 1px solid #86efac;
         }
-        .verdict-tag.fail {
+        .qualification-tag.fail {
           background: #fee2e2;
           color: #b91c1c;
           border: 1px solid #fca5a5;
         }
-        .scorecard-stats-grid {
+        .scorecard-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 8px;
           margin-bottom: 18px;
         }
-        .sc-card {
+        .sc-tile {
           background: #ffffff;
-          border: 1px solid #bbf7d0;
+          border: 1px solid #e2e8f0;
           border-radius: 10px;
           padding: 10px 6px;
         }
         .sc-val {
-          font-size: 1.4rem;
+          font-size: 1.35rem;
           font-weight: 850;
         }
         .sc-lbl {
@@ -519,111 +465,39 @@ export default function TypingPage() {
           margin-top: 2px;
         }
 
-        /* Guidelines Card */
-        .guidelines-card {
-          background: #ffffff;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 20px;
-          box-sizing: border-box;
-        }
-        .guidelines-header {
-          font-size: 0.92rem;
-          font-weight: 800;
-          color: #0f172a;
-          margin-bottom: 10px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-        .guidelines-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          font-size: 0.84rem;
-          color: #334155;
-          line-height: 1.5;
-        }
-
         @media (max-width: 640px) {
-          .typing-page-main {
-            padding: 16px 12px 76px;
-          }
-          .typing-main-card {
-            padding: 16px 14px;
-            border-radius: 16px;
-          }
-          .typing-title-h1 {
-            font-size: 1.15rem;
-          }
-          .stats-dashboard {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .scorecard-stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .passage-card-box {
-            font-size: 0.94rem;
-            max-height: 160px;
-            padding: 12px;
-          }
-          .controls-panel {
-            padding: 10px;
-          }
-          .duration-chip {
-            padding: 5px 8px;
-            font-size: 0.78rem;
-          }
+          .typing-page-main { padding: 16px 12px 76px; }
+          .typing-card { padding: 16px 14px; border-radius: 16px; }
+          .typing-title { font-size: 1.15rem; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); }
+          .scorecard-grid { grid-template-columns: repeat(2, 1fr); }
+          .passage-box { font-size: 0.94rem; max-height: 160px; padding: 12px; }
+          .controls-panel { padding: 8px 10px; }
+          .duration-chip { padding: 5px 8px; font-size: 0.78rem; }
         }
       `}</style>
 
       <div className="typing-container">
-        <div className="typing-main-card">
+        <div className="typing-card">
           {/* Header */}
-          <div className="typing-header-row">
-            <div className="typing-header-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <line x1="6" y1="8" x2="6.01" y2="8" />
-                <line x1="10" y1="8" x2="10.01" y2="8" />
-                <line x1="14" y1="8" x2="14.01" y2="8" />
-                <line x1="18" y1="8" x2="18.01" y2="8" />
-                <line x1="6" y1="12" x2="6.01" y2="12" />
-                <line x1="10" y1="12" x2="10.01" y2="12" />
-                <line x1="14" y1="12" x2="14.01" y2="12" />
-                <line x1="18" y1="12" x2="18.01" y2="12" />
-                <line x1="7" y1="16" x2="17" y2="16" />
-              </svg>
-            </div>
-            <div className="typing-header-text">
-              <span className="exam-pattern-pill">SSC &amp; Railway Pattern</span>
-              <h1 className="typing-title-h1">Exam Typing Speed Test</h1>
-              <p className="typing-subtitle-p">
-                Practice TCS iON test format with real-time Gross WPM, Net WPM &amp; accuracy analysis.
+          <div className="typing-header">
+            <div className="typing-title-area">
+              <h1 className="typing-title">Exam Typing Speed Test</h1>
+              <p className="typing-subtitle">
+                Practice TCS iON test format with real-time Gross WPM, Net WPM &amp; accuracy.
               </p>
             </div>
           </div>
 
-          {/* Hint */}
-          <div className="hardware-hint-banner">
-            <span>💡</span>
-            <div>
-              <strong>Exam Advice:</strong> For best exam simulation, practice on a PC/Laptop physical keyboard or connect an OTG external keyboard with mobile.
-            </div>
-          </div>
-
-          {/* Controls Bar: Duration & Timer */}
+          {/* Controls: Duration & Timer */}
           <div className="controls-panel">
-            <div className="durations-wrap">
+            <div className="duration-group">
               {[
-                { label: '1 Min', val: 60 },
-                { label: '2 Min', val: 120 },
-                { label: '5 Min', val: 300 },
-                { label: '10 Min (RRB)', val: 600 },
-                { label: '15 Min (SSC)', val: 900 }
+                { label: '1m', val: 60 },
+                { label: '2m', val: 120 },
+                { label: '5m', val: 300 },
+                { label: '10m (RRB)', val: 600 },
+                { label: '15m (SSC)', val: 900 }
               ].map((d) => (
                 <button
                   key={d.val}
@@ -636,7 +510,7 @@ export default function TypingPage() {
               ))}
             </div>
 
-            <div className={`timer-badge-box${timeLeft <= 10 && isTestActive ? ' warning' : ''}`}>
+            <div className={`timer-badge${timeLeft <= 10 && isTestActive ? ' warning' : ''}`}>
               <span>⏱️</span>
               <span>{formatTimer(timeLeft)}</span>
             </div>
@@ -644,9 +518,8 @@ export default function TypingPage() {
 
           {/* Passage Selector */}
           <div>
-            <label className="passage-select-label">Select Practice Passage:</label>
             <select
-              className="passage-select-input"
+              className="passage-select"
               value={selectedPassageIndex}
               disabled={isTestActive}
               onChange={(e) => {
@@ -660,35 +533,35 @@ export default function TypingPage() {
             </select>
           </div>
 
-          {/* 4 Stats Tiles (Responsive 2x2 on Mobile) */}
-          <div className="stats-dashboard">
-            <div className="stat-tile">
-              <div className="stat-tile-val" style={{ color: '#059669' }}>{netWpm}</div>
-              <div className="stat-tile-lbl">Net WPM</div>
+          {/* Live 4 Stats */}
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: '#0044cc' }}>{netWpm}</div>
+              <div className="stat-lbl">Net WPM</div>
             </div>
-            <div className="stat-tile">
-              <div className="stat-tile-val" style={{ color: '#0f172a' }}>{grossWpm}</div>
-              <div className="stat-tile-lbl">Gross WPM</div>
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: '#0f172a' }}>{grossWpm}</div>
+              <div className="stat-lbl">Gross WPM</div>
             </div>
-            <div className="stat-tile">
-              <div className="stat-tile-val" style={{ color: accuracy >= 95 ? '#16a34a' : '#d97706' }}>
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: accuracy >= 95 ? '#16a34a' : '#d97706' }}>
                 {accuracy}%
               </div>
-              <div className="stat-tile-lbl">Accuracy</div>
+              <div className="stat-lbl">Accuracy</div>
             </div>
-            <div className="stat-tile">
-              <div className="stat-tile-val" style={{ color: '#0f172a' }}>{keystrokes}</div>
-              <div className="stat-tile-lbl">Depressions</div>
+            <div className="stat-card">
+              <div className="stat-val" style={{ color: '#0f172a' }}>{keystrokes}</div>
+              <div className="stat-lbl">Depressions</div>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="progress-bar-container">
-            <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }}></div>
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${progressPercent}%` }}></div>
           </div>
 
-          {/* Passage Reader */}
-          <div className="passage-card-box" onClick={() => typingInputRef.current?.focus()}>
+          {/* Reading Passage Box */}
+          <div className="passage-box" onClick={() => typingInputRef.current?.focus()}>
             {currentPassageWords.map((word, idx) => {
               let statusClass = 'pending';
               if (idx < typedWords.length) {
@@ -710,8 +583,8 @@ export default function TypingPage() {
             <input
               ref={typingInputRef}
               type="text"
-              className="typing-input-field"
-              placeholder={isTestActive ? "Type word and press Space..." : "Click here to start typing (Timer begins on first stroke)..."}
+              className="typing-input"
+              placeholder={isTestActive ? "Type here and press Space..." : "Click here to start typing (Timer begins on first key)..."}
               value={userInput}
               disabled={isTestFinished}
               onChange={(e) => setUserInput(e.target.value)}
@@ -723,16 +596,16 @@ export default function TypingPage() {
             />
           </div>
 
-          {/* Actions Bar */}
-          <div className="actions-row">
-            <div className="space-hint-text">
-              Press <kbd className="space-hint-kbd">Space</kbd> after each word to proceed.
+          {/* Actions */}
+          <div className="actions-bar">
+            <div className="hint-text">
+              Press <kbd className="hint-kbd">Space</kbd> after each word to proceed.
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               <button
                 type="button"
                 onClick={() => resetTypingTest()}
-                className="btn-restart-action"
+                className="btn-restart"
               >
                 🔄 Reset
               </button>
@@ -740,7 +613,7 @@ export default function TypingPage() {
                 <button
                   type="button"
                   onClick={startTypingTest}
-                  className="btn-start-action"
+                  className="btn-start"
                 >
                   ▶️ Start Test
                 </button>
@@ -751,37 +624,37 @@ export default function TypingPage() {
           {/* Scorecard on Completion */}
           {isTestFinished && (
             <div className="scorecard-box">
-              <h2 className="scorecard-h2">🎉 Test Complete! Official Scorecard</h2>
+              <h2 className="scorecard-title">🎉 Test Complete! Scorecard</h2>
               <div>
                 {netWpm >= 35 ? (
-                  <span className="verdict-tag pass">
+                  <span className="qualification-tag pass">
                     ✅ Qualified for SSC CGL / CHSL (≥ 35 WPM) &amp; RRB NTPC (≥ 30 WPM)
                   </span>
                 ) : netWpm >= 30 ? (
-                  <span className="verdict-tag pass">
-                    ✅ Qualified for RRB NTPC (≥ 30 WPM) | SSC CHSL (Target: 35 WPM)
+                  <span className="qualification-tag pass">
+                    ✅ Qualified for RRB NTPC (≥ 30 WPM) | SSC Target: 35 WPM
                   </span>
                 ) : (
-                  <span className="verdict-tag fail">
-                    ⚠️ Needs Speed Practice (Target: 35 WPM English / 30 WPM Hindi)
+                  <span className="qualification-tag fail">
+                    ⚠️ Needs More Speed Practice (Target: 35 WPM English / 30 WPM Hindi)
                   </span>
                 )}
               </div>
 
-              <div className="scorecard-stats-grid">
-                <div className="sc-card">
-                  <div className="sc-val" style={{ color: '#059669' }}>{netWpm} WPM</div>
+              <div className="scorecard-grid">
+                <div className="sc-tile">
+                  <div className="sc-val" style={{ color: '#0044cc' }}>{netWpm} WPM</div>
                   <div className="sc-lbl">Net Speed</div>
                 </div>
-                <div className="sc-card">
+                <div className="sc-tile">
                   <div className="sc-val" style={{ color: '#0f172a' }}>{grossWpm} WPM</div>
                   <div className="sc-lbl">Gross Speed</div>
                 </div>
-                <div className="sc-card">
+                <div className="sc-tile">
                   <div className="sc-val" style={{ color: accuracy >= 95 ? '#16a34a' : '#d97706' }}>{accuracy}%</div>
                   <div className="sc-lbl">Accuracy</div>
                 </div>
-                <div className="sc-card">
+                <div className="sc-tile">
                   <div className="sc-val" style={{ color: '#0f172a' }}>{keystrokes}</div>
                   <div className="sc-lbl">Depressions</div>
                 </div>
@@ -790,31 +663,13 @@ export default function TypingPage() {
               <button
                 type="button"
                 onClick={() => resetTypingTest()}
-                className="btn-start-action"
+                className="btn-start"
                 style={{ padding: '10px 24px', fontSize: '0.92rem' }}
               >
-                🔁 Practice Another Passage
+                🔁 Practice Again
               </button>
             </div>
           )}
-        </div>
-
-        {/* Guidelines Card */}
-        <div className="guidelines-card">
-          <div className="guidelines-header">
-            <span>📌</span> Official Exam Typing Standards
-          </div>
-          <ul className="guidelines-list">
-            <li>
-              <strong>SSC CGL / CHSL:</strong> 35 WPM English (approx 1750 key depressions in 10 minutes) or 30 WPM Hindi (approx 1500 key depressions).
-            </li>
-            <li>
-              <strong>RRB NTPC (Junior Clerk / Accounts):</strong> 30 WPM in English or 25 WPM in Hindi for 10 minutes.
-            </li>
-            <li>
-              <strong>Accuracy Requirement:</strong> Max permissible error margin is 5% for General/UR category and up to 7-10% for reserved categories.
-            </li>
-          </ul>
         </div>
       </div>
     </main>
