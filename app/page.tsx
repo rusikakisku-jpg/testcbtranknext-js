@@ -6,6 +6,10 @@ import type { Metadata } from 'next';
 import HomeBlogsSection from './components/HomeBlogsSection';
 import { fetchBlogsFromCloudflareD1, BlogPost } from './data/blogs';
 import { APP_FEATURE_FLAGS } from './config/features';
+import { AdBanner } from './components/GoogleAdSense';
+import AdsterraBanner from './components/AdsterraBanner';
+import AdsterraNativeBanner from './components/AdsterraNativeBanner';
+import { ADSENSE_CONFIG } from './config/adsense';
 
 export const metadata: Metadata = {
   title: 'CBT RANK - Latest Answer Keys calculator ',
@@ -150,6 +154,9 @@ export default async function HomePage() {
               <span>Answerkey Calculator</span>
             </Link>
           </div>
+          {/* Manual Google AdSense Banner & Adsterra Banner in mobile view */}
+          <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
+          <AdsterraBanner size="300x250" />
         </div>
 
         <div className="content-grid">
@@ -194,6 +201,13 @@ export default async function HomePage() {
                 </div>
               )}
             </div>
+
+            {/* Adsterra Native Banner */}
+            <AdsterraNativeBanner />
+
+            {/* Adsterra 300x250 Banner & Manual AdSense Banner at the end of exam list */}
+            <AdsterraBanner size="300x250" />
+            <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
           </section>
         </div>
       </div>

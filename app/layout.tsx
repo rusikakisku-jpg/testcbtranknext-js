@@ -4,9 +4,13 @@ import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import Footer from "./components/Footer";
 import GoogleAnalytics from "./components/GoogleAnalytics";
-import GoogleAdSense from "./components/GoogleAdSense";
+import GoogleAdSense, { AdBanner } from "./components/GoogleAdSense";
 import CookieConsent from "./components/CookieConsent";
-import { getAdSenseClientId } from "./config/adsense";
+import AdsterraSocialBar from "./components/AdsterraSocialBar";
+import AdsterraBanner from "./components/AdsterraBanner";
+import MonetagVignette from "./components/MonetagVignette";
+import { ADSENSE_CONFIG, getAdSenseClientId } from "./config/adsense";
+import { MONETAG_CONFIG } from "./config/monetag";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://cbtrank.com'),
@@ -64,7 +68,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://api.cbtrank.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
-        {getAdSenseClientId() && (
+        {/* Google AdSense Crawler Verification & Auto Ads Script (Loaded directly in <head> for 100% crawler discovery) */}
+        {ADSENSE_CONFIG.ENABLED && getAdSenseClientId() && (
           <>
             <meta name="google-adsense-account" content={getAdSenseClientId()} />
             <script
@@ -73,6 +78,23 @@ export default function RootLayout({
               crossOrigin="anonymous"
             />
           </>
+        )}
+        {MONETAG_CONFIG.VERIFICATION_CODE && (
+          <meta name="monetag" content={MONETAG_CONFIG.VERIFICATION_CODE} />
+        )}
+        {MONETAG_CONFIG.ENABLED && MONETAG_CONFIG.VIGNETTE_ENABLED && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(s){s.dataset.zone='${MONETAG_CONFIG.VIGNETTE_ZONE_ID}',s.src='${MONETAG_CONFIG.VIGNETTE_SCRIPT_URL}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`
+            }}
+          />
+        )}
+        {MONETAG_CONFIG.ENABLED && MONETAG_CONFIG.IN_PAGE_PUSH_ENABLED && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(s){s.dataset.zone='${MONETAG_CONFIG.IN_PAGE_PUSH_ZONE_ID}',s.src='${MONETAG_CONFIG.IN_PAGE_PUSH_SCRIPT_URL}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`
+            }}
+          />
         )}
         <script
           type="application/ld+json"
@@ -110,9 +132,14 @@ export default function RootLayout({
       <body>
         <GoogleAnalytics />
         <GoogleAdSense />
+        <MonetagVignette />
+        <AdsterraSocialBar />
         <div className="page-body">
           <Navbar />
           {children}
+          {/* Manual AdSense and Adsterra Banner above Footer */}
+          <AdBanner slotId={ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
+          <AdsterraBanner size="320x50" />
           <Footer />
         </div>
         <BottomNav />

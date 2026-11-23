@@ -6,22 +6,28 @@ import ExamFaqSection from '../components/ExamFaqSection';
 import AnswerkeySidebar from '../components/AnswerkeySidebar';
 import { fetchBlogsFromCloudflareD1, FALLBACK_BLOG_POSTS, BlogPost } from '../data/blogs';
 
+const currentYear = new Date().getFullYear();
+
 export const metadata: Metadata = {
-  title: 'CBT Rank Answer Key Calculator & Rank Predictor',
-  description: 'Calculate your marks, shift rank, and category rank instantly with CBTRank\'s official Answer Key Calculator. Supports all major Central and State CBT exam response sheets.',
+  title: {
+    absolute: `CBTRank AnswerKey Calculator – Rank & Score Calculator ${currentYear}`,
+  },
+  description: `Calculate your exam marks, shift rank, and category cut off instantly with CBTRank's Answer Key Calculator ${currentYear}. Works with all DigiALM and TCS iON response sheets.`,
   keywords: [
     'Answer Key Calculator',
     'CBT marks calculator',
-    'CBT answer key score',
+    'DigiALM answer key score',
     'SSC answer key calculator',
     'RRB answer key calculator',
-    'rank predictor'
+    'rank predictor',
+    'TCS iON response sheet score',
+    'CBT response sheet score calculator'
   ],
   alternates: {
     canonical: 'https://cbtrank.com/answerkey',
   },
   openGraph: {
-    title: 'CBT Rank Answer Key Calculator | CBT RANK',
+    title: `CBTRank AnswerKey Calculator – Rank & Score Calculator ${currentYear}`,
     description: 'Calculate your marks, shift rank, and category rank instantly. Supports all major CBT exams.',
     url: 'https://cbtrank.com/answerkey',
     siteName: 'CBT RANK',
@@ -29,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'CBT Rank Answer Key Calculator | CBT RANK',
+    title: `CBTRank AnswerKey Calculator – Rank & Score Calculator ${currentYear}`,
     description: 'Calculate your marks, shift rank, and category rank instantly.',
   },
 };
@@ -37,15 +43,15 @@ export const metadata: Metadata = {
 const UNIVERSAL_FAQS = [
   {
     q: 'How does the Universal Answer Key Calculator work?',
-    a: 'Simply paste your official response sheet / answer key URL into the calculator input. Our system parses each question, matches your marked response with official answer keys, and calculates your total positive marks, negative marks, and net score.'
+    a: 'Simply paste your official response sheet URL (DigiALM / TCS iON) into the calculator input. Our system parses each question, matches your marked response with official answer keys, and calculates your total positive marks, negative marks, and net score.'
   },
   {
     q: 'Which exam links can be checked here?',
-    a: 'You can calculate marks for almost all Central and State Government CBT (Computer Based Test) examinations across India, including Railway RRB (NTPC, Group D, ALP, Technician), SSC (CGL, CHSL, MTS, GD, JE, CPO), State PSCs, Subordinate Services Selection Boards, Police, Defence recruitments, and all other Central and State CBT mode exams.'
+    a: 'You can check answer keys from SSC (CGL, CHSL, MTS, GD, JE, CPO), Railway RRB (NTPC, Group D, ALP, Technician), State PSCs, Subordinate Services Selection Boards, and any Central or State government recruitment exams hosted on TCS iON or DigiALM platforms.'
   },
   {
     q: 'How do I copy my response sheet link on mobile?',
-    a: 'Open your candidate login page in Chrome or your mobile browser. Once the response sheet with questions and marked options appears, tap your browser’s top address bar and click the Copy icon to get the complete URL.'
+    a: 'Open your candidate login page in Chrome or your mobile browser where your response sheet is displayed. Tap the browser top address bar and click the Copy icon to get the complete URL, then paste it directly into the calculator.'
   },
   {
     q: 'Are my scores and personal details saved publicly?',
@@ -56,16 +62,22 @@ const UNIVERSAL_FAQS = [
 const webAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  'name': 'CBT RANK Latest Answer Key Calculator',
+  'name': `CBTRank AnswerKey Calculator – Rank & Score Calculator ${currentYear}`,
   'url': 'https://cbtrank.com/answerkey',
   'applicationCategory': 'EducationalApplication',
   'operatingSystem': 'All',
-  'description': 'Calculate your exam marks, shift rank, and category cut off instantly using your official response sheet on CBTRank.',
   'offers': {
     '@type': 'Offer',
     'price': '0',
-    'priceCurrency': 'INR',
+    'priceCurrency': 'INR'
   },
+  'featureList': [
+    'Automated response sheet parsing',
+    'Shift rank calculation',
+    'Category rank estimation',
+    'Section-wise score breakdown',
+    'Instant cut off analysis'
+  ]
 };
 
 const faqSchema = {
@@ -107,6 +119,7 @@ export default async function AnswerkeyPage() {
       />
 
       <AnswerkeyCalculator
+        initialTitle={`CBTRank AnswerKey Calculator ${currentYear}`}
         sidebar={
           <AnswerkeySidebar
             currentSlug=""
@@ -116,7 +129,7 @@ export default async function AnswerkeyPage() {
         }
       >
         <ExamFaqSection
-          formattedTitle="CBT Exams"
+          formattedTitle="Universal CBT Answer Key Calculator"
           faqs={UNIVERSAL_FAQS}
           style={{ width: '100%', maxWidth: '100%', margin: '24px 0 0', padding: 0 }}
         />

@@ -1,18 +1,18 @@
 'use client';
 
-import Script from 'next/script';
+import { useEffect, useRef } from 'react';
 import { ADSENSE_CONFIG, getAdSenseClientId } from '../config/adsense';
 
 export default function GoogleAdSense() {
-  // Main AdSense script is loaded directly in <head> of layout.tsx for 100% crawler discovery
+  // Main AdSense Auto Ads script is loaded directly in <head> of layout.tsx for 100% crawler discovery
   return null;
 }
 
 /**
- * Reusable Ad Banner Component for manual ad placements (e.g., inside blog posts or sidebars)
+ * Reusable Ad Banner Component for manual Google AdSense placements
  */
 interface AdBannerProps {
-  slotId: string;
+  slotId?: string;
   format?: 'auto' | 'fluid' | 'rectangle' | 'horizontal' | 'vertical';
   responsive?: boolean;
   className?: string;
@@ -27,8 +27,25 @@ export function AdBanner({
   style = { display: 'block' },
 }: AdBannerProps) {
   const clientId = getAdSenseClientId();
+  const effectiveSlotId = slotId || ADSENSE_CONFIG.DEFAULT_SLOT_ID;
+  const pushedRef = useRef(false);
 
-  if (!ADSENSE_CONFIG.ENABLED || !clientId || !slotId) {
+  useEffect(() => {
+    if (!ADSENSE_CONFIG.ENABLED || !clientId || !effectiveSlotId) return;
+    if (pushedRef.current) return;
+
+    try {
+      if (typeof window !== 'undefined') {
+        const adsbygoogle = (window as any).adsbygoogle || [];
+        adsbygoogle.push({});
+        pushedRef.current = true;
+      }
+    } catch (e) {
+      // Graceful fallback if ad blocker is active or script loading
+    }
+  }, [clientId, effectiveSlotId]);
+
+  if (!ADSENSE_CONFIG.ENABLED || !clientId || !effectiveSlotId) {
     return null;
   }
 
@@ -38,13 +55,10 @@ export function AdBanner({
         className="adsbygoogle"
         style={style}
         data-ad-client={clientId}
-        data-ad-slot={slotId}
+        data-ad-slot={effectiveSlotId}
         data-ad-format={format}
         data-full-width-responsive={responsive ? 'true' : 'false'}
       />
-      <Script id={`adsbygoogle-push-${slotId}`} strategy="afterInteractive">
-        {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-      </Script>
     </div>
   );
 }

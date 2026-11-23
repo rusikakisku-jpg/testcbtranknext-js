@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import RelatedExamsSection from './RelatedExamsSection';
 import { BlogPost } from '../data/blogs';
+import { AdBanner } from './GoogleAdSense';
+import { ADSENSE_CONFIG } from '../config/adsense';
 
 interface AnswerkeySidebarProps {
   currentSlug?: string;
@@ -78,6 +80,9 @@ export default function AnswerkeySidebar({
           </button>
         </form>
       </div>
+
+      {/* 2b. Sidebar Manual AdSense Banner */}
+      <AdBanner slotId={ADSENSE_CONFIG.SLOTS.SIDEBAR_BANNER} />
 
       {/* 3. Recent Exam Updates Widget */}
       {recentPosts && recentPosts.length > 0 && (

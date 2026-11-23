@@ -3,8 +3,10 @@ export const runtime = 'edge';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { fetchBlogsFromCloudflareD1 } from '../../data/blogs';
+import { fetchBlogsFromCloudflareD1, fetchBlogBySlug } from '../../data/blogs';
 import BlogViewTracker from '../../components/BlogViewTracker';
+import { AdBanner } from '../../components/GoogleAdSense';
+import { ADSENSE_CONFIG } from '../../config/adsense';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -19,7 +21,10 @@ function toIsoDate(dateStr?: string): string {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const allPosts = await fetchBlogsFromCloudflareD1();
-  const post = allPosts.find(p => p.slug === slug);
+  let post = allPosts.find(p => p.slug === slug);
+  if (!post) {
+    post = (await fetchBlogBySlug(slug)) || undefined;
+  }
 
   if (!post) {
     return {
@@ -72,18 +77,22 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const slug = resolvedParams.slug;
   const allPosts = await fetchBlogsFromCloudflareD1();
-  const post = allPosts.find(p => p.slug === slug);
+  let post = allPosts.find(p => p.slug === slug);
+  if (!post) {
+    post = (await fetchBlogBySlug(slug)) || undefined;
+  }
 
   if (!post) {
     notFound();
   }
 
-  const recentPosts = allPosts.slice(0, 5);
-  const popularPosts = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
+  const recentPosts = allPosts.length > 0 ? allPosts.slice(0, 5) : (post ? [post] : []);
+  const popularPosts = allPosts.length > 0 ? [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5) : (post ? [post] : []);
 
-  const categories = Array.from(new Set(allPosts.map(p => p.category || 'Exam Analysis'))).map(cat => ({
+  const sourcePosts = allPosts.length > 0 ? allPosts : (post ? [post] : []);
+  const categories = Array.from(new Set(sourcePosts.map(p => p.category || 'Exam Analysis'))).map(cat => ({
     category: cat,
-    count: allPosts.filter(p => (p.category || 'Exam Analysis') === cat).length,
+    count: sourcePosts.filter(p => (p.category || 'Exam Analysis') === cat).length,
   }));
 
   const isHtmlString = typeof post.content === 'string';
@@ -259,6 +268,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </Link>
               </div>
 
+              {/* In-Article Manual Ad Banner */}
+              <AdBanner slotId={ADSENSE_CONFIG.SLOTS.ARTICLE_BANNER} />
+
             </article>
           </div>
 
@@ -321,6 +333,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </button>
               </form>
             </div>
+
+            {/* Sidebar Manual Ad Banner */}
+            <AdBanner slotId={ADSENSE_CONFIG.SLOTS.SIDEBAR_BANNER} />
 
             {/* Recent Posts Widget */}
             {recentPosts.length > 0 && (

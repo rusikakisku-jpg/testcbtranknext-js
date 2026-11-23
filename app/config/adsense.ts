@@ -28,6 +28,18 @@ export const ADSENSE_CONFIG = {
 
   // Ads/Script ko ON/OFF karne ke liye toggle (true = Active, false = Disabled)
   ENABLED: true,
+
+  // Default / Fallback slot ID for manual ads
+  DEFAULT_SLOT_ID: process.env.NEXT_PUBLIC_ADSENSE_DEFAULT_SLOT_ID || '3497555781',
+
+  // Specific Slot IDs for granular ad placement
+  SLOTS: {
+    HOMEPAGE_BANNER: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOMEPAGE || '3497555781',
+    CALCULATOR_BANNER: process.env.NEXT_PUBLIC_ADSENSE_SLOT_CALCULATOR || '3497555781',
+    FOOTER_BANNER: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER || '3497555781',
+    SIDEBAR_BANNER: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR || '3497555781',
+    ARTICLE_BANNER: process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE || '3497555781',
+  },
 };
 
 /**
