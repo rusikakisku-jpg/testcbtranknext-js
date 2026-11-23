@@ -635,28 +635,6 @@ footer {
   transform: translateY(-1px);
 }
 
-.exam-card.exam-card-top {
-  border-color: var(--green, #10b981);
-  box-shadow: 0 1px 6px rgba(16, 185, 129, 0.12);
-}
-
-.exam-card.exam-card-top:hover {
-  border-color: #059669;
-  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.22);
-  transform: translateY(-1px);
-}
-
-.exam-card.exam-card-latest {
-  border-color: var(--red, #ef4444);
-  box-shadow: 0 1px 6px rgba(239, 68, 68, 0.12);
-}
-
-.exam-card.exam-card-latest:hover {
-  border-color: #dc2626;
-  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.22);
-  transform: translateY(-1px);
-}
-
 .exam-card a {
   display: flex;
   align-items: center;
@@ -695,7 +673,13 @@ footer {
   padding: 2px 7px;
   border-radius: 999px;
   letter-spacing: 0.04em;
+  animation: pulse 1.8s infinite;
   white-space: nowrap;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 .badge-top {
@@ -725,7 +709,19 @@ footer {
 }
 
 .exam-arrow {
-  display: none;
+  color: #cbd5e1;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.exam-card:hover .exam-arrow {
+  color: var(--primary-light);
+  transform: translateX(3px);
+}
+
+.exam-arrow svg {
+  width: 20px;
+  height: 20px;
 }
 
 .empty-state {

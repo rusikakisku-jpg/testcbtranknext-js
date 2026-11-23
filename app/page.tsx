@@ -96,24 +96,25 @@ async function getExams(): Promise<Exam[]> {
 }
 
 function ExamCard({ exam }: { exam: Exam }) {
-  const isTop = Number(exam.set_on_top) === 1;
-  const isLatest = !isTop && (Number(exam.is_latest) === 1 || (exam as any).is_latest === true);
+  const isLatest = Number(exam.is_latest) === 1 || Number(exam.set_on_top) === 1;
   const href = `/${exam.slug}/answerkey`;
 
-  const cardClass = isTop
-    ? 'exam-card exam-card-top'
-    : isLatest
-    ? 'exam-card exam-card-latest'
-    : 'exam-card';
-
   return (
-    <div className={cardClass}>
+    <div className="exam-card">
       <Link href={href} prefetch={true} aria-label={exam.title}>
         <div className="exam-card-left">
           <div className="exam-title">
             <span>{exam.title}</span>
           </div>
           {exam.subtitle && <p className="exam-subtitle">{exam.subtitle}</p>}
+        </div>
+        <div className="exam-card-right">
+          {isLatest && <span className="badge-latest">Latest</span>}
+          <div className="exam-arrow" aria-hidden="true">
+            <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
         </div>
       </Link>
     </div>
