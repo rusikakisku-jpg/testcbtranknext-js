@@ -103,238 +103,448 @@ export default function ImageBackgroundChangePage() {
     img.src = bgImage;
   }, [bgImage, bgColor, isTransparent, tolerance]);
 
+  const COLOR_OPTIONS = [
+    { name: 'Pure White (Official)', value: '#ffffff', border: '#cbd5e1' },
+    { name: 'Light Sky Blue', value: '#dbeafe', border: '#93c5fd' },
+    { name: 'Light Grey', value: '#f1f5f9', border: '#cbd5e1' },
+    { name: 'Deep Navy Blue', value: '#1e3a8a', border: '#1e3a8a' },
+    { name: 'Passport Red', value: '#ef4444', border: '#ef4444' },
+  ];
+
   return (
     <main className="tool-screen-main">
       <style>{`
         .tool-screen-main {
           min-height: calc(100vh - 140px);
-          background: #f8fafc;
-          padding: 24px 16px 80px;
+          background: radial-gradient(circle at 50% 0%, #faf5ff 0%, #f8fafc 40%, #f1f5f9 100%);
+          padding: 24px 16px 84px;
           color: #0f172a;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .tool-screen-container {
-          max-width: 800px;
+          max-width: 860px;
           margin: 0 auto;
         }
+
+        /* Nav Bar */
         .back-nav-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
           margin-bottom: 20px;
+          gap: 12px;
+          flex-wrap: wrap;
         }
         .btn-back-tools {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          color: #0066ff;
-          font-size: 0.92rem;
+          gap: 8px;
+          font-size: 0.88rem;
           font-weight: 700;
           text-decoration: none;
-          background: #eff6ff;
-          border: 1px solid #bfdbfe;
-          padding: 8px 14px;
-          border-radius: 10px;
-          transition: all 0.2s ease;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          color: #1e293b;
+          padding: 8px 16px;
+          border-radius: 12px;
+          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .btn-back-tools:hover {
-          background: #dbeafe;
+          background: #faf5ff;
+          border-color: #ddd6fe;
+          color: #7c3aed;
           transform: translateX(-2px);
         }
-        .screen-badge {
-          font-size: 0.75rem;
-          font-weight: 800;
-          text-transform: uppercase;
-          background: #e2e8f0;
-          color: #475569;
-          padding: 3px 8px;
+        .privacy-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.78rem;
+          font-weight: 700;
+          background: #f5f3ff;
+          color: #6d28d9;
+          border: 1px solid #ddd6fe;
+          padding: 4px 12px;
           border-radius: 999px;
-          letter-spacing: 0.04em;
         }
+
+        /* Tool Card */
         .tool-card {
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          border-radius: 18px;
-          padding: 24px;
-          box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+          border-radius: 22px;
+          padding: 30px;
+          box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
           margin-bottom: 24px;
         }
         .tool-header-block {
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
           border-bottom: 1px solid #f1f5f9;
-          padding-bottom: 14px;
-          margin-bottom: 20px;
+          padding-bottom: 18px;
+          margin-bottom: 24px;
         }
-        .tool-title {
-          font-size: 1.4rem;
-          font-weight: 800;
-          color: #0f172a;
-          margin: 0 0 4px 0;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .tool-desc {
-          font-size: 0.9rem;
-          color: #64748b;
-          margin: 0;
-          line-height: 1.45;
-        }
-        .upload-dropzone {
-          border: 2px dashed #93c5fd;
-          background: #eff6ff;
-          border-radius: 14px;
-          padding: 36px 20px;
-          text-align: center;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          margin-bottom: 20px;
-        }
-        .upload-dropzone:hover {
-          border-color: #3b82f6;
-          background: #dbeafe;
-        }
-        .upload-icon {
-          width: 44px;
-          height: 44px;
-          margin: 0 auto 10px;
-          color: #0066ff;
-        }
-        .upload-title {
-          font-size: 1.05rem;
-          font-weight: 700;
-          color: #1e3a8a;
-          margin-bottom: 4px;
-        }
-        .upload-hint {
-          font-size: 0.82rem;
-          color: #64748b;
-        }
-        .color-palette {
-          display: flex;
-          gap: 12px;
-          flex-wrap: wrap;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-        .color-circle {
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          border: 2px solid #cbd5e1;
-          cursor: pointer;
+        .tool-header-icon {
+          width: 52px;
+          height: 52px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+          color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.2s ease;
-          position: relative;
+          box-shadow: 0 8px 18px -4px rgba(124, 58, 237, 0.3);
+          flex-shrink: 0;
         }
-        .color-circle.active {
-          border-color: #0066ff;
-          transform: scale(1.1);
-          box-shadow: 0 2px 8px rgba(0, 102, 255, 0.35);
+        .tool-title {
+          font-size: 1.5rem;
+          font-weight: 850;
+          color: #0f172a;
+          margin: 0 0 6px 0;
+          letter-spacing: -0.02em;
         }
-        .field-label {
-          display: block;
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: #334155;
+        .tool-desc {
+          font-size: 0.92rem;
+          color: #64748b;
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        /* Upload Dropzone */
+        .upload-dropzone {
+          border: 2px dashed #ddd6fe;
+          background: linear-gradient(180deg, #f8fafc 0%, #faf5ff 100%);
+          border-radius: 18px;
+          padding: 40px 20px;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          margin-bottom: 20px;
+        }
+        .upload-dropzone:hover {
+          border-color: #7c3aed;
+          background: #faf5ff;
+          transform: translateY(-1px);
+          box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.12);
+        }
+        .upload-icon-box {
+          width: 56px;
+          height: 56px;
+          border-radius: 16px;
+          background: #ffffff;
+          color: #7c3aed;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 14px;
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.12);
+        }
+        .upload-title {
+          font-size: 1.12rem;
+          font-weight: 800;
+          color: #0f172a;
           margin-bottom: 6px;
         }
-        .preview-container {
-          background: #f1f5f9;
+        .upload-hint {
+          font-size: 0.85rem;
+          color: #64748b;
+          margin-bottom: 14px;
+        }
+        .upload-btn-fake {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: #7c3aed;
+          color: #ffffff;
+          font-size: 0.86rem;
+          font-weight: 750;
+          padding: 9px 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        /* Active File Banner */
+        .file-active-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #f8fafc;
+          border: 1.5px solid #e2e8f0;
           border-radius: 14px;
-          padding: 20px;
-          margin-top: 20px;
+          padding: 12px 18px;
+          margin-bottom: 22px;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .file-info-text {
+          font-size: 0.88rem;
+          color: #334155;
+          font-weight: 700;
+        }
+        .btn-change-file {
+          background: #ffffff;
+          border: 1.5px solid #cbd5e1;
+          color: #1e293b;
+          padding: 6px 14px;
+          border-radius: 8px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .btn-change-file:hover {
+          background: #f1f5f9;
+          border-color: #94a3b8;
+        }
+
+        /* Color Options */
+        .section-label {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 0.86rem;
+          font-weight: 800;
+          color: #1e293b;
+          margin-bottom: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+        .color-palette {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+        .color-pill-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          padding: 6px 14px 6px 8px;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 0.84rem;
+          font-weight: 700;
+          color: #334155;
+        }
+        .color-pill-btn:hover {
+          border-color: #cbd5e1;
+          background: #f8fafc;
+        }
+        .color-pill-btn.active {
+          border-color: #7c3aed;
+          background: #f5f3ff;
+          color: #6d28d9;
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+        }
+        .swatch-circle {
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          border: 1.5px solid #cbd5e1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .custom-color-box {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          padding: 5px 12px;
+          border-radius: 12px;
+          font-size: 0.84rem;
+          font-weight: 700;
+          color: #334155;
+          cursor: pointer;
+        }
+
+        /* Tolerance Control */
+        .tolerance-box {
+          background: #f8fafc;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 16px 20px;
+          margin-bottom: 24px;
+        }
+        .tolerance-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+        .tolerance-title {
+          font-size: 0.86rem;
+          font-weight: 750;
+          color: #1e293b;
+        }
+        .tolerance-badge {
+          font-size: 0.82rem;
+          font-weight: 800;
+          color: #7c3aed;
+          background: #f5f3ff;
+          border: 1px solid #ddd6fe;
+          padding: 2px 10px;
+          border-radius: 999px;
+        }
+        .slider-range {
+          width: 100%;
+          height: 6px;
+          accent-color: #7c3aed;
+          cursor: pointer;
+        }
+        .tolerance-hint {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.74rem;
+          color: #64748b;
+          margin-top: 6px;
+        }
+
+        /* Preview Container */
+        .preview-container {
+          background: linear-gradient(180deg, #f8fafc 0%, #faf5ff 100%);
+          border: 1.5px solid #ddd6fe;
+          border-radius: 18px;
+          padding: 24px;
+          margin-top: 24px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
         }
+        .preview-header-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.78rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          background: #ede9fe;
+          color: #5b21b6;
+          padding: 4px 12px;
+          border-radius: 999px;
+          margin-bottom: 16px;
+          letter-spacing: 0.03em;
+        }
         .preview-img-box {
           max-width: 280px;
           max-height: 280px;
-          border: 1.5px solid #cbd5e1;
-          border-radius: 10px;
-          padding: 4px;
-          margin-bottom: 14px;
+          border: 2px solid #cbd5e1;
+          border-radius: 14px;
+          padding: 6px;
+          margin-bottom: 16px;
           overflow: hidden;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+          box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
         }
         .preview-img-box img {
           width: 100%;
           height: 100%;
           object-fit: contain;
           display: block;
+          border-radius: 8px;
         }
         .preview-stats {
           display: flex;
-          gap: 12px;
+          gap: 10px;
           font-size: 0.85rem;
-          font-weight: 700;
+          font-weight: 750;
           color: #1e293b;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
         .stat-badge {
           background: #ffffff;
-          padding: 4px 12px;
-          border-radius: 20px;
+          padding: 6px 14px;
+          border-radius: 999px;
           border: 1px solid #e2e8f0;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
         .stat-badge.highlight {
-          background: #eff6ff;
-          color: #0066ff;
-          border-color: #bfdbfe;
+          background: #f5f3ff;
+          color: #7c3aed;
+          border-color: #ddd6fe;
         }
+
+        /* Download Button */
         .btn-download {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
-          background: #0066ff;
+          gap: 10px;
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
           color: #ffffff;
-          font-size: 0.95rem;
-          font-weight: 700;
-          padding: 12px 28px;
-          border-radius: 10px;
+          font-size: 0.98rem;
+          font-weight: 800;
+          padding: 13px 32px;
+          border-radius: 12px;
           text-decoration: none;
           border: none;
           cursor: pointer;
-          transition: all 0.2s ease;
-          box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3);
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 6px 20px rgba(124, 58, 237, 0.28);
         }
         .btn-download:hover {
-          background: #0052cc;
-          transform: translateY(-1px);
+          background: linear-gradient(135deg, #6d28d9 0%, #4f46e5 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
         }
+
+        /* Guidelines Card */
         .exam-info-card {
-          background: #f0fdf4;
-          border: 1px solid #bbf7d0;
-          border-radius: 12px;
-          padding: 16px;
-          font-size: 0.85rem;
+          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+          border: 1.5px solid #a7f3d0;
+          border-radius: 18px;
+          padding: 20px;
+          font-size: 0.86rem;
           color: #166534;
           line-height: 1.6;
         }
         .exam-info-card strong { color: #14532d; }
+
+        @media (max-width: 640px) {
+          .tool-card { padding: 20px 16px; border-radius: 18px; }
+          .tool-title { font-size: 1.25rem; }
+          .tool-header-icon { width: 44px; height: 44px; border-radius: 12px; }
+          .color-palette { gap: 8px; }
+          .color-pill-btn { padding: 5px 10px 5px 6px; font-size: 0.78rem; }
+          .btn-download { width: 100%; }
+        }
       `}</style>
 
       <div className="tool-screen-container">
         {/* Navigation Bar */}
         <div className="back-nav-bar">
           <Link href="/tools" prefetch={true} className="btn-back-tools">
-            <span>←</span> Back to All Tools
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Back to All Tools</span>
           </Link>
-          <span className="screen-badge">White / Custom BG</span>
+          <span className="privacy-pill">
+            <span>🔒</span> 100% Client-Side Privacy
+          </span>
         </div>
 
         <div className="tool-card">
           <div className="tool-header-block">
-            <h1 className="tool-title">
-              <span>🎨</span> Image Background Change
-            </h1>
-            <p className="tool-desc">
-              Convert photo background to pure white or light sky blue to prevent government exam application form rejection.
-            </p>
+            <div className="tool-header-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h1 className="tool-title">Image Background Change</h1>
+              <p className="tool-desc">
+                Convert photo background to pure white or light sky blue to prevent exam application rejection.
+              </p>
+            </div>
           </div>
 
           <input
@@ -347,110 +557,98 @@ export default function ImageBackgroundChangePage() {
 
           {!bgImage ? (
             <div className="upload-dropzone" onClick={() => bgInputRef.current?.click()}>
-              <svg className="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <path d="M21 15l-5-5L5 21" />
-              </svg>
-              <div className="upload-title">Click or Drop Passport Photo Here</div>
+              <div className="upload-icon-box">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="M21 15l-5-5L5 21" />
+                </svg>
+              </div>
+              <div className="upload-title">Upload Passport Photo</div>
               <div className="upload-hint">Upload photo to convert background to plain White or Custom Color</div>
+              <div className="upload-btn-fake">
+                <span>Browse Photo</span>
+              </div>
             </div>
           ) : (
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>
-                  Select Target Background Color:
-                </div>
+              <div className="file-active-banner">
+                <span className="file-info-text">Active Photo Loaded</span>
                 <button
                   type="button"
                   onClick={() => bgInputRef.current?.click()}
-                  style={{
-                    background: '#f1f5f9',
-                    border: '1px solid #cbd5e1',
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
+                  className="btn-change-file"
                 >
                   Change Photo
                 </button>
               </div>
 
-              {/* Color Palette */}
+              {/* Target Background Color */}
+              <div className="section-label">
+                <span>Select Target Background Color</span>
+              </div>
+
               <div className="color-palette">
+                {COLOR_OPTIONS.map((c) => {
+                  const isActive = !isTransparent && bgColor.toLowerCase() === c.value.toLowerCase();
+                  return (
+                    <button
+                      key={c.value}
+                      type="button"
+                      className={`color-pill-btn${isActive ? ' active' : ''}`}
+                      onClick={() => { setBgColor(c.value); setIsTransparent(false); }}
+                    >
+                      <span className="swatch-circle" style={{ backgroundColor: c.value, borderColor: c.border }}>
+                        {isActive && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c.value === '#ffffff' ? '#0f172a' : '#ffffff'} strokeWidth="3">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </span>
+                      <span>{c.name}</span>
+                    </button>
+                  );
+                })}
+
+                {/* Transparent PNG */}
                 <button
                   type="button"
-                  className={`color-circle${!isTransparent && bgColor.toLowerCase() === '#ffffff' ? ' active' : ''}`}
-                  style={{ backgroundColor: '#ffffff' }}
-                  onClick={() => { setBgColor('#ffffff'); setIsTransparent(false); }}
-                  title="Pure White (SSC / RRB Standard)"
-                  aria-label="Pure White"
-                />
-                <button
-                  type="button"
-                  className={`color-circle${!isTransparent && bgColor.toLowerCase() === '#dbeafe' ? ' active' : ''}`}
-                  style={{ backgroundColor: '#dbeafe' }}
-                  onClick={() => { setBgColor('#dbeafe'); setIsTransparent(false); }}
-                  title="Light Sky Blue"
-                  aria-label="Light Sky Blue"
-                />
-                <button
-                  type="button"
-                  className={`color-circle${!isTransparent && bgColor.toLowerCase() === '#f1f5f9' ? ' active' : ''}`}
-                  style={{ backgroundColor: '#f1f5f9' }}
-                  onClick={() => { setBgColor('#f1f5f9'); setIsTransparent(false); }}
-                  title="Light Grey"
-                  aria-label="Light Grey"
-                />
-                <button
-                  type="button"
-                  className={`color-circle${!isTransparent && bgColor.toLowerCase() === '#1e3a8a' ? ' active' : ''}`}
-                  style={{ backgroundColor: '#1e3a8a' }}
-                  onClick={() => { setBgColor('#1e3a8a'); setIsTransparent(false); }}
-                  title="Deep Navy Blue"
-                  aria-label="Deep Navy Blue"
-                />
-                <button
-                  type="button"
-                  className={`color-circle${!isTransparent && bgColor.toLowerCase() === '#ef4444' ? ' active' : ''}`}
-                  style={{ backgroundColor: '#ef4444' }}
-                  onClick={() => { setBgColor('#ef4444'); setIsTransparent(false); }}
-                  title="Red Background"
-                  aria-label="Red Background"
-                />
-                <button
-                  type="button"
-                  className={`color-circle${isTransparent ? ' active' : ''}`}
-                  style={{
-                    background: 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 8px 8px',
-                    fontSize: '10px',
-                    fontWeight: 700
-                  }}
+                  className={`color-pill-btn${isTransparent ? ' active' : ''}`}
                   onClick={() => setIsTransparent(true)}
-                  title="Transparent PNG"
-                  aria-label="Transparent PNG"
                 >
-                  PNG
+                  <span
+                    className="swatch-circle"
+                    style={{
+                      background: 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 6px 6px',
+                    }}
+                  >
+                    {isTransparent && (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </span>
+                  <span>Transparent PNG</span>
                 </button>
 
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem', fontWeight: 600, color: '#475569', cursor: 'pointer' }}>
+                {/* Custom Color */}
+                <label className="custom-color-box">
                   <span>Custom:</span>
                   <input
                     type="color"
                     value={bgColor}
                     onChange={(e) => { setBgColor(e.target.value); setIsTransparent(false); }}
-                    style={{ width: 32, height: 32, border: 'none', borderRadius: 6, cursor: 'pointer' }}
+                    style={{ width: 24, height: 24, border: 'none', borderRadius: 4, cursor: 'pointer' }}
                   />
+                  <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{bgColor.toUpperCase()}</span>
                 </label>
               </div>
 
               {/* Edge Tolerance */}
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span className="field-label" style={{ margin: 0 }}>Background Removal Sensitivity / Tolerance</span>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#0066ff' }}>{tolerance}</span>
+              <div className="tolerance-box">
+                <div className="tolerance-header">
+                  <span className="tolerance-title">Edge Sensitivity / Tolerance</span>
+                  <span className="tolerance-badge">{tolerance}</span>
                 </div>
                 <input
                   type="range"
@@ -458,14 +656,29 @@ export default function ImageBackgroundChangePage() {
                   max="65"
                   value={tolerance}
                   onChange={(e) => setTolerance(Number(e.target.value))}
-                  style={{ width: '100%', cursor: 'pointer' }}
+                  className="slider-range"
                 />
+                <div className="tolerance-hint">
+                  <span>Sharp Silhouette (5)</span>
+                  <span>Balanced (28)</span>
+                  <span>Aggressive Removal (65)</span>
+                </div>
               </div>
 
               {/* Background Result Preview */}
               {processedBgImage && (
                 <div className="preview-container">
-                  <div className="preview-img-box" style={{ background: isTransparent ? 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 12px 12px' : bgColor }}>
+                  <div className="preview-header-pill">
+                    <span>✨</span> Live Background Replacement
+                  </div>
+                  <div
+                    className="preview-img-box"
+                    style={{
+                      background: isTransparent
+                        ? 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 12px 12px'
+                        : bgColor,
+                    }}
+                  >
                     <img src={processedBgImage} alt="Background Changed Result" />
                   </div>
                   <div className="preview-stats">
@@ -478,7 +691,7 @@ export default function ImageBackgroundChangePage() {
                     download={`${bgFileName}_new_bg.png`}
                     className="btn-download"
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
@@ -494,7 +707,7 @@ export default function ImageBackgroundChangePage() {
         {/* Govt Exam Guidelines Notice */}
         <div className="exam-info-card">
           <strong>📌 Official Guidelines for SSC, Railway &amp; UPSC Application Photos:</strong>
-          <ul style={{ paddingLeft: 18, marginTop: 6, marginBottom: 0 }}>
+          <ul style={{ paddingLeft: 18, marginTop: 8, marginBottom: 0 }}>
             <li><strong>Background:</strong> Must be plain white or very light color (dark/shadowy backgrounds cause rejection).</li>
             <li><strong>Face Coverage:</strong> At least 70-80% of photo area, looking directly into the camera with neutral expression. No hats, caps, or sunglasses.</li>
           </ul>
