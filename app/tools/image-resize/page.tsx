@@ -144,14 +144,19 @@ export default function ImageResizePage() {
       <style>{`
         .tool-screen-main {
           min-height: calc(100vh - 140px);
-          background: radial-gradient(circle at 50% 0%, #f0f7ff 0%, #f8fafc 40%, #f1f5f9 100%);
+          background: #f8fafc;
           padding: 24px 16px 84px;
           color: #0f172a;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          box-sizing: border-box;
+          overflow-x: hidden;
+          width: 100%;
         }
         .tool-screen-container {
-          max-width: 860px;
+          max-width: 760px;
           margin: 0 auto;
+          box-sizing: border-box;
+          width: 100%;
         }
 
         /* Nav Bar */
@@ -159,41 +164,40 @@ export default function ImageResizePage() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 20px;
-          gap: 12px;
+          margin-bottom: 18px;
+          gap: 10px;
           flex-wrap: wrap;
         }
         .btn-back-tools {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          font-size: 0.88rem;
-          font-weight: 700;
+          gap: 6px;
+          font-size: 0.86rem;
+          font-weight: 750;
           text-decoration: none;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
           color: #1e293b;
-          padding: 8px 16px;
-          border-radius: 12px;
-          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: 7px 14px;
+          border-radius: 10px;
+          box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+          transition: all 0.2s ease;
         }
         .btn-back-tools:hover {
           background: #eff6ff;
           border-color: #93c5fd;
           color: #0044cc;
-          transform: translateX(-2px);
         }
         .privacy-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 0.78rem;
-          font-weight: 700;
+          font-size: 0.74rem;
+          font-weight: 750;
           background: #eff6ff;
           color: #1d4ed8;
           border: 1px solid #bfdbfe;
-          padding: 4px 12px;
+          padding: 4px 10px;
           border-radius: 999px;
         }
 
@@ -201,84 +205,85 @@ export default function ImageResizePage() {
         .tool-card {
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          border-radius: 22px;
-          padding: 30px;
-          box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
-          margin-bottom: 24px;
+          border-radius: 20px;
+          padding: 24px;
+          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+          margin-bottom: 20px;
+          box-sizing: border-box;
+          width: 100%;
         }
         .tool-header-block {
           display: flex;
-          align-items: flex-start;
-          gap: 16px;
+          align-items: center;
+          gap: 14px;
           border-bottom: 1px solid #f1f5f9;
-          padding-bottom: 18px;
-          margin-bottom: 24px;
+          padding-bottom: 16px;
+          margin-bottom: 20px;
         }
         .tool-header-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 16px;
+          width: 46px;
+          height: 46px;
+          border-radius: 14px;
           background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 8px 18px -4px rgba(37, 99, 235, 0.3);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
           flex-shrink: 0;
         }
         .tool-title {
-          font-size: 1.5rem;
+          font-size: 1.35rem;
           font-weight: 850;
           color: #0f172a;
-          margin: 0 0 6px 0;
+          margin: 0 0 4px 0;
           letter-spacing: -0.02em;
         }
         .tool-desc {
-          font-size: 0.92rem;
+          font-size: 0.86rem;
           color: #64748b;
           margin: 0;
-          line-height: 1.5;
+          line-height: 1.45;
         }
 
         /* Upload Dropzone */
         .upload-dropzone {
           border: 2px dashed #93c5fd;
-          background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
-          border-radius: 18px;
-          padding: 40px 20px;
+          background: #f8fafc;
+          border-radius: 16px;
+          padding: 32px 16px;
           text-align: center;
           cursor: pointer;
-          transition: all 0.25s ease;
-          margin-bottom: 20px;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+          width: 100%;
         }
         .upload-dropzone:hover {
           border-color: #2563eb;
           background: #eff6ff;
-          transform: translateY(-1px);
-          box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.12);
         }
         .upload-icon-box {
-          width: 56px;
-          height: 56px;
-          border-radius: 16px;
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
           background: #ffffff;
           color: #0044cc;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 14px;
-          box-shadow: 0 4px 12px rgba(0, 68, 204, 0.12);
+          margin: 0 auto 12px;
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.12);
         }
         .upload-title {
-          font-size: 1.12rem;
+          font-size: 1.05rem;
           font-weight: 800;
           color: #0f172a;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         .upload-hint {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           color: #64748b;
-          margin-bottom: 14px;
+          margin-bottom: 12px;
         }
         .upload-btn-fake {
           display: inline-flex;
@@ -286,11 +291,11 @@ export default function ImageResizePage() {
           gap: 6px;
           background: #0044cc;
           color: #ffffff;
-          font-size: 0.86rem;
+          font-size: 0.84rem;
           font-weight: 750;
-          padding: 9px 20px;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(0, 68, 204, 0.25);
+          padding: 8px 18px;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.2);
         }
 
         /* Active File Banner */
@@ -299,190 +304,183 @@ export default function ImageResizePage() {
           align-items: center;
           justify-content: space-between;
           background: #f8fafc;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 14px;
-          padding: 12px 18px;
-          margin-bottom: 22px;
-          gap: 12px;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 10px 14px;
+          margin-bottom: 18px;
+          gap: 10px;
           flex-wrap: wrap;
         }
         .file-info-text {
-          font-size: 0.88rem;
+          font-size: 0.84rem;
           color: #334155;
-          font-weight: 600;
+          font-weight: 650;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-wrap: wrap;
         }
         .file-info-badge {
           background: #ffffff;
           border: 1px solid #cbd5e1;
           color: #0f172a;
           font-weight: 800;
-          padding: 2px 8px;
-          border-radius: 6px;
-          margin-left: 6px;
+          padding: 2px 6px;
+          border-radius: 5px;
+          font-size: 0.78rem;
         }
         .btn-change-file {
           background: #ffffff;
-          border: 1.5px solid #cbd5e1;
+          border: 1px solid #cbd5e1;
           color: #1e293b;
-          padding: 6px 14px;
-          border-radius: 8px;
-          font-size: 0.82rem;
-          font-weight: 700;
+          padding: 5px 12px;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          font-weight: 750;
           cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        .btn-change-file:hover {
-          background: #f1f5f9;
-          border-color: #94a3b8;
         }
 
         /* Presets Grid */
         .section-label {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 0.86rem;
+          font-size: 0.82rem;
           font-weight: 800;
           color: #1e293b;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           text-transform: uppercase;
-          letter-spacing: 0.03em;
+          letter-spacing: 0.02em;
         }
         .preset-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-          gap: 12px;
-          margin-bottom: 24px;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 10px;
+          margin-bottom: 18px;
         }
         .preset-btn {
-          position: relative;
           border: 1.5px solid #e2e8f0;
           background: #ffffff;
-          border-radius: 14px;
-          padding: 12px 14px;
+          border-radius: 12px;
+          padding: 10px 12px;
           text-align: left;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.15s ease;
+          box-sizing: border-box;
+          width: 100%;
         }
         .preset-btn:hover {
           border-color: #93c5fd;
           background: #f8fafc;
-          transform: translateY(-1px);
         }
         .preset-btn.active {
           border-color: #0044cc;
-          background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
-          box-shadow: 0 4px 14px rgba(0, 68, 204, 0.12);
+          background: #eff6ff;
+          box-shadow: 0 2px 8px rgba(0, 68, 204, 0.1);
         }
         .preset-top {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 4px;
+          margin-bottom: 2px;
         }
         .preset-name {
-          font-size: 0.9rem;
+          font-size: 0.86rem;
           font-weight: 800;
           color: #0f172a;
         }
         .preset-badge-tag {
-          font-size: 0.68rem;
+          font-size: 0.65rem;
           font-weight: 800;
           color: #0044cc;
           background: #dbeafe;
-          padding: 1px 6px;
+          padding: 1px 5px;
           border-radius: 999px;
         }
         .preset-desc {
-          font-size: 0.78rem;
+          font-size: 0.74rem;
           color: #64748b;
-          line-height: 1.4;
+          line-height: 1.35;
         }
 
         /* Form Controls */
         .form-row {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 16px;
-          margin-bottom: 18px;
+          gap: 12px;
+          margin-bottom: 14px;
         }
         .field-label {
           display: block;
-          font-size: 0.84rem;
+          font-size: 0.82rem;
           font-weight: 750;
           color: #334155;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         .input-text, .select-box {
           width: 100%;
-          padding: 11px 14px;
+          padding: 10px 12px;
           border: 1.5px solid #cbd5e1;
-          border-radius: 11px;
-          font-size: 0.92rem;
+          border-radius: 10px;
+          font-size: 16px; /* Prevents auto zoom in mobile Safari */
           color: #0f172a;
           background: #fff;
           outline: none;
           box-sizing: border-box;
-          transition: all 0.2s ease;
         }
         .input-text:focus, .select-box:focus {
           border-color: #0044cc;
-          box-shadow: 0 0 0 3px rgba(0, 68, 204, 0.12);
         }
         .checkbox-label {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          font-size: 0.84rem;
+          gap: 6px;
+          font-size: 0.8rem;
           font-weight: 650;
           color: #475569;
           cursor: pointer;
-          margin-top: 8px;
-          user-select: none;
+          margin-top: 6px;
         }
         .checkbox-label input {
           width: 16px;
           height: 16px;
           accent-color: #0044cc;
-          cursor: pointer;
         }
 
         /* Preview Container */
         .preview-container {
-          background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+          background: #f8fafc;
           border: 1.5px solid #bfdbfe;
-          border-radius: 18px;
-          padding: 24px;
-          margin-top: 24px;
+          border-radius: 16px;
+          padding: 18px 14px;
+          margin-top: 20px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
+          box-sizing: border-box;
+          width: 100%;
         }
         .preview-header-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 0.78rem;
+          font-size: 0.74rem;
           font-weight: 800;
           text-transform: uppercase;
           background: #dbeafe;
           color: #1e40af;
-          padding: 4px 12px;
+          padding: 3px 10px;
           border-radius: 999px;
-          margin-bottom: 16px;
-          letter-spacing: 0.03em;
+          margin-bottom: 12px;
         }
         .preview-img-box {
-          max-width: 280px;
-          max-height: 280px;
+          max-width: 240px;
+          max-height: 240px;
           background: #ffffff;
-          border: 2px solid #cbd5e1;
-          border-radius: 14px;
-          padding: 6px;
-          margin-bottom: 16px;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          padding: 4px;
+          margin-bottom: 14px;
           overflow: hidden;
-          box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
         }
         .preview-img-box img {
           width: 100%;
@@ -493,20 +491,19 @@ export default function ImageResizePage() {
         }
         .preview-stats {
           display: flex;
-          gap: 10px;
-          font-size: 0.85rem;
+          gap: 8px;
+          font-size: 0.8rem;
           font-weight: 750;
           color: #1e293b;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
           flex-wrap: wrap;
           justify-content: center;
         }
         .stat-badge {
           background: #ffffff;
-          padding: 6px 14px;
+          padding: 4px 10px;
           border-radius: 999px;
           border: 1px solid #e2e8f0;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
         .stat-badge.highlight {
           background: #eff6ff;
@@ -519,41 +516,44 @@ export default function ImageResizePage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          background: linear-gradient(135deg, #0044cc 0%, #2563eb 100%);
+          gap: 8px;
+          background: #0044cc;
           color: #ffffff;
-          font-size: 0.98rem;
+          font-size: 0.92rem;
           font-weight: 800;
-          padding: 13px 32px;
-          border-radius: 12px;
+          padding: 12px 24px;
+          border-radius: 10px;
           text-decoration: none;
           border: none;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 6px 20px rgba(0, 68, 204, 0.28);
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 14px rgba(0, 68, 204, 0.25);
+          box-sizing: border-box;
+          min-height: 48px;
         }
         .btn-download:hover {
-          background: linear-gradient(135deg, #003399 0%, #1d4ed8 100%);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(0, 68, 204, 0.35);
+          background: #003399;
         }
 
         /* Guidelines Card */
         .exam-info-card {
-          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-          border: 1.5px solid #a7f3d0;
-          border-radius: 18px;
-          padding: 20px;
-          font-size: 0.86rem;
-          color: #166534;
-          line-height: 1.6;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 18px;
+          font-size: 0.84rem;
+          color: #334155;
+          line-height: 1.55;
+          box-sizing: border-box;
+          width: 100%;
         }
-        .exam-info-card strong { color: #14532d; }
+        .exam-info-card strong { color: #0f172a; }
 
         @media (max-width: 640px) {
-          .tool-card { padding: 20px 16px; border-radius: 18px; }
-          .tool-title { font-size: 1.25rem; }
-          .tool-header-icon { width: 44px; height: 44px; border-radius: 12px; }
+          .tool-screen-main { padding: 16px 12px 76px; }
+          .tool-card { padding: 16px 14px; border-radius: 16px; }
+          .tool-title { font-size: 1.15rem; }
+          .tool-header-icon { width: 40px; height: 40px; border-radius: 12px; }
           .form-row { grid-template-columns: 1fr; }
           .preset-grid { grid-template-columns: 1fr; }
           .btn-download { width: 100%; }
@@ -564,10 +564,10 @@ export default function ImageResizePage() {
         {/* Navigation Bar */}
         <div className="back-nav-bar">
           <Link href="/tools" prefetch={true} className="btn-back-tools">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            <span>Back to All Tools</span>
+            <span>Back to Tools</span>
           </Link>
           <span className="privacy-pill">
             <span>🔒</span> 100% Client-Side Privacy
@@ -577,7 +577,7 @@ export default function ImageResizePage() {
         <div className="tool-card">
           <div className="tool-header-block">
             <div className="tool-header-icon">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 3 21 3 21 9"></polyline>
                 <polyline points="9 21 3 21 3 15"></polyline>
                 <line x1="21" y1="3" x2="14" y2="10"></line>
@@ -587,7 +587,7 @@ export default function ImageResizePage() {
             <div>
               <h1 className="tool-title">Image Resize &amp; KB Compress</h1>
               <p className="tool-desc">
-                Compress and scale photo (20–50 KB) &amp; signature (10–20 KB) to exact pixels for SSC, Railway &amp; UPSC exams.
+                Scale photo (20–50 KB) &amp; signature (10–20 KB) to exact pixels for SSC, RRB &amp; UPSC.
               </p>
             </div>
           </div>
@@ -603,14 +603,14 @@ export default function ImageResizePage() {
           {!resizeImage ? (
             <div className="upload-dropzone" onClick={() => resizeInputRef.current?.click()}>
               <div className="upload-icon-box">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="17 8 12 3 7 8" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
               </div>
               <div className="upload-title">Upload Photo or Signature</div>
-              <div className="upload-hint">Supports JPG, PNG, WEBP files up to 25 MB</div>
+              <div className="upload-hint">Supports JPG, PNG, WEBP up to 25 MB</div>
               <div className="upload-btn-fake">
                 <span>Browse File</span>
               </div>
@@ -619,7 +619,7 @@ export default function ImageResizePage() {
             <div>
               <div className="file-active-banner">
                 <div className="file-info-text">
-                  <span>Selected Image:</span>
+                  <span>Image Loaded:</span>
                   <span className="file-info-badge">{origDimensions.w} × {origDimensions.h} px</span>
                   <span className="file-info-badge">{origDimensions.kb} KB</span>
                 </div>
@@ -633,9 +633,7 @@ export default function ImageResizePage() {
               </div>
 
               {/* Exam Presets */}
-              <div className="section-label">
-                <span>Select Exam Preset</span>
-              </div>
+              <div className="section-label">Select Exam Preset:</div>
               <div className="preset-grid">
                 {PRESETS.map((p) => (
                   <button
@@ -656,7 +654,7 @@ export default function ImageResizePage() {
               {/* Dimension Inputs */}
               <div className="form-row">
                 <div>
-                  <label className="field-label">Target Width (Pixels)</label>
+                  <label className="field-label">Target Width (px)</label>
                   <input
                     type="number"
                     className="input-text"
@@ -665,7 +663,7 @@ export default function ImageResizePage() {
                   />
                 </div>
                 <div>
-                  <label className="field-label">Target Height (Pixels)</label>
+                  <label className="field-label">Target Height (px)</label>
                   <input
                     type="number"
                     className="input-text"
@@ -678,7 +676,7 @@ export default function ImageResizePage() {
               {/* File size & format */}
               <div className="form-row">
                 <div>
-                  <label className="field-label">Max Target File Size (KB)</label>
+                  <label className="field-label">Max Target Size (KB)</label>
                   <input
                     type="number"
                     className="input-text"
@@ -691,17 +689,17 @@ export default function ImageResizePage() {
                       checked={lockRatio}
                       onChange={(e) => setLockRatio(e.target.checked)}
                     />
-                    <span>Maintain original aspect ratio</span>
+                    <span>Lock aspect ratio</span>
                   </label>
                 </div>
                 <div>
-                  <label className="field-label">Target Output Format</label>
+                  <label className="field-label">Output Format</label>
                   <select
                     className="select-box"
                     value={format}
                     onChange={(e) => setFormat(e.target.value as any)}
                   >
-                    <option value="image/jpeg">JPEG / JPG (Standard for TCS iON &amp; Govt Portals)</option>
+                    <option value="image/jpeg">JPEG / JPG (Official Exam Standard)</option>
                     <option value="image/png">PNG</option>
                     <option value="image/webp">WEBP</option>
                   </select>
@@ -718,21 +716,21 @@ export default function ImageResizePage() {
                     <img src={resizedPreview} alt="Resized Result" />
                   </div>
                   <div className="preview-stats">
-                    <div className="stat-badge">Dimensions: {targetWidth} × {targetHeight} px</div>
-                    <div className="stat-badge highlight">File Size: ~{resizedKb} KB</div>
-                    <div className="stat-badge">Format: {format.split('/')[1].toUpperCase()}</div>
+                    <div className="stat-badge">{targetWidth} × {targetHeight} px</div>
+                    <div className="stat-badge highlight">Size: ~{resizedKb} KB</div>
+                    <div className="stat-badge">{format.split('/')[1].toUpperCase()}</div>
                   </div>
                   <a
                     href={resizedPreview}
                     download={`${resizeFileName}_resized_${targetWidth}x${targetHeight}.${format.split('/')[1]}`}
                     className="btn-download"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    <span>Download Form-Ready Photo</span>
+                    <span>Download Resized Photo</span>
                   </a>
                 </div>
               )}
@@ -740,13 +738,12 @@ export default function ImageResizePage() {
           )}
         </div>
 
-        {/* Govt Exam Guidelines Notice */}
+        {/* Guidelines Notice */}
         <div className="exam-info-card">
-          <strong>📌 Official Guidelines for SSC, Railway &amp; UPSC Application Forms:</strong>
-          <ul style={{ paddingLeft: 18, marginTop: 8, marginBottom: 0 }}>
-            <li><strong>Photo Dimensions:</strong> Standard 3.5 cm width × 4.5 cm height (approx 200 × 230 pixels).</li>
-            <li><strong>File Size:</strong> Photographs must be between <strong>20 KB and 50 KB</strong>. Signatures must be <strong>10 KB to 20 KB</strong>.</li>
-            <li><strong>Format:</strong> JPEG/JPG format is strictly required by TCS iON / SSC application portals.</li>
+          <strong>📌 Official Photo &amp; Signature Rules:</strong>
+          <ul style={{ paddingLeft: 18, marginTop: 6, marginBottom: 0 }}>
+            <li><strong>Photo:</strong> 20 KB to 50 KB, 3.5 × 4.5 cm (approx 200 × 230 px), plain light background.</li>
+            <li><strong>Signature:</strong> 10 KB to 20 KB, approx 140 × 60 px on clean white paper.</li>
           </ul>
         </div>
       </div>

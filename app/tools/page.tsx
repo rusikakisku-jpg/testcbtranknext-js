@@ -2,8 +2,8 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Free Student Tools - Photo Resize, Background Change & Typing Test | CBT RANK',
-  description: 'Free online tools for govt exam aspirants (SSC, RRB, Railway, UPSC, State PSC). Resize photos & signatures to 20-50 KB, change photo background to white, and practice exam typing speed test.',
+  title: 'Free Photo & Signature Tools for Govt Exams | CBT RANK',
+  description: 'Free online photo resize & background changer for SSC, RRB, Railway, UPSC & State PSC. Compress photo to 20-50 KB, signature to 10-20 KB, and make background white.',
   alternates: {
     canonical: 'https://cbtrank.com/tools',
   },
@@ -13,7 +13,6 @@ const TOOLS_LIST = [
   {
     id: 'resize',
     href: '/tools/image-resize',
-    iconGradient: 'from-blue-600 to-indigo-600',
     iconBg: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
     iconColor: '#ffffff',
     iconSvg: (
@@ -29,14 +28,13 @@ const TOOLS_LIST = [
     badgeColor: '#1d4ed8',
     badgeBg: '#eff6ff',
     badgeBorder: '#bfdbfe',
-    desc: 'Compress and resize photos (20–50 KB) & signatures (10–20 KB) to exact dimensions for SSC, RRB & UPSC application portals.',
-    tags: ['20-50 KB', 'SSC & RRB Spec', 'Instant Compression'],
+    desc: 'Compress and resize photos (20–50 KB) & signatures (10–20 KB) to exact pixels for SSC, RRB & UPSC portals.',
+    tags: ['20-50 KB Photo', '10-20 KB Signature', 'JPEG / PNG'],
     cta: 'Open Tool'
   },
   {
     id: 'background',
     href: '/tools/image-background-change',
-    iconGradient: 'from-purple-600 to-indigo-600',
     iconBg: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
     iconColor: '#ffffff',
     iconSvg: (
@@ -49,38 +47,9 @@ const TOOLS_LIST = [
     badgeColor: '#6d28d9',
     badgeBg: '#f5f3ff',
     badgeBorder: '#ddd6fe',
-    desc: 'Convert photo background to clean white or light sky blue in seconds to avoid form rejection by examination authorities.',
+    desc: 'Convert photo background to pure white or light sky blue to prevent application rejection by exam authorities.',
     tags: ['Plain White BG', 'Sky Blue', 'Transparent PNG'],
     cta: 'Open Tool'
-  },
-  {
-    id: 'typing',
-    href: '/tools/typing-test',
-    iconGradient: 'from-emerald-600 to-teal-600',
-    iconBg: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)',
-    iconColor: '#ffffff',
-    iconSvg: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="3"></rect>
-        <line x1="6" y1="8" x2="6.01" y2="8"></line>
-        <line x1="10" y1="8" x2="10.01" y2="8"></line>
-        <line x1="14" y1="8" x2="14.01" y2="8"></line>
-        <line x1="18" y1="8" x2="18.01" y2="8"></line>
-        <line x1="6" y1="12" x2="6.01" y2="12"></line>
-        <line x1="10" y1="12" x2="10.01" y2="12"></line>
-        <line x1="14" y1="12" x2="14.01" y2="12"></line>
-        <line x1="18" y1="12" x2="18.01" y2="12"></line>
-        <line x1="8" y1="16" x2="16" y2="16"></line>
-      </svg>
-    ),
-    title: 'Exam Typing Speed Test',
-    badge: 'TCS iON / SSC Pattern',
-    badgeColor: '#047857',
-    badgeBg: '#ecfdf5',
-    badgeBorder: '#a7f3d0',
-    desc: 'Practice official examination typing passages with real-time Net WPM, Gross WPM, Accuracy % and Key Depressions countdown.',
-    tags: ['35 WPM SSC Target', 'Timer Countdown', 'Instant Scorecard'],
-    cta: 'Start Test'
   },
 ];
 
@@ -90,172 +59,136 @@ export default function ToolsHubPage() {
       <style>{`
         .tools-page-main {
           min-height: calc(100vh - 140px);
-          background: radial-gradient(circle at 50% 0%, #f0f7ff 0%, #f8fafc 40%, #f1f5f9 100%);
-          padding: 32px 16px 84px;
+          background: #f8fafc;
+          padding: 24px 16px 84px;
           color: #0f172a;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          box-sizing: border-box;
+          overflow-x: hidden;
+          width: 100%;
         }
         .tools-container {
-          max-width: 860px;
+          max-width: 760px;
           margin: 0 auto;
+          box-sizing: border-box;
         }
 
         /* Hero Header */
         .tools-header {
           text-align: center;
-          margin-bottom: 32px;
-          position: relative;
+          margin-bottom: 24px;
         }
-        .hero-badge-pill {
+        .hero-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
           background: #eff6ff;
           border: 1px solid #bfdbfe;
           color: #1d4ed8;
-          font-size: 0.78rem;
-          font-weight: 700;
-          padding: 5px 14px;
-          border-radius: 999px;
-          margin-bottom: 14px;
-          letter-spacing: 0.02em;
-          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
-        }
-        .tools-title {
-          font-size: 2.15rem;
-          font-weight: 850;
-          color: #0f172a;
-          margin: 0 0 10px 0;
-          letter-spacing: -0.03em;
-          line-height: 1.2;
-        }
-        .tools-title-gradient {
-          background: linear-gradient(135deg, #0044cc 0%, #2563eb 50%, #0284c7 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        .tools-subtitle {
-          font-size: 1rem;
-          color: #475569;
-          margin: 0 auto;
-          max-width: 620px;
-          line-height: 1.6;
-        }
-
-        /* Trust Badges Bar */
-        .trust-bar {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 16px;
-          flex-wrap: wrap;
-          margin: 18px 0 28px;
-        }
-        .trust-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          color: #334155;
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(8px);
-          border: 1px solid #e2e8f0;
+          font-size: 0.76rem;
+          font-weight: 750;
           padding: 4px 12px;
           border-radius: 999px;
+          margin-bottom: 10px;
+        }
+        .tools-title {
+          font-size: 1.85rem;
+          font-weight: 850;
+          color: #0f172a;
+          margin: 0 0 8px 0;
+          letter-spacing: -0.02em;
+          line-height: 1.25;
+        }
+        .tools-title-accent {
+          color: #0044cc;
+        }
+        .tools-subtitle {
+          font-size: 0.92rem;
+          color: #64748b;
+          margin: 0 auto;
+          max-width: 560px;
+          line-height: 1.5;
         }
 
         /* Tools List View */
         .tools-list-view {
           display: flex;
           flex-direction: column;
-          gap: 16px;
-          margin-bottom: 36px;
+          gap: 14px;
+          margin-bottom: 24px;
         }
         .tool-list-card {
-          position: relative;
           display: flex;
           align-items: center;
           justify-content: space-between;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          border-radius: 20px;
-          padding: 22px 24px;
+          border-radius: 18px;
+          padding: 18px 20px;
           text-decoration: none;
           color: inherit;
-          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
-          overflow: hidden;
-        }
-        .tool-list-card::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 4px;
-          background: transparent;
-          transition: background 0.25s;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+          box-sizing: border-box;
+          width: 100%;
         }
         .tool-list-card:hover {
           border-color: #93c5fd;
           transform: translateY(-2px);
-          box-shadow: 0 12px 28px -6px rgba(37, 99, 235, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
-        }
-        .tool-list-card:hover::before {
-          background: #0044cc;
+          box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.12);
         }
         .tool-card-left {
           display: flex;
-          align-items: flex-start;
-          gap: 18px;
+          align-items: center;
+          gap: 16px;
           flex: 1;
+          min-width: 0;
         }
         .tool-icon-circle {
-          width: 54px;
-          height: 54px;
-          border-radius: 16px;
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          box-shadow: 0 8px 18px -4px rgba(0, 0, 0, 0.15);
-          transition: transform 0.25s ease;
+          box-shadow: 0 6px 14px -3px rgba(0, 0, 0, 0.12);
         }
-        .tool-list-card:hover .tool-icon-circle {
-          transform: scale(1.06);
-        }
-
         .tool-info {
           flex: 1;
+          min-width: 0;
         }
         .tool-title-row {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           flex-wrap: wrap;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         .tool-title {
-          font-size: 1.15rem;
+          font-size: 1.05rem;
           font-weight: 750;
           color: #0f172a;
           margin: 0;
           letter-spacing: -0.01em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .tool-badge {
-          font-size: 0.72rem;
+          font-size: 0.68rem;
           font-weight: 750;
           text-transform: uppercase;
-          padding: 3px 10px;
+          padding: 2px 8px;
           border-radius: 999px;
-          letter-spacing: 0.03em;
+          letter-spacing: 0.02em;
+          flex-shrink: 0;
         }
         .tool-desc {
-          font-size: 0.88rem;
+          font-size: 0.84rem;
           color: #64748b;
-          line-height: 1.5;
-          margin: 0 0 10px 0;
+          line-height: 1.45;
+          margin: 0 0 8px 0;
         }
         .tool-tags-row {
           display: flex;
@@ -263,28 +196,27 @@ export default function ToolsHubPage() {
           flex-wrap: wrap;
         }
         .tool-tag {
-          font-size: 0.72rem;
+          font-size: 0.7rem;
           font-weight: 600;
           color: #475569;
           background: #f1f5f9;
-          padding: 2px 8px;
+          padding: 2px 7px;
           border-radius: 6px;
           border: 1px solid #e2e8f0;
+          white-space: nowrap;
         }
-
-        /* Action Arrow Box */
         .tool-arrow-box {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           background: #eff6ff;
           color: #0044cc;
           font-weight: 750;
-          font-size: 0.86rem;
-          padding: 10px 18px;
-          border-radius: 12px;
+          font-size: 0.84rem;
+          padding: 8px 14px;
+          border-radius: 10px;
           border: 1px solid #bfdbfe;
-          margin-left: 16px;
+          margin-left: 12px;
           flex-shrink: 0;
           transition: all 0.2s ease;
         }
@@ -292,94 +224,149 @@ export default function ToolsHubPage() {
           background: #0044cc;
           color: #ffffff;
           border-color: #0044cc;
-          box-shadow: 0 4px 12px rgba(0, 68, 204, 0.25);
         }
-        .tool-arrow-icon {
-          font-size: 1rem;
-          transition: transform 0.2s;
+
+        /* Dedicated Typing Banner */
+        .typing-nav-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+          border: 1.5px solid #a7f3d0;
+          border-radius: 16px;
+          padding: 16px 20px;
+          margin-bottom: 24px;
+          text-decoration: none;
+          color: inherit;
+          box-shadow: 0 2px 8px rgba(16, 185, 129, 0.06);
+          transition: all 0.2s ease;
         }
-        .tool-list-card:hover .tool-arrow-icon {
-          transform: translateX(3px);
+        .typing-nav-banner:hover {
+          border-color: #34d399;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
+        }
+        .typing-banner-left {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+        .typing-banner-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .typing-banner-title {
+          font-size: 0.98rem;
+          font-weight: 800;
+          color: #065f46;
+          margin-bottom: 2px;
+        }
+        .typing-banner-desc {
+          font-size: 0.82rem;
+          color: #047857;
+        }
+        .typing-banner-cta {
+          font-size: 0.84rem;
+          font-weight: 750;
+          color: #059669;
+          background: #ffffff;
+          border: 1px solid #a7f3d0;
+          padding: 6px 14px;
+          border-radius: 8px;
+          white-space: nowrap;
+          margin-left: 10px;
+          flex-shrink: 0;
         }
 
         /* Guidelines Card */
         .exam-info-card {
-          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-          border: 1.5px solid #a7f3d0;
-          border-radius: 20px;
-          padding: 24px;
-          box-shadow: 0 4px 16px rgba(16, 185, 129, 0.06);
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 20px;
+          box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+          box-sizing: border-box;
         }
         .exam-info-header {
           display: flex;
           align-items: center;
           gap: 8px;
-          font-size: 1rem;
+          font-size: 0.92rem;
           font-weight: 800;
-          color: #065f46;
-          margin-bottom: 14px;
+          color: #0f172a;
+          margin-bottom: 12px;
         }
-        .spec-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 14px;
-        }
-        .spec-box {
-          background: rgba(255, 255, 255, 0.85);
-          border: 1px solid #bbf7d0;
-          border-radius: 12px;
-          padding: 14px;
-        }
-        .spec-box-title {
-          font-size: 0.82rem;
-          font-weight: 800;
-          text-transform: uppercase;
-          color: #047857;
-          margin-bottom: 6px;
-          letter-spacing: 0.02em;
-        }
-        .spec-box-desc {
-          font-size: 0.82rem;
-          color: #1e293b;
-          line-height: 1.45;
+        .spec-list {
+          list-style: none;
+          padding: 0;
           margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
         }
-
-        @media (max-width: 768px) {
-          .spec-grid {
-            grid-template-columns: 1fr;
-          }
+        .spec-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          font-size: 0.84rem;
+          color: #334155;
+          line-height: 1.5;
+        }
+        .spec-item strong {
+          color: #0f172a;
         }
 
         @media (max-width: 640px) {
           .tools-page-main {
-            padding: 20px 12px 76px;
+            padding: 16px 12px 76px;
           }
           .tools-title {
-            font-size: 1.65rem;
+            font-size: 1.45rem;
           }
           .tool-list-card {
-            padding: 16px 14px;
-            border-radius: 16px;
+            padding: 14px 12px;
+            border-radius: 14px;
           }
           .tool-card-left {
             gap: 12px;
           }
           .tool-icon-circle {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
           }
           .tool-title {
-            font-size: 1.02rem;
+            font-size: 0.98rem;
+            white-space: normal;
           }
           .tool-arrow-box span {
             display: none;
           }
           .tool-arrow-box {
-            padding: 8px 10px;
-            border-radius: 10px;
+            padding: 7px 9px;
+            border-radius: 8px;
             margin-left: 8px;
+          }
+          .typing-nav-banner {
+            padding: 14px 12px;
+          }
+          .typing-banner-icon {
+            width: 38px;
+            height: 38px;
+          }
+          .typing-banner-title {
+            font-size: 0.92rem;
+          }
+          .typing-banner-cta {
+            padding: 5px 10px;
+            font-size: 0.78rem;
           }
         }
       `}</style>
@@ -387,28 +374,15 @@ export default function ToolsHubPage() {
       <div className="tools-container">
         {/* Header */}
         <header className="tools-header">
-          <div className="hero-badge-pill">
-            <span>✨</span> 100% Free Aspirant Toolkit
+          <div className="hero-pill">
+            <span>✨</span> 100% Free &amp; Private Tools
           </div>
           <h1 className="tools-title">
-            Student &amp; Aspirant <span className="tools-title-gradient">Utilities</span>
+            Photo &amp; Signature <span className="tools-title-accent">Tools</span>
           </h1>
           <p className="tools-subtitle">
-            Official specification-compliant tools designed for SSC, RRB, Railway, UPSC &amp; State PSC candidates.
+            Format your photograph and signature strictly as per official SSC, RRB, Railway &amp; UPSC notification rules.
           </p>
-
-          {/* Privacy & Fast Trust Bar */}
-          <div className="trust-bar">
-            <span className="trust-item">
-              <span>🔒</span> 100% Client-Side Privacy
-            </span>
-            <span className="trust-item">
-              <span>⚡</span> Instant Canvas Processing
-            </span>
-            <span className="trust-item">
-              <span>🎯</span> Form Rejection Prevention
-            </span>
-          </div>
         </header>
 
         {/* Tools List View */}
@@ -452,37 +426,60 @@ export default function ToolsHubPage() {
 
               <div className="tool-arrow-box">
                 <span>{tool.cta}</span>
-                <span className="tool-arrow-icon">❯</span>
+                <span>❯</span>
               </div>
             </Link>
           ))}
         </div>
 
-        {/* Govt Exam Guidelines Notice */}
+        {/* Separate Dedicated Typing Banner */}
+        <Link href="/typing" prefetch={true} className="typing-nav-banner">
+          <div className="typing-banner-left">
+            <div className="typing-banner-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <line x1="6" y1="8" x2="6.01" y2="8" />
+                <line x1="10" y1="8" x2="10.01" y2="8" />
+                <line x1="14" y1="8" x2="14.01" y2="8" />
+                <line x1="18" y1="8" x2="18.01" y2="8" />
+                <line x1="7" y1="16" x2="17" y2="16" />
+              </svg>
+            </div>
+            <div>
+              <div className="typing-banner-title">Practice Exam Typing Test</div>
+              <div className="typing-banner-desc">Dedicated screen with timer &amp; real-time WPM</div>
+            </div>
+          </div>
+          <div className="typing-banner-cta">
+            Open Typing ❯
+          </div>
+        </Link>
+
+        {/* Guidelines Card */}
         <div className="exam-info-card">
           <div className="exam-info-header">
-            <span>📌</span> Official Guidelines for SSC, Railway &amp; Govt Competitive Exams
+            <span>📌</span> Official Specifications (SSC / RRB / UPSC)
           </div>
-          <div className="spec-grid">
-            <div className="spec-box">
-              <div className="spec-box-title">📷 Photo Specs</div>
-              <p className="spec-box-desc">
-                Must be <strong>20 KB to 50 KB</strong> with <strong>plain white or light background</strong> (3.5 × 4.5 cm).
-              </p>
-            </div>
-            <div className="spec-box">
-              <div className="spec-box-title">✍️ Signature Specs</div>
-              <p className="spec-box-desc">
-                Must be <strong>10 KB to 20 KB</strong>, clearly scanned on clean white paper with black/blue ink.
-              </p>
-            </div>
-            <div className="spec-box">
-              <div className="spec-box-title">⌨️ Typing Standards</div>
-              <p className="spec-box-desc">
-                SSC requires <strong>35 WPM English</strong> / <strong>30 WPM Hindi</strong>. RRB NTPC requires <strong>30 WPM English</strong>.
-              </p>
-            </div>
-          </div>
+          <ul className="spec-list">
+            <li className="spec-item">
+              <span>📷</span>
+              <div>
+                <strong>Photograph:</strong> 20 KB to 50 KB file size, 3.5 × 4.5 cm (approx 200 × 230 px), plain white or very light background.
+              </div>
+            </li>
+            <li className="spec-item">
+              <span>✍️</span>
+              <div>
+                <strong>Signature:</strong> 10 KB to 20 KB file size, 140 × 60 px, clearly signed with black or blue ink on white paper.
+              </div>
+            </li>
+            <li className="spec-item">
+              <span>🔒</span>
+              <div>
+                <strong>100% Privacy:</strong> All image processing happens locally inside your browser. No files are uploaded to any server.
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </main>

@@ -40,6 +40,11 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
+              <Link href="/typing" className={isActive('/typing') ? 'active' : ''}>
+                Typing
+              </Link>
+            </li>
+            <li>
               <Link href="/answerkey" className={isActive('/answerkey') ? 'active' : ''}>
                 Answer Key
               </Link>
@@ -89,6 +94,13 @@ export default function Navbar() {
           onClick={() => setIsOpen(false)}
         >
           Tools
+        </Link>
+        <Link
+          href="/typing"
+          className={isActive('/typing') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Typing Test
         </Link>
         <Link
           href="/answerkey"

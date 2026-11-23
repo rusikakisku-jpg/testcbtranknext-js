@@ -105,10 +105,10 @@ export default function ImageBackgroundChangePage() {
 
   const COLOR_OPTIONS = [
     { name: 'Pure White (Official)', value: '#ffffff', border: '#cbd5e1' },
-    { name: 'Light Sky Blue', value: '#dbeafe', border: '#93c5fd' },
+    { name: 'Sky Blue', value: '#dbeafe', border: '#93c5fd' },
     { name: 'Light Grey', value: '#f1f5f9', border: '#cbd5e1' },
-    { name: 'Deep Navy Blue', value: '#1e3a8a', border: '#1e3a8a' },
-    { name: 'Passport Red', value: '#ef4444', border: '#ef4444' },
+    { name: 'Navy Blue', value: '#1e3a8a', border: '#1e3a8a' },
+    { name: 'Red', value: '#ef4444', border: '#ef4444' },
   ];
 
   return (
@@ -116,14 +116,19 @@ export default function ImageBackgroundChangePage() {
       <style>{`
         .tool-screen-main {
           min-height: calc(100vh - 140px);
-          background: radial-gradient(circle at 50% 0%, #faf5ff 0%, #f8fafc 40%, #f1f5f9 100%);
+          background: #f8fafc;
           padding: 24px 16px 84px;
           color: #0f172a;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          box-sizing: border-box;
+          overflow-x: hidden;
+          width: 100%;
         }
         .tool-screen-container {
-          max-width: 860px;
+          max-width: 760px;
           margin: 0 auto;
+          box-sizing: border-box;
+          width: 100%;
         }
 
         /* Nav Bar */
@@ -131,41 +136,40 @@ export default function ImageBackgroundChangePage() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 20px;
-          gap: 12px;
+          margin-bottom: 18px;
+          gap: 10px;
           flex-wrap: wrap;
         }
         .btn-back-tools {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          font-size: 0.88rem;
-          font-weight: 700;
+          gap: 6px;
+          font-size: 0.86rem;
+          font-weight: 750;
           text-decoration: none;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
           color: #1e293b;
-          padding: 8px 16px;
-          border-radius: 12px;
-          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: 7px 14px;
+          border-radius: 10px;
+          box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+          transition: all 0.2s ease;
         }
         .btn-back-tools:hover {
           background: #faf5ff;
           border-color: #ddd6fe;
           color: #7c3aed;
-          transform: translateX(-2px);
         }
         .privacy-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 0.78rem;
-          font-weight: 700;
+          font-size: 0.74rem;
+          font-weight: 750;
           background: #f5f3ff;
           color: #6d28d9;
           border: 1px solid #ddd6fe;
-          padding: 4px 12px;
+          padding: 4px 10px;
           border-radius: 999px;
         }
 
@@ -173,84 +177,85 @@ export default function ImageBackgroundChangePage() {
         .tool-card {
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          border-radius: 22px;
-          padding: 30px;
-          box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
-          margin-bottom: 24px;
+          border-radius: 20px;
+          padding: 24px;
+          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+          margin-bottom: 20px;
+          box-sizing: border-box;
+          width: 100%;
         }
         .tool-header-block {
           display: flex;
-          align-items: flex-start;
-          gap: 16px;
+          align-items: center;
+          gap: 14px;
           border-bottom: 1px solid #f1f5f9;
-          padding-bottom: 18px;
-          margin-bottom: 24px;
+          padding-bottom: 16px;
+          margin-bottom: 20px;
         }
         .tool-header-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 16px;
+          width: 46px;
+          height: 46px;
+          border-radius: 14px;
           background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 8px 18px -4px rgba(124, 58, 237, 0.3);
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
           flex-shrink: 0;
         }
         .tool-title {
-          font-size: 1.5rem;
+          font-size: 1.35rem;
           font-weight: 850;
           color: #0f172a;
-          margin: 0 0 6px 0;
+          margin: 0 0 4px 0;
           letter-spacing: -0.02em;
         }
         .tool-desc {
-          font-size: 0.92rem;
+          font-size: 0.86rem;
           color: #64748b;
           margin: 0;
-          line-height: 1.5;
+          line-height: 1.45;
         }
 
         /* Upload Dropzone */
         .upload-dropzone {
           border: 2px dashed #ddd6fe;
-          background: linear-gradient(180deg, #f8fafc 0%, #faf5ff 100%);
-          border-radius: 18px;
-          padding: 40px 20px;
+          background: #f8fafc;
+          border-radius: 16px;
+          padding: 32px 16px;
           text-align: center;
           cursor: pointer;
-          transition: all 0.25s ease;
-          margin-bottom: 20px;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+          width: 100%;
         }
         .upload-dropzone:hover {
           border-color: #7c3aed;
           background: #faf5ff;
-          transform: translateY(-1px);
-          box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.12);
         }
         .upload-icon-box {
-          width: 56px;
-          height: 56px;
-          border-radius: 16px;
+          width: 48px;
+          height: 48px;
+          border-radius: 14px;
           background: #ffffff;
           color: #7c3aed;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 14px;
-          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.12);
+          margin: 0 auto 12px;
+          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
         }
         .upload-title {
-          font-size: 1.12rem;
+          font-size: 1.05rem;
           font-weight: 800;
           color: #0f172a;
-          margin-bottom: 6px;
+          margin-bottom: 4px;
         }
         .upload-hint {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
           color: #64748b;
-          margin-bottom: 14px;
+          margin-bottom: 12px;
         }
         .upload-btn-fake {
           display: inline-flex;
@@ -258,11 +263,11 @@ export default function ImageBackgroundChangePage() {
           gap: 6px;
           background: #7c3aed;
           color: #ffffff;
-          font-size: 0.86rem;
+          font-size: 0.84rem;
           font-weight: 750;
-          padding: 9px 20px;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+          padding: 8px 18px;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
         }
 
         /* Active File Banner */
@@ -271,65 +276,57 @@ export default function ImageBackgroundChangePage() {
           align-items: center;
           justify-content: space-between;
           background: #f8fafc;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 14px;
-          padding: 12px 18px;
-          margin-bottom: 22px;
-          gap: 12px;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 10px 14px;
+          margin-bottom: 18px;
+          gap: 10px;
           flex-wrap: wrap;
         }
         .file-info-text {
-          font-size: 0.88rem;
+          font-size: 0.84rem;
           color: #334155;
           font-weight: 700;
         }
         .btn-change-file {
           background: #ffffff;
-          border: 1.5px solid #cbd5e1;
+          border: 1px solid #cbd5e1;
           color: #1e293b;
-          padding: 6px 14px;
-          border-radius: 8px;
-          font-size: 0.82rem;
-          font-weight: 700;
+          padding: 5px 12px;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          font-weight: 750;
           cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        .btn-change-file:hover {
-          background: #f1f5f9;
-          border-color: #94a3b8;
         }
 
         /* Color Options */
         .section-label {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 0.86rem;
+          font-size: 0.82rem;
           font-weight: 800;
           color: #1e293b;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           text-transform: uppercase;
-          letter-spacing: 0.03em;
+          letter-spacing: 0.02em;
         }
         .color-palette {
           display: flex;
-          gap: 14px;
+          gap: 8px;
           flex-wrap: wrap;
           align-items: center;
-          margin-bottom: 24px;
+          margin-bottom: 18px;
         }
         .color-pill-btn {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          padding: 6px 14px 6px 8px;
-          border-radius: 12px;
+          padding: 5px 12px 5px 7px;
+          border-radius: 10px;
           cursor: pointer;
-          transition: all 0.2s ease;
-          font-size: 0.84rem;
-          font-weight: 700;
+          transition: all 0.15s ease;
+          font-size: 0.8rem;
+          font-weight: 750;
           color: #334155;
         }
         .color-pill-btn:hover {
@@ -340,11 +337,11 @@ export default function ImageBackgroundChangePage() {
           border-color: #7c3aed;
           background: #f5f3ff;
           color: #6d28d9;
-          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+          box-shadow: 0 2px 6px rgba(124, 58, 237, 0.15);
         }
         .swatch-circle {
-          width: 26px;
-          height: 26px;
+          width: 22px;
+          height: 22px;
           border-radius: 50%;
           border: 1.5px solid #cbd5e1;
           display: flex;
@@ -355,13 +352,13 @@ export default function ImageBackgroundChangePage() {
         .custom-color-box {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           background: #ffffff;
           border: 1.5px solid #e2e8f0;
-          padding: 5px 12px;
-          border-radius: 12px;
-          font-size: 0.84rem;
-          font-weight: 700;
+          padding: 4px 10px;
+          border-radius: 10px;
+          font-size: 0.8rem;
+          font-weight: 750;
           color: #334155;
           cursor: pointer;
         }
@@ -369,29 +366,29 @@ export default function ImageBackgroundChangePage() {
         /* Tolerance Control */
         .tolerance-box {
           background: #f8fafc;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 16px 20px;
-          margin-bottom: 24px;
+          border: 1px solid #e2e8f0;
+          border-radius: 14px;
+          padding: 14px 16px;
+          margin-bottom: 20px;
         }
         .tolerance-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
         .tolerance-title {
-          font-size: 0.86rem;
+          font-size: 0.82rem;
           font-weight: 750;
           color: #1e293b;
         }
         .tolerance-badge {
-          font-size: 0.82rem;
+          font-size: 0.78rem;
           font-weight: 800;
           color: #7c3aed;
           background: #f5f3ff;
           border: 1px solid #ddd6fe;
-          padding: 2px 10px;
+          padding: 1px 8px;
           border-radius: 999px;
         }
         .slider-range {
@@ -403,46 +400,47 @@ export default function ImageBackgroundChangePage() {
         .tolerance-hint {
           display: flex;
           justify-content: space-between;
-          font-size: 0.74rem;
+          font-size: 0.72rem;
           color: #64748b;
-          margin-top: 6px;
+          margin-top: 4px;
         }
 
         /* Preview Container */
         .preview-container {
-          background: linear-gradient(180deg, #f8fafc 0%, #faf5ff 100%);
+          background: #f8fafc;
           border: 1.5px solid #ddd6fe;
-          border-radius: 18px;
-          padding: 24px;
-          margin-top: 24px;
+          border-radius: 16px;
+          padding: 18px 14px;
+          margin-top: 20px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
+          box-sizing: border-box;
+          width: 100%;
         }
         .preview-header-pill {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 0.78rem;
+          font-size: 0.74rem;
           font-weight: 800;
           text-transform: uppercase;
           background: #ede9fe;
           color: #5b21b6;
-          padding: 4px 12px;
+          padding: 3px 10px;
           border-radius: 999px;
-          margin-bottom: 16px;
-          letter-spacing: 0.03em;
+          margin-bottom: 12px;
         }
         .preview-img-box {
-          max-width: 280px;
-          max-height: 280px;
-          border: 2px solid #cbd5e1;
-          border-radius: 14px;
-          padding: 6px;
-          margin-bottom: 16px;
+          max-width: 240px;
+          max-height: 240px;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          padding: 4px;
+          margin-bottom: 14px;
           overflow: hidden;
-          box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
         }
         .preview-img-box img {
           width: 100%;
@@ -453,18 +451,17 @@ export default function ImageBackgroundChangePage() {
         }
         .preview-stats {
           display: flex;
-          gap: 10px;
-          font-size: 0.85rem;
+          gap: 8px;
+          font-size: 0.8rem;
           font-weight: 750;
           color: #1e293b;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
         }
         .stat-badge {
           background: #ffffff;
-          padding: 6px 14px;
+          padding: 4px 10px;
           border-radius: 999px;
           border: 1px solid #e2e8f0;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
         .stat-badge.highlight {
           background: #f5f3ff;
@@ -477,43 +474,46 @@ export default function ImageBackgroundChangePage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+          gap: 8px;
+          background: #7c3aed;
           color: #ffffff;
-          font-size: 0.98rem;
+          font-size: 0.92rem;
           font-weight: 800;
-          padding: 13px 32px;
-          border-radius: 12px;
+          padding: 12px 24px;
+          border-radius: 10px;
           text-decoration: none;
           border: none;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 6px 20px rgba(124, 58, 237, 0.28);
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+          box-sizing: border-box;
+          min-height: 48px;
         }
         .btn-download:hover {
-          background: linear-gradient(135deg, #6d28d9 0%, #4f46e5 100%);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+          background: #6d28d9;
         }
 
         /* Guidelines Card */
         .exam-info-card {
-          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-          border: 1.5px solid #a7f3d0;
-          border-radius: 18px;
-          padding: 20px;
-          font-size: 0.86rem;
-          color: #166534;
-          line-height: 1.6;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 18px;
+          font-size: 0.84rem;
+          color: #334155;
+          line-height: 1.55;
+          box-sizing: border-box;
+          width: 100%;
         }
-        .exam-info-card strong { color: #14532d; }
+        .exam-info-card strong { color: #0f172a; }
 
         @media (max-width: 640px) {
-          .tool-card { padding: 20px 16px; border-radius: 18px; }
-          .tool-title { font-size: 1.25rem; }
-          .tool-header-icon { width: 44px; height: 44px; border-radius: 12px; }
-          .color-palette { gap: 8px; }
-          .color-pill-btn { padding: 5px 10px 5px 6px; font-size: 0.78rem; }
+          .tool-screen-main { padding: 16px 12px 76px; }
+          .tool-card { padding: 16px 14px; border-radius: 16px; }
+          .tool-title { font-size: 1.15rem; }
+          .tool-header-icon { width: 40px; height: 40px; border-radius: 12px; }
+          .color-palette { gap: 6px; }
+          .color-pill-btn { padding: 4px 8px 4px 5px; font-size: 0.74rem; }
           .btn-download { width: 100%; }
         }
       `}</style>
@@ -522,10 +522,10 @@ export default function ImageBackgroundChangePage() {
         {/* Navigation Bar */}
         <div className="back-nav-bar">
           <Link href="/tools" prefetch={true} className="btn-back-tools">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            <span>Back to All Tools</span>
+            <span>Back to Tools</span>
           </Link>
           <span className="privacy-pill">
             <span>🔒</span> 100% Client-Side Privacy
@@ -535,14 +535,14 @@ export default function ImageBackgroundChangePage() {
         <div className="tool-card">
           <div className="tool-header-block">
             <div className="tool-header-icon">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
               </svg>
             </div>
             <div>
               <h1 className="tool-title">Image Background Change</h1>
               <p className="tool-desc">
-                Convert photo background to pure white or light sky blue to prevent exam application rejection.
+                Convert background to pure white or light sky blue to prevent exam application rejection.
               </p>
             </div>
           </div>
@@ -558,7 +558,7 @@ export default function ImageBackgroundChangePage() {
           {!bgImage ? (
             <div className="upload-dropzone" onClick={() => bgInputRef.current?.click()}>
               <div className="upload-icon-box">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <path d="M21 15l-5-5L5 21" />
@@ -584,9 +584,7 @@ export default function ImageBackgroundChangePage() {
               </div>
 
               {/* Target Background Color */}
-              <div className="section-label">
-                <span>Select Target Background Color</span>
-              </div>
+              <div className="section-label">Select Background Color:</div>
 
               <div className="color-palette">
                 {COLOR_OPTIONS.map((c) => {
@@ -600,7 +598,7 @@ export default function ImageBackgroundChangePage() {
                     >
                       <span className="swatch-circle" style={{ backgroundColor: c.value, borderColor: c.border }}>
                         {isActive && (
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={c.value === '#ffffff' ? '#0f172a' : '#ffffff'} strokeWidth="3">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={c.value === '#ffffff' ? '#0f172a' : '#ffffff'} strokeWidth="3.5">
                             <polyline points="20 6 9 17 4 12" />
                           </svg>
                         )}
@@ -619,11 +617,11 @@ export default function ImageBackgroundChangePage() {
                   <span
                     className="swatch-circle"
                     style={{
-                      background: 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 6px 6px',
+                      background: 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 5px 5px',
                     }}
                   >
                     {isTransparent && (
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="3">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="3.5">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     )}
@@ -638,16 +636,16 @@ export default function ImageBackgroundChangePage() {
                     type="color"
                     value={bgColor}
                     onChange={(e) => { setBgColor(e.target.value); setIsTransparent(false); }}
-                    style={{ width: 24, height: 24, border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                    style={{ width: 22, height: 22, border: 'none', borderRadius: 4, cursor: 'pointer' }}
                   />
-                  <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{bgColor.toUpperCase()}</span>
+                  <span style={{ fontSize: '0.74rem', color: '#64748b' }}>{bgColor.toUpperCase()}</span>
                 </label>
               </div>
 
               {/* Edge Tolerance */}
               <div className="tolerance-box">
                 <div className="tolerance-header">
-                  <span className="tolerance-title">Edge Sensitivity / Tolerance</span>
+                  <span className="tolerance-title">Edge Sensitivity</span>
                   <span className="tolerance-badge">{tolerance}</span>
                 </div>
                 <input
@@ -659,9 +657,9 @@ export default function ImageBackgroundChangePage() {
                   className="slider-range"
                 />
                 <div className="tolerance-hint">
-                  <span>Sharp Silhouette (5)</span>
+                  <span>Sharp (5)</span>
                   <span>Balanced (28)</span>
-                  <span>Aggressive Removal (65)</span>
+                  <span>Aggressive (65)</span>
                 </div>
               </div>
 
@@ -669,13 +667,13 @@ export default function ImageBackgroundChangePage() {
               {processedBgImage && (
                 <div className="preview-container">
                   <div className="preview-header-pill">
-                    <span>✨</span> Live Background Replacement
+                    <span>✨</span> Live Replacement Output
                   </div>
                   <div
                     className="preview-img-box"
                     style={{
                       background: isTransparent
-                        ? 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 12px 12px'
+                        ? 'repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 10px 10px'
                         : bgColor,
                     }}
                   >
@@ -691,7 +689,7 @@ export default function ImageBackgroundChangePage() {
                     download={`${bgFileName}_new_bg.png`}
                     className="btn-download"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
@@ -704,12 +702,12 @@ export default function ImageBackgroundChangePage() {
           )}
         </div>
 
-        {/* Govt Exam Guidelines Notice */}
+        {/* Guidelines Notice */}
         <div className="exam-info-card">
-          <strong>📌 Official Guidelines for SSC, Railway &amp; UPSC Application Photos:</strong>
-          <ul style={{ paddingLeft: 18, marginTop: 8, marginBottom: 0 }}>
-            <li><strong>Background:</strong> Must be plain white or very light color (dark/shadowy backgrounds cause rejection).</li>
-            <li><strong>Face Coverage:</strong> At least 70-80% of photo area, looking directly into the camera with neutral expression. No hats, caps, or sunglasses.</li>
+          <strong>📌 Official Rules:</strong>
+          <ul style={{ paddingLeft: 18, marginTop: 6, marginBottom: 0 }}>
+            <li>Background must be plain white or very light color. Dark or patterned backgrounds are rejected by exam portals.</li>
+            <li>Face must cover 70-80% of photo area with direct eye contact into the camera.</li>
           </ul>
         </div>
       </div>

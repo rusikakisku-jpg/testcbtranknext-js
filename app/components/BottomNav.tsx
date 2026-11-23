@@ -14,6 +14,7 @@ export default function BottomNav() {
     try {
       router.prefetch('/');
       router.prefetch('/tools');
+      router.prefetch('/typing');
       router.prefetch('/history');
       router.prefetch('/blog');
     } catch {
@@ -34,6 +35,7 @@ export default function BottomNav() {
 
   const isHomeActive = currentPath === '/';
   const isToolsActive = currentPath === '/tools' || currentPath.startsWith('/tools/');
+  const isTypingActive = currentPath === '/typing' || currentPath.startsWith('/typing/') || currentPath === '/tools/typing-test';
   const isHistoryActive = currentPath === '/history' || currentPath.startsWith('/history/');
   const isBlogActive = currentPath === '/blog' || currentPath.startsWith('/blog/');
 
@@ -82,18 +84,18 @@ export default function BottomNav() {
         <span className="bottom-nav-label">Home</span>
       </Link>
 
-      {/* 2. Tools Tab */}
+      {/* 2. Tools Tab (Photo & Sign tools) */}
       <Link
         href="/tools"
         prefetch={true}
-        className={`bottom-nav-tab${isToolsActive ? ' active' : ''}`}
+        className={`bottom-nav-tab${isToolsActive && !isTypingActive ? ' active' : ''}`}
         aria-label="Tools"
-        aria-current={isToolsActive ? 'page' : undefined}
+        aria-current={isToolsActive && !isTypingActive ? 'page' : undefined}
         onClick={() => handleTabPress('/tools')}
         onTouchStart={() => handleTabPress('/tools')}
       >
         <div className="bottom-nav-icon-box">
-          {isToolsActive ? (
+          {isToolsActive && !isTypingActive ? (
             <svg
               className="bottom-nav-icon"
               viewBox="0 0 24 24"
@@ -124,7 +126,67 @@ export default function BottomNav() {
         <span className="bottom-nav-label">Tools</span>
       </Link>
 
-      {/* 3. History Tab */}
+      {/* 3. Typing Tab (Dedicated Typing Page) */}
+      <Link
+        href="/typing"
+        prefetch={true}
+        className={`bottom-nav-tab${isTypingActive ? ' active' : ''}`}
+        aria-label="Typing"
+        aria-current={isTypingActive ? 'page' : undefined}
+        onClick={() => handleTabPress('/typing')}
+        onTouchStart={() => handleTabPress('/typing')}
+      >
+        <div className="bottom-nav-icon-box">
+          {isTypingActive ? (
+            <svg
+              className="bottom-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" fill="currentColor" fillOpacity="0.2" />
+              <line x1="6" y1="8" x2="6.01" y2="8" strokeWidth="2.5" />
+              <line x1="10" y1="8" x2="10.01" y2="8" strokeWidth="2.5" />
+              <line x1="14" y1="8" x2="14.01" y2="8" strokeWidth="2.5" />
+              <line x1="18" y1="8" x2="18.01" y2="8" strokeWidth="2.5" />
+              <line x1="6" y1="12" x2="6.01" y2="12" strokeWidth="2.5" />
+              <line x1="10" y1="12" x2="10.01" y2="12" strokeWidth="2.5" />
+              <line x1="14" y1="12" x2="14.01" y2="12" strokeWidth="2.5" />
+              <line x1="18" y1="12" x2="18.01" y2="12" strokeWidth="2.5" />
+              <line x1="7" y1="16" x2="17" y2="16" strokeWidth="2.5" />
+            </svg>
+          ) : (
+            <svg
+              className="bottom-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <line x1="6" y1="8" x2="6.01" y2="8" />
+              <line x1="10" y1="8" x2="10.01" y2="8" />
+              <line x1="14" y1="8" x2="14.01" y2="8" />
+              <line x1="18" y1="8" x2="18.01" y2="8" />
+              <line x1="6" y1="12" x2="6.01" y2="12" />
+              <line x1="10" y1="12" x2="10.01" y2="12" />
+              <line x1="14" y1="12" x2="14.01" y2="12" />
+              <line x1="18" y1="12" x2="18.01" y2="12" />
+              <line x1="7" y1="16" x2="17" y2="16" />
+            </svg>
+          )}
+        </div>
+        <span className="bottom-nav-label">Typing</span>
+      </Link>
+
+      {/* 4. History Tab */}
       <Link
         href="/history"
         prefetch={true}
@@ -170,7 +232,7 @@ export default function BottomNav() {
         <span className="bottom-nav-label">History</span>
       </Link>
 
-      {/* 4. Blog Tab */}
+      {/* 5. Blog Tab */}
       <Link
         href="/blog"
         prefetch={true}
