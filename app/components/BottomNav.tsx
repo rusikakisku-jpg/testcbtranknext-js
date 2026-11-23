@@ -13,7 +13,7 @@ export default function BottomNav() {
   useEffect(() => {
     try {
       router.prefetch('/');
-      router.prefetch('/answerkey');
+      router.prefetch('/tools');
       router.prefetch('/history');
       router.prefetch('/blog');
     } catch {
@@ -33,11 +33,7 @@ export default function BottomNav() {
   }
 
   const isHomeActive = currentPath === '/';
-  const isCalculatorActive =
-    currentPath === '/answerkey' ||
-    currentPath.startsWith('/answerkey/') ||
-    currentPath.endsWith('/answerkey') ||
-    currentPath.startsWith('/calculator');
+  const isToolsActive = currentPath === '/tools' || currentPath.startsWith('/tools/');
   const isHistoryActive = currentPath === '/history' || currentPath.startsWith('/history/');
   const isBlogActive = currentPath === '/blog' || currentPath.startsWith('/blog/');
 
@@ -86,38 +82,46 @@ export default function BottomNav() {
         <span className="bottom-nav-label">Home</span>
       </Link>
 
-      {/* 2. Calculator Tab */}
+      {/* 2. Tools Tab */}
       <Link
-        href="/answerkey"
+        href="/tools"
         prefetch={true}
-        className={`bottom-nav-tab${isCalculatorActive ? ' active' : ''}`}
-        aria-label="Calculator"
-        aria-current={isCalculatorActive ? 'page' : undefined}
-        onClick={() => handleTabPress('/answerkey')}
-        onTouchStart={() => handleTabPress('/answerkey')}
+        className={`bottom-nav-tab${isToolsActive ? ' active' : ''}`}
+        aria-label="Tools"
+        aria-current={isToolsActive ? 'page' : undefined}
+        onClick={() => handleTabPress('/tools')}
+        onTouchStart={() => handleTabPress('/tools')}
       >
         <div className="bottom-nav-icon-box">
-          <svg
-            className="bottom-nav-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="4" y="2" width="16" height="20" rx="3" strokeWidth="2" />
-            <line x1="8" y1="7" x2="16" y2="7" strokeWidth="2.4" />
-            <circle cx="8.5" cy="12" r="1.2" fill="currentColor" />
-            <circle cx="12" cy="12" r="1.2" fill="currentColor" />
-            <circle cx="15.5" cy="12" r="1.2" fill="currentColor" />
-            <circle cx="8.5" cy="16.5" r="1.2" fill="currentColor" />
-            <circle cx="12" cy="16.5" r="1.2" fill="currentColor" />
-            <circle cx="15.5" cy="16.5" r="1.2" fill="currentColor" />
-          </svg>
+          {isToolsActive ? (
+            <svg
+              className="bottom-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="currentColor" fillOpacity="0.2" />
+            </svg>
+          ) : (
+            <svg
+              className="bottom-nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+            </svg>
+          )}
         </div>
-        <span className="bottom-nav-label">Calculator</span>
+        <span className="bottom-nav-label">Tools</span>
       </Link>
 
       {/* 3. History Tab */}
