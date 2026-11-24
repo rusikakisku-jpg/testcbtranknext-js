@@ -836,13 +836,11 @@ export default function AnswerkeyCalculator({
           </div>
         </div>
 
-        {/* Main Calculator Area (with Desktop 2-Column Side-by-Side Layout) */}
+        {/* Main Calculator Area (with Desktop 2-Column Side-by-Side Grid Layout) */}
         <div className={sidebar ? "calculator-layout-wrapper" : ""}>
-          {/* Left Column: Calculator Card + SEO Guides + FAQs strictly on the Left Side */}
-          <div className="calculator-left-col">
-            {/* Calculator Card */}
-            <div className="calculator-card">
-              <div className="top-accent-bar"></div>
+          {/* 1. Calculator Card (Row 1, Col 1 - Strictly in one line with Sidebar) */}
+          <div className="calculator-card">
+            <div className="top-accent-bar"></div>
 
           <div className="banner-header">
             <div className="badge-pill">
@@ -1139,8 +1137,17 @@ export default function AnswerkeyCalculator({
           </div>
         </div>
 
-        {/* AdSense Manual Banner */}
-        <AdBanner slotId={ADSENSE_CONFIG.SLOTS.CALCULATOR_BANNER} />
+        {/* 2. Calculator Sidebar (Col 2, Spanning down - Popular & Related in one line with Calculator) */}
+        {sidebar && (
+          <aside className="calculator-sidebar">
+            {sidebar}
+          </aside>
+        )}
+
+        {/* 3. Left Details Column (Row 2, Col 1 - Strictly on the LEFT SIDE under Calculator Card) */}
+        <div className="calculator-left-details">
+          {/* AdSense Manual Banner */}
+          <AdBanner slotId={ADSENSE_CONFIG.SLOTS.CALCULATOR_BANNER} />
 
         {/* Rich SEO & Informational Content Cards OR Custom Exam Description */}
         {hasCustomDescription ? (
@@ -1521,12 +1528,6 @@ export default function AnswerkeyCalculator({
         {/* Custom Page Children (e.g. ExamFaqSection or Exam Details) */}
         {children}
       </div>
-
-      {sidebar && (
-        <aside className="calculator-sidebar">
-          {sidebar}
-        </aside>
-      )}
     </div>
   </div>
 </main>
