@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { AdBanner } from '../../components/GoogleAdSense';
+import { ADSENSE_CONFIG } from '../../config/adsense';
 
 interface ResizePreset {
   name: string;
@@ -669,6 +671,9 @@ export default function ImageResizePage() {
             </div>
           )}
         </div>
+
+        {/* AdSense Unit for Aspirant Tools */}
+        <AdBanner slotId={ADSENSE_CONFIG.SLOTS.TOOLS_BANNER || ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
       </div>
     </main>
   );

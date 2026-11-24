@@ -10,6 +10,8 @@ import {
   restoreSearchHistoryItem,
   HistoryItem,
 } from '../utils/history';
+import { AdBanner } from '../components/GoogleAdSense';
+import { ADSENSE_CONFIG } from '../config/adsense';
 
 function formatRelativeTime(timestamp: number, formattedFallback: string): string {
   if (!timestamp) return formattedFallback || '';
@@ -222,8 +224,24 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {/* Main Container */}
-      <div className="history-container">
+      {/* Desktop 3-Column Layout with AdSense Left & Right Rails */}
+      <div className="history-desktop-layout">
+        {/* Desktop Left Rail AdSense Skyscraper */}
+        <aside className="history-ad-rail history-ad-rail-left" aria-label="Left AdSense Advertisement">
+          <div className="history-ad-rail-sticky">
+            <AdBanner
+              slotId={ADSENSE_CONFIG.SLOTS.HISTORY_SIDEBAR_LEFT || ADSENSE_CONFIG.SLOTS.SIDEBAR_BANNER}
+              format="vertical"
+              responsive={false}
+              style={{ display: 'inline-block', width: '160px', height: '600px', minHeight: '600px' }}
+            />
+          </div>
+        </aside>
+
+        {/* Center Content Column */}
+        <div className="history-center-col">
+          {/* Main Container */}
+          <div className="history-container">
 
         {/* Minimalist Clean Header */}
         <header className="history-header">
@@ -254,6 +272,11 @@ export default function HistoryPage() {
             Previously checked answer keys and scorecards
           </p>
         </header>
+
+        {/* Mobile / Tablet AdSense Banner */}
+        <div className="history-mobile-ad">
+          <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HISTORY_BANNER} />
+        </div>
 
         {/* Papers List */}
         {!isLoaded ? (
@@ -421,7 +444,26 @@ export default function HistoryPage() {
           </div>
         )}
 
+        {/* Footer Ad Unit */}
+        <div className="history-footer-ad">
+          <AdBanner slotId={ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
+        </div>
+
       </div>
+    </div>
+
+    {/* Desktop Right Rail AdSense Skyscraper */}
+    <aside className="history-ad-rail history-ad-rail-right" aria-label="Right AdSense Advertisement">
+      <div className="history-ad-rail-sticky">
+        <AdBanner
+          slotId={ADSENSE_CONFIG.SLOTS.HISTORY_SIDEBAR_RIGHT || ADSENSE_CONFIG.SLOTS.SIDEBAR_BANNER}
+          format="vertical"
+          responsive={false}
+          style={{ display: 'inline-block', width: '160px', height: '600px', minHeight: '600px' }}
+        />
+      </div>
+    </aside>
+  </div>
 
       {/* Clear All Confirmation Modal */}
       {showClearModal && (

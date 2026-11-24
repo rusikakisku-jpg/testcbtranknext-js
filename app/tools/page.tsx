@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { AdBanner } from '../components/GoogleAdSense';
+import { ADSENSE_CONFIG } from '../config/adsense';
 
 export const metadata: Metadata = {
   title: 'Free Photo & Signature Tools for Govt Exams | CBT RANK',
@@ -252,6 +254,9 @@ export default function ToolsHubPage() {
           </p>
         </header>
 
+        {/* AdSense Tools Top Banner Unit */}
+        <AdBanner slotId={ADSENSE_CONFIG.SLOTS.TOOLS_BANNER || ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
+
         <div className="tools-list-view">
           {TOOLS_LIST.map((tool) => (
             <Link
@@ -285,6 +290,9 @@ export default function ToolsHubPage() {
             </Link>
           ))}
         </div>
+
+        {/* AdSense Tools Bottom Footer Unit */}
+        <AdBanner slotId={ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
       </div>
     </main>
   );

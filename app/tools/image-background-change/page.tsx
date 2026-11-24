@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { AdBanner } from '../../components/GoogleAdSense';
+import { ADSENSE_CONFIG } from '../../config/adsense';
 
 export default function ImageBackgroundChangePage() {
   const [bgImage, setBgImage] = useState<string | null>(null);
@@ -637,6 +639,9 @@ export default function ImageBackgroundChangePage() {
             </div>
           )}
         </div>
+
+        {/* AdSense Unit for Aspirant Tools */}
+        <AdBanner slotId={ADSENSE_CONFIG.SLOTS.TOOLS_BANNER || ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
       </div>
     </main>
   );
