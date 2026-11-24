@@ -8,6 +8,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+  // Use dedicated TypingNavbar when on /typing
+  if (pathname?.startsWith('/typing')) {
+    return null;
+  }
+
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);

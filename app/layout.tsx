@@ -114,8 +114,6 @@ export default function RootLayout({
         <div className="page-body">
           <Navbar />
           {children}
-          {/* Manual Google AdSense Banner above Footer */}
-          <AdBanner slotId={ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
           <Footer />
         </div>
         <BottomNav />

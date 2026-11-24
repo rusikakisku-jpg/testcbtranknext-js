@@ -29,7 +29,7 @@ export default function BottomNav() {
 
   const currentPath = optimisticPath ?? pathname;
 
-  if (pathname?.startsWith('/review-answerkey')) {
+  if (pathname?.startsWith('/review-answerkey') || pathname?.startsWith('/typing')) {
     return null;
   }
 
