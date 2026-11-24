@@ -836,12 +836,10 @@ export default function AnswerkeyCalculator({
           </div>
         </div>
 
-        {/* Main Calculator Area (with optional Desktop Sidebar) */}
+        {/* Main Calculator Top Row (Calculator Card Left + Popular & Related / Telegram Sidebar Right in One Line) */}
         <div className={sidebar ? "calculator-layout-wrapper" : ""}>
-          {/* Left Column: Calculator Form + Informational Cards + Children */}
-          <div className="calculator-main-col">
-            {/* Calculator Card */}
-            <div className="calculator-card">
+          {/* Calculator Card */}
+          <div className="calculator-card">
             <div className="top-accent-bar"></div>
 
           <div className="banner-header">
@@ -1139,6 +1137,15 @@ export default function AnswerkeyCalculator({
           </div>
         </div>
 
+        {sidebar && (
+          <aside className="calculator-sidebar">
+            {sidebar}
+          </aside>
+        )}
+      </div>
+
+      {/* Bottom Area: AdSense Banner + SEO Details Cards + Children */}
+      <div className="calculator-bottom-details">
         {/* AdSense Manual Banner */}
         <AdBanner slotId={ADSENSE_CONFIG.SLOTS.CALCULATOR_BANNER} />
 
@@ -1521,14 +1528,7 @@ export default function AnswerkeyCalculator({
         {/* Custom Page Children (e.g. ExamFaqSection or Exam Details) */}
         {children}
       </div>
-
-      {sidebar && (
-        <aside className="calculator-sidebar">
-          {sidebar}
-        </aside>
-      )}
     </div>
-  </div>
-</main>
-  );
+  </main>
+);
 }
