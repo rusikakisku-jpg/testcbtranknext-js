@@ -4,7 +4,6 @@ import type { Metadata } from 'next';
 import AnswerkeyCalculator from '../components/AnswerkeyCalculator';
 import ExamFaqSection from '../components/ExamFaqSection';
 import AnswerkeySidebar from '../components/AnswerkeySidebar';
-import { fetchBlogsFromCloudflareD1, FALLBACK_BLOG_POSTS, BlogPost } from '../data/blogs';
 
 const currentYear = new Date().getFullYear();
 
@@ -94,19 +93,6 @@ const faqSchema = {
 };
 
 export default async function AnswerkeyPage() {
-  let allPosts: BlogPost[] = [];
-  try {
-    allPosts = await fetchBlogsFromCloudflareD1();
-  } catch (e) {
-    allPosts = FALLBACK_BLOG_POSTS;
-  }
-  if (!Array.isArray(allPosts) || allPosts.length === 0) {
-    allPosts = FALLBACK_BLOG_POSTS;
-  }
-
-  const recentPosts = allPosts.slice(0, 5);
-  const popularPosts = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
-
   return (
     <>
       <script
@@ -123,8 +109,6 @@ export default async function AnswerkeyPage() {
         sidebar={
           <AnswerkeySidebar
             currentSlug=""
-            recentPosts={recentPosts}
-            popularPosts={popularPosts}
           />
         }
       >

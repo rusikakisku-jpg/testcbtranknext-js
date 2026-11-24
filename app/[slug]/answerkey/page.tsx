@@ -6,7 +6,6 @@ import AnswerkeyCalculator from '../../components/AnswerkeyCalculator';
 import ExamFaqSection from '../../components/ExamFaqSection';
 import AnswerkeySidebar from '../../components/AnswerkeySidebar';
 import { getExamBySlug, Exam } from '../../data/exams';
-import { fetchBlogsFromCloudflareD1, FALLBACK_BLOG_POSTS, BlogPost } from '../../data/blogs';
 
 // Next.js 15: params is a Promise
 interface PageProps {
@@ -115,19 +114,6 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
     }
   ];
 
-  let allPosts: BlogPost[] = [];
-  try {
-    allPosts = await fetchBlogsFromCloudflareD1();
-  } catch (e) {
-    allPosts = FALLBACK_BLOG_POSTS;
-  }
-  if (!Array.isArray(allPosts) || allPosts.length === 0) {
-    allPosts = FALLBACK_BLOG_POSTS;
-  }
-
-  const recentPosts = allPosts.slice(0, 5);
-  const popularPosts = [...allPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
-
   // 1. WebApplication Schema
   const webAppSchema = {
     '@context': 'https://schema.org',
@@ -213,8 +199,6 @@ export default async function ExamAnswerkeyPage({ params }: PageProps) {
         sidebar={
           <AnswerkeySidebar
             currentSlug={slug}
-            recentPosts={recentPosts}
-            popularPosts={popularPosts}
           />
         }
       >

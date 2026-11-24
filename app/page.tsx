@@ -3,9 +3,6 @@ export const revalidate = 60;
 
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import HomeBlogsSection from './components/HomeBlogsSection';
-import { fetchBlogsFromCloudflareD1, BlogPost } from './data/blogs';
-import { APP_FEATURE_FLAGS } from './config/features';
 import { AdBanner } from './components/GoogleAdSense';
 import AdsterraBanner from './components/AdsterraBanner';
 import AdsterraNativeBanner from './components/AdsterraNativeBanner';
@@ -125,14 +122,7 @@ function ExamCard({ exam }: { exam: Exam }) {
 }
 
 export default async function HomePage() {
-  const [exams, blogs] = await Promise.all([
-    getExams(),
-    APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS
-      ? fetchBlogsFromCloudflareD1().catch(() => [] as BlogPost[])
-      : Promise.resolve([] as BlogPost[])
-  ]);
-
-  const latestBlogs = blogs.slice(0, 5);
+  const exams = await getExams();
 
   const CalculatorIcon = () => (
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,8 +170,8 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Desktop Side-by-Side Layout: Latest Exams (Left) + Latest Articles (Right) */}
-            <div className={`home-layout-columns ${APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS && latestBlogs.length > 0 ? 'has-sidebar' : ''}`}>
+            {/* Desktop Side-by-Side Layout: Latest Exams (Left) + Ads Column (Right, where blogs used to show) */}
+            <div className="home-layout-columns has-sidebar">
               <div className="exam-list" id="exam-list">
                 {exams.length === 0 ? (
                   <div className="empty-state">
@@ -194,20 +184,20 @@ export default async function HomePage() {
                 )}
               </div>
 
-              {/* Latest 5 Blog Posts Section (Toggleable via APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS) */}
-              {APP_FEATURE_FLAGS.SHOW_HOMEPAGE_BLOGS && latestBlogs.length > 0 && (
-                <div className="home-side-articles-col">
-                  <HomeBlogsSection blogs={latestBlogs} />
+              {/* Home Side Ads Column (Positioned exactly where blogs used to show) */}
+              <div className="home-side-ads-col" id="home-side-ads">
+                <div className="home-ads-sticky-container">
+                  {/* Google AdSense Manual Responsive Display Unit */}
+                  <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
+
+                  {/* 300x250 Medium Rectangle Ad Banner */}
+                  <AdsterraBanner size="300x250" />
+
+                  {/* Native Ad Banner */}
+                  <AdsterraNativeBanner />
                 </div>
-              )}
+              </div>
             </div>
-
-            {/* Adsterra Native Banner */}
-            <AdsterraNativeBanner />
-
-            {/* Adsterra 300x250 Banner & Manual AdSense Banner at the end of exam list */}
-            <AdsterraBanner size="300x250" />
-            <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
           </section>
         </div>
       </div>
