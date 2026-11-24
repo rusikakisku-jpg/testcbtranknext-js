@@ -7,8 +7,6 @@ import { cbtSave, cbtGet, cbtRemove, cbtSaveString, cbtGetString, STORAGE_KEYS }
 import { addToSearchHistory } from '../utils/history';
 import { trackEvent } from './GoogleAnalytics';
 import { AdBanner } from './GoogleAdSense';
-import AdsterraNativeBanner from './AdsterraNativeBanner';
-import AdsterraBanner from './AdsterraBanner';
 import { ADSENSE_CONFIG } from '../config/adsense';
 import { CustomField } from '../data/exams';
 
@@ -1143,12 +1141,6 @@ export default function AnswerkeyCalculator({
 
         {/* AdSense Manual Banner */}
         <AdBanner slotId={ADSENSE_CONFIG.SLOTS.CALCULATOR_BANNER} />
-
-        {/* Adsterra Native Banner */}
-        <AdsterraNativeBanner />
-
-        {/* Adsterra 300x250 Banner */}
-        <AdsterraBanner size="300x250" />
 
         {/* Rich SEO & Informational Content Cards OR Custom Exam Description */}
         {hasCustomDescription ? (

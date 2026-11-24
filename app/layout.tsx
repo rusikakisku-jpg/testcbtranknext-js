@@ -6,11 +6,7 @@ import Footer from "./components/Footer";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import GoogleAdSense, { AdBanner } from "./components/GoogleAdSense";
 import CookieConsent from "./components/CookieConsent";
-import AdsterraSocialBar from "./components/AdsterraSocialBar";
-import AdsterraBanner from "./components/AdsterraBanner";
-import MonetagVignette from "./components/MonetagVignette";
 import { ADSENSE_CONFIG, getAdSenseClientId } from "./config/adsense";
-import { MONETAG_CONFIG } from "./config/monetag";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://cbtrank.com'),
@@ -79,23 +75,6 @@ export default function RootLayout({
             />
           </>
         )}
-        {MONETAG_CONFIG.VERIFICATION_CODE && (
-          <meta name="monetag" content={MONETAG_CONFIG.VERIFICATION_CODE} />
-        )}
-        {MONETAG_CONFIG.ENABLED && MONETAG_CONFIG.VIGNETTE_ENABLED && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(function(s){s.dataset.zone='${MONETAG_CONFIG.VIGNETTE_ZONE_ID}',s.src='${MONETAG_CONFIG.VIGNETTE_SCRIPT_URL}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`
-            }}
-          />
-        )}
-        {MONETAG_CONFIG.ENABLED && MONETAG_CONFIG.IN_PAGE_PUSH_ENABLED && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(function(s){s.dataset.zone='${MONETAG_CONFIG.IN_PAGE_PUSH_ZONE_ID}',s.src='${MONETAG_CONFIG.IN_PAGE_PUSH_SCRIPT_URL}'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`
-            }}
-          />
-        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -132,14 +111,11 @@ export default function RootLayout({
       <body>
         <GoogleAnalytics />
         <GoogleAdSense />
-        <MonetagVignette />
-        <AdsterraSocialBar />
         <div className="page-body">
           <Navbar />
           {children}
-          {/* Manual AdSense and Adsterra Banner above Footer */}
+          {/* Manual Google AdSense Banner above Footer */}
           <AdBanner slotId={ADSENSE_CONFIG.SLOTS.FOOTER_BANNER} />
-          <AdsterraBanner size="320x50" />
           <Footer />
         </div>
         <BottomNav />

@@ -4,8 +4,6 @@ export const revalidate = 60;
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { AdBanner } from './components/GoogleAdSense';
-import AdsterraBanner from './components/AdsterraBanner';
-import AdsterraNativeBanner from './components/AdsterraNativeBanner';
 import { ADSENSE_CONFIG } from './config/adsense';
 
 export const metadata: Metadata = {
@@ -144,9 +142,8 @@ export default async function HomePage() {
               <span>Answerkey Calculator</span>
             </Link>
           </div>
-          {/* Manual Google AdSense Banner & Adsterra Banner in mobile view */}
+          {/* Manual Google AdSense Banner in mobile view */}
           <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
-          <AdsterraBanner size="300x250" />
         </div>
 
         <div className="content-grid">
@@ -189,12 +186,6 @@ export default async function HomePage() {
                 <div className="home-ads-sticky-container">
                   {/* Google AdSense Manual Responsive Display Unit */}
                   <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
-
-                  {/* 300x250 Medium Rectangle Ad Banner */}
-                  <AdsterraBanner size="300x250" />
-
-                  {/* Native Ad Banner */}
-                  <AdsterraNativeBanner />
                 </div>
               </div>
             </div>

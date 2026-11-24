@@ -1,7 +1,6 @@
 import RelatedExamsSection from './RelatedExamsSection';
 import { BlogPost } from '../data/blogs';
 import { AdBanner } from './GoogleAdSense';
-import AdsterraBanner from './AdsterraBanner';
 import { ADSENSE_CONFIG } from '../config/adsense';
 
 interface AnswerkeySidebarProps {
@@ -74,9 +73,8 @@ export default function AnswerkeySidebar({
         </a>
       </div>
 
-      {/* 3. Manual AdSense & Fallback Banner */}
+      {/* 3. Manual AdSense Banner */}
       <AdBanner slotId={ADSENSE_CONFIG.SLOTS.SIDEBAR_BANNER} />
-      <AdsterraBanner size="300x250" />
     </div>
   );
 }
