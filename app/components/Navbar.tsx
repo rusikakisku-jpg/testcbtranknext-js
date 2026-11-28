@@ -64,6 +64,28 @@ export default function Navbar() {
                 Blog
               </Link>
             </li>
+            <li className="nav-dropdown">
+              <button type="button" className="nav-dropdown-trigger">
+                Sarkari Alerts ▾
+              </button>
+              <div className="nav-dropdown-menu">
+                <Link href="/latest-jobs" className={isActive('/latest-jobs') ? 'active' : ''}>
+                  Latest Jobs
+                </Link>
+                <Link href="/admit-card" className={isActive('/admit-card') ? 'active' : ''}>
+                  Admit Card
+                </Link>
+                <Link href="/results" className={isActive('/results') ? 'active' : ''}>
+                  Results
+                </Link>
+                <Link href="/answer-key" className={isActive('/answer-key') ? 'active' : ''}>
+                  Answer Key
+                </Link>
+                <Link href="/syllabus" className={isActive('/syllabus') ? 'active' : ''}>
+                  Syllabus
+                </Link>
+              </div>
+            </li>
           </ul>
         </nav>
 
@@ -127,6 +149,41 @@ export default function Navbar() {
           onClick={() => setIsOpen(false)}
         >
           Blog
+        </Link>
+        <Link
+          href="/latest-jobs"
+          className={isActive('/latest-jobs') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Latest Jobs
+        </Link>
+        <Link
+          href="/admit-card"
+          className={isActive('/admit-card') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Admit Card
+        </Link>
+        <Link
+          href="/results"
+          className={isActive('/results') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Results
+        </Link>
+        <Link
+          href="/answer-key"
+          className={isActive('/answer-key') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Answer Key
+        </Link>
+        <Link
+          href="/syllabus"
+          className={isActive('/syllabus') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Syllabus
         </Link>
       </div>
     </header>

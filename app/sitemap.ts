@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { fetchBlogsFromCloudflareD1 } from './data/blogs';
 
+import { fetchAllActiveSarkariSlugsForSitemap } from './lib/sarkariDb';
+
 export const runtime = 'edge';
 
 interface Exam {
@@ -163,5 +165,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  return [...staticPages, ...examUrls, ...blogUrls];
+  const sarkariStaticRoutes = [
+    '/latest-jobs',
+    '/admit-card',
+    '/results',
+    '/syllabus',
+    '/answer-key',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily' as const,
+    priority: 0.85,
+  }));
+
+  let sarkariPostUrls: MetadataRoute.Sitemap = [];
+  try {
+    const slugs = await fetchAllActiveSarkariSlugsForSitemap();
+    sarkariPostUrls = slugs.map((item) => ({
+      url: `${baseUrl}/post/${item.slug}`,
+      lastModified: item.updated_at ? new Date(item.updated_at) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
+    }));
+  } catch {
+    // D1 optional during build if not bound yet
+  }
+
+  return [...staticPages, ...sarkariStaticRoutes, ...examUrls, ...blogUrls, ...sarkariPostUrls];
 }
