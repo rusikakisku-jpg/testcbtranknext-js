@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import AdminConsoleShell from './AdminConsoleShell';
 import {
   AgeLimitRow,
   ApplicationFeeItem,
@@ -299,20 +300,17 @@ export default function SarkariPostEditor({
   }
 
   return (
-    <main className="sarkari-container" style={{ padding: '20px 16px 48px' }}>
-      <div className="sarkari-admin-topbar">
-        <div>
-          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-            {isEdit ? `✏️ Edit: ${initialPost?.title}` : '➕ Create New Govt Exam / Sarkari Post'}
-          </h1>
-          <p style={{ fontSize: '0.84rem', color: '#64748b', marginTop: '2px' }}>
-            Save as Draft for human review &amp; Preview before publishing live
-          </p>
+    <AdminConsoleShell pageTitle={isEdit ? 'Edit Notification' : 'Create Notification'}>
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <div>
+            <h2>{isEdit ? `Edit Notification: ${initialPost?.title}` : 'Create New Sarkari Notification'}</h2>
+            <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px' }}>
+              Save as Draft for human review &amp; Preview before publishing live
+            </div>
+          </div>
+          <Link href="/admin/posts" className="btn btn-secondary btn-sm">← Back to Posts</Link>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Link href="/admin/posts" className="sarkari-btn-secondary">← Back to Posts</Link>
-        </div>
-      </div>
 
       {errorMsg && (
         <div style={{ background: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '12px 14px', borderRadius: '6px', marginBottom: '16px', fontWeight: 600 }}>
@@ -756,6 +754,7 @@ export default function SarkariPostEditor({
           <Link href="/admin/posts" className="sarkari-btn-secondary">Cancel</Link>
         </div>
       </div>
-    </main>
+      </div>
+    </AdminConsoleShell>
   );
 }

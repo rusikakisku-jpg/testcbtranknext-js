@@ -8,8 +8,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Use dedicated TypingNavbar when on /typing
-  if (pathname?.startsWith('/typing')) {
+  // Use dedicated TypingNavbar when on /typing, and AdminConsoleShell when on /admin
+  if (pathname?.startsWith('/typing') || pathname?.startsWith('/admin')) {
     return null;
   }
 
@@ -69,6 +69,9 @@ export default function Navbar() {
                 Sarkari Alerts ▾
               </button>
               <div className="nav-dropdown-menu">
+                <Link href="/sarkari" className={isActive('/sarkari') ? 'active' : ''}>
+                  Sarkari Alerts Hub
+                </Link>
                 <Link href="/latest-jobs" className={isActive('/latest-jobs') ? 'active' : ''}>
                   Latest Jobs
                 </Link>
@@ -149,6 +152,13 @@ export default function Navbar() {
           onClick={() => setIsOpen(false)}
         >
           Blog
+        </Link>
+        <Link
+          href="/sarkari"
+          className={isActive('/sarkari') ? 'active' : ''}
+          onClick={() => setIsOpen(false)}
+        >
+          Sarkari Hub
         </Link>
         <Link
           href="/latest-jobs"

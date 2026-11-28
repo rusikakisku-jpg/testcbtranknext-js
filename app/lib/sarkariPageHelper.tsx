@@ -5,10 +5,11 @@ import {
   countCategorySarkariPosts,
   fetchAllSarkariCategoryCounts,
   fetchCategorySarkariPosts,
-  fetchRecentActiveSarkariPosts
+  fetchSarkariBadges,
+  getSarkariSettings
 } from './sarkariDb';
 
-const PER_PAGE = 25;
+const PER_PAGE = 30;
 
 export function buildCategoryMetadata(catKey: string): Metadata {
   const meta = SARKARI_CATEGORIES[catKey];
@@ -38,11 +39,12 @@ export async function renderCategoryPage(
   const query = String(resolved?.q || '').trim();
   const offset = (page - 1) * PER_PAGE;
 
-  const [totalPosts, posts, categoryCounts, recentPosts] = await Promise.all([
+  const [totalPosts, posts, settings, badges, categoryCounts] = await Promise.all([
     countCategorySarkariPosts(catKey, query),
     fetchCategorySarkariPosts(catKey, PER_PAGE, offset, query),
-    fetchAllSarkariCategoryCounts(),
-    fetchRecentActiveSarkariPosts(0, 6)
+    getSarkariSettings(),
+    fetchSarkariBadges(),
+    fetchAllSarkariCategoryCounts()
   ]);
 
   const totalPages = Math.max(1, Math.ceil(totalPosts / PER_PAGE));
@@ -55,8 +57,9 @@ export async function renderCategoryPage(
       currentPage={page}
       totalPages={totalPages}
       searchQuery={query}
+      settings={settings}
+      badges={badges}
       categoryCounts={categoryCounts}
-      recentPosts={recentPosts}
     />
   );
 }

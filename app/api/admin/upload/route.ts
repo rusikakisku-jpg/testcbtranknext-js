@@ -3,6 +3,7 @@ export const runtime = 'edge';
 import { getRequestContext } from '@cloudflare/next-on-pages';
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthenticatedFromCookies } from '../../../lib/sarkariAuth';
+import { dbRun, ensureSarkariSchema } from '../../../lib/sarkariDb';
 
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticatedFromCookies())) {
@@ -20,7 +21,6 @@ export async function POST(req: NextRequest) {
     const rawName = (blob.name || 'upload.bin').replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase();
     const key = `${Date.now()}-${rawName}`;
 
-    // 1. Prefer native R2 binding if configured in Cloudflare Pages
     let r2Bucket: any = null;
     let r2PublicDomain = 'https://upload.cbtrank.com';
     try {
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
       }
     } catch {}
 
+    let uploadedUrl = '';
     if (r2Bucket && typeof r2Bucket.put === 'function') {
       const arr = await blob.arrayBuffer();
       await r2Bucket.put(key, arr, {
@@ -40,23 +41,28 @@ export async function POST(req: NextRequest) {
           cacheControl: 'public, max-age=31536000'
         }
       });
-      const fullUrl = `${r2PublicDomain}/${key}`;
-      return NextResponse.json({ success: true, url: fullUrl, location: fullUrl, key });
-    }
-
-    // 2. Fallback to optional external R2 upload worker endpoint if configured
-    const externalUploadUrl = process.env.R2_UPLOAD_URL || '';
-    if (externalUploadUrl) {
+      uploadedUrl = `${r2PublicDomain}/${key}`;
+    } else if (process.env.R2_UPLOAD_URL) {
       const fwd = new FormData();
       fwd.append('file', blob, rawName);
-      const upRes = await fetch(externalUploadUrl, { method: 'POST', body: fwd });
+      const upRes = await fetch(process.env.R2_UPLOAD_URL, { method: 'POST', body: fwd });
       const upJson = (await upRes.json().catch(() => null)) as any;
       if (upRes.ok && upJson?.url) {
-        const normalizedUrl = upJson.url.startsWith('http')
+        uploadedUrl = upJson.url.startsWith('http')
           ? upJson.url
           : `${r2PublicDomain}/${String(upJson.url).replace(/^\/+/, '')}`;
-        return NextResponse.json({ success: true, url: normalizedUrl, location: normalizedUrl });
       }
+    }
+
+    if (uploadedUrl) {
+      try {
+        await ensureSarkariSchema();
+        await dbRun(
+          'INSERT INTO sarkari_uploads (original_name, file_key, file_url, storage_type, file_size) VALUES (?, ?, ?, ?, ?)',
+          [blob.name || rawName, key, uploadedUrl, 'r2', blob.size || 0]
+        );
+      } catch {}
+      return NextResponse.json({ success: true, url: uploadedUrl, location: uploadedUrl, key });
     }
 
     return NextResponse.json(

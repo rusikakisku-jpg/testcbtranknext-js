@@ -7,10 +7,13 @@ import { isAdminAuthenticatedFromCookies, verifyDraftPreviewToken } from '../../
 import { SARKARI_CATEGORIES } from '../../lib/sarkariConstants';
 import {
   fetchAllSarkariCategoryCounts,
+  fetchPopularActiveSarkariPosts,
   fetchRecentActiveSarkariPosts,
   fetchRelatedSarkariPosts,
   fetchSarkariAuthorById,
+  fetchSarkariBadges,
   fetchSarkariPostBySlug,
+  getHiddenCategoriesSet,
   getSarkariSettings
 } from '../../lib/sarkariDb';
 
@@ -74,12 +77,14 @@ export default async function SarkariPostDetailPage({ params, searchParams }: Po
     notFound();
   }
 
-  const [author, relatedPosts, recentPosts, categoryCounts, settings] = await Promise.all([
+  const [author, relatedPosts, recentPosts, popularPosts, categoryCounts, settings, badges] = await Promise.all([
     fetchSarkariAuthorById(post.author_id || 1),
     fetchRelatedSarkariPosts(post.category, post.id, 6),
-    fetchRecentActiveSarkariPosts(post.id, 6),
+    fetchRecentActiveSarkariPosts(post.id, 5),
+    fetchPopularActiveSarkariPosts(post.id, 5),
     fetchAllSarkariCategoryCounts(),
-    getSarkariSettings()
+    getSarkariSettings(),
+    fetchSarkariBadges()
   ]);
 
   const layoutMode = settings.post_detail_layout === 'classic' ? 'classic' : 'blog_2col';
@@ -87,6 +92,7 @@ export default async function SarkariPostDetailPage({ params, searchParams }: Po
   if (!catMeta) {
     post.category = 'latest-jobs';
   }
+  const hiddenSet = getHiddenCategoriesSet(settings, categoryCounts);
 
   return (
     <SarkariPostDetailView
@@ -94,10 +100,13 @@ export default async function SarkariPostDetailPage({ params, searchParams }: Po
       author={author}
       relatedPosts={relatedPosts}
       recentPosts={recentPosts}
+      popularPosts={popularPosts}
       categoryCounts={categoryCounts}
+      hiddenCategories={Array.from(hiddenSet)}
+      badges={badges}
       layoutMode={layoutMode}
+      settings={settings}
       isDraftPreview={isDraftPreview}
-      telegramUrl={settings.telegram_url || 'https://t.me/cbtrank'}
     />
   );
 }

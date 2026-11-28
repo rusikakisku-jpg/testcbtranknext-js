@@ -166,6 +166,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const sarkariStaticRoutes = [
+    '/sarkari',
     '/latest-jobs',
     '/admit-card',
     '/results',

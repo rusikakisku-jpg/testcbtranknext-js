@@ -9,8 +9,8 @@ export default function Footer() {
   const pathname = usePathname();
   const year = new Date().getFullYear();
 
-  // Hide main footer on /typing (it has its own dedicated TypingFooter)
-  if (pathname?.startsWith('/typing')) {
+  // Hide main footer on /typing (it has its own dedicated TypingFooter) and /admin
+  if (pathname?.startsWith('/typing') || pathname?.startsWith('/admin')) {
     return null;
   }
 

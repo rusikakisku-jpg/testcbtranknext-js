@@ -1,241 +1,242 @@
 import Link from 'next/link';
-import { AdBanner } from './GoogleAdSense';
-import { ADSENSE_CONFIG } from '../config/adsense';
 import {
-  formatShortDate,
   SARKARI_CATEGORIES,
   SARKARI_CATEGORY_KEYS,
+  SarkariBadge,
   SarkariCategoryMeta,
   SarkariPost
 } from '../lib/sarkariConstants';
+import SarkariSubheader from './SarkariSubheader';
 
-interface SarkariCategoryViewProps {
+interface Props {
   categoryMeta: SarkariCategoryMeta;
   posts: SarkariPost[];
   totalPosts: number;
   currentPage: number;
   totalPages: number;
   searchQuery: string;
-  categoryCounts: Record<string, number>;
-  recentPosts: SarkariPost[];
+  settings: Record<string, string>;
+  badges?: SarkariBadge[];
+  categoryCounts?: Record<string, number>;
 }
 
 export default function SarkariCategoryView({
   categoryMeta,
   posts,
-  totalPosts,
   currentPage,
   totalPages,
   searchQuery,
-  categoryCounts,
-  recentPosts
-}: SarkariCategoryViewProps) {
-  const basePath = categoryMeta.route;
-
-  const collectionSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: `${categoryMeta.name} 2026 - CBT RANK`,
-    description: categoryMeta.description,
-    url: `https://cbtrank.com${basePath}`
+  settings,
+  badges = []
+}: Props) {
+  const buildPageHref = (pageNum: number) => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('q', searchQuery);
+    if (pageNum > 1) params.set('page', String(pageNum));
+    const qs = params.toString();
+    return qs ? `${categoryMeta.route}?${qs}` : categoryMeta.route;
   };
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://cbtrank.com' },
-      { '@type': 'ListItem', position: 2, name: categoryMeta.name, item: `https://cbtrank.com${basePath}` }
-    ]
-  };
+  const pageNumbers: number[] = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
 
   return (
-    <main style={{ minHeight: '80vh', padding: '14px 0 42px' }}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+    <div className="gez-portal-root">
+      {/* Compact Category Sub-Header */}
+      <SarkariSubheader
+        settings={settings}
+        badges={badges}
+        searchQuery={searchQuery}
+        showBadges={false}
+        showSearch={false}
       />
 
-      <div className="sarkari-container">
-        <div className="sarkari-breadcrumb">
-          <Link href="/">Home</Link> <span>»</span> <strong>{categoryMeta.name}</strong>
+      <main className="container">
+        {/* Category Quick Bar */}
+        <div className="gez-cat-strip">
+          <Link href="/sarkari" className="gez-cat-strip-link">
+            🏠 Sarkari Hub
+          </Link>
+          {SARKARI_CATEGORY_KEYS.map((key) => {
+            const cat = SARKARI_CATEGORIES[key];
+            return (
+              <Link
+                key={key}
+                href={cat.route}
+                className={`gez-cat-strip-link${key === categoryMeta.slug ? ' active' : ''}`}
+              >
+                {cat.shortLabel}
+              </Link>
+            );
+          })}
         </div>
 
-        <div className="sarkari-layout">
-          <div className="sarkari-main-col">
-            <div className="sarkari-hero-banner" style={{ borderLeftColor: categoryMeta.accentColor }}>
-              <div className="sarkari-hero-top">
-                <span className="sarkari-cat-pill" style={{ background: categoryMeta.accentColor }}>
-                  {categoryMeta.name}
-                </span>
-                <span className="sarkari-total-pill">{totalPosts} Updates</span>
-              </div>
-              <h1 className="sarkari-page-h1">{categoryMeta.name} 2026 Updates</h1>
-              <p className="sarkari-page-desc">{categoryMeta.description}</p>
+        {/* Breadcrumb */}
+        <div style={{ fontSize: '13px', margin: '10px 0 12px 2px', color: '#666' }}>
+          <Link href="/" style={{ color: 'var(--primary-red)', fontWeight: 'bold', textDecoration: 'none' }}>
+            🏠 Home
+          </Link>
+          <span style={{ margin: '0 6px', color: '#999' }}>»</span>
+          <Link href="/sarkari" style={{ color: '#475569', fontWeight: 600, textDecoration: 'none' }}>
+            Sarkari Portal
+          </Link>
+          <span style={{ margin: '0 6px', color: '#999' }}>»</span>
+          <span style={{ color: '#333', fontWeight: 600 }}>{categoryMeta.name}</span>
+        </div>
 
-              <form action={basePath} method="GET" className="sarkari-search-row">
-                <input
-                  type="text"
-                  name="q"
-                  defaultValue={searchQuery}
-                  placeholder={`Search inside ${categoryMeta.name} by exam or department...`}
-                  className="sarkari-search-input"
-                />
-                <button type="submit" className="sarkari-search-btn">Search</button>
-                {searchQuery && (
-                  <Link href={basePath} className="sarkari-reset-btn">Clear</Link>
-                )}
-              </form>
-            </div>
+        <div className="sarkari-box" style={{ marginBottom: '30px' }}>
+          <h1 className="sarkari-box-header" style={{ margin: 0, fontSize: '16px', lineHeight: 1.3 }}>
+            {categoryMeta.name} - CBTRank 2026
+          </h1>
 
-            <AdBanner slotId={ADSENSE_CONFIG.SLOTS.HOMEPAGE_BANNER} />
-
-            {posts.length === 0 ? (
-              <div className="sarkari-empty-card">
-                <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📋</div>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '6px' }}>
-                  {searchQuery ? `No matching ${categoryMeta.name} found` : `No ${categoryMeta.name} published yet`}
-                </h2>
-                <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '14px' }}>
-                  {searchQuery
-                    ? 'Try clearing your search filter or check another category.'
-                    : 'Verified official updates will appear here as soon as published.'}
-                </p>
-                <Link href="/answerkey" className="btn-cta" style={{ display: 'inline-flex', padding: '10px 18px', fontSize: '0.88rem' }}>
-                  Check Answer Key Calculator
-                </Link>
-              </div>
-            ) : (
-              <div className="sarkari-list-cards">
-                {posts.map((post) => (
-                  <article key={post.id} className="sarkari-list-item">
-                    <div className="sarkari-list-item-main">
-                      <div className="sarkari-list-meta">
-                        <span className="sarkari-mini-badge" style={{ color: categoryMeta.accentColor, borderColor: categoryMeta.accentColor }}>
-                          {categoryMeta.shortLabel}
-                        </span>
-                        {post.is_featured === 1 && (
-                          <span className="sarkari-featured-badge">★ Featured</span>
-                        )}
-                        {post.total_vacancy && (
-                          <span className="sarkari-vac-badge">{post.total_vacancy}</span>
-                        )}
-                        {post.last_date && (
-                          <span className="sarkari-lastdate-badge">Last Date: {post.last_date}</span>
-                        )}
-                      </div>
-                      <h2 className="sarkari-list-title">
-                        <Link href={`/post/${post.slug}`}>{post.title}</Link>
-                      </h2>
-                      {post.short_desc && (
-                        <p className="sarkari-list-excerpt">{post.short_desc}</p>
-                      )}
-                      <div className="sarkari-list-foot">
-                        <span>{post.department || 'Official Commission'}</span>
-                        <span>•</span>
-                        <span>{post.post_date || formatShortDate(post.created_at)}</span>
-                      </div>
-                    </div>
-                    <div className="sarkari-list-action">
-                      <Link href={`/post/${post.slug}`} className="sarkari-read-btn">
-                        View Details →
-                      </Link>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-
-            {totalPages > 1 && (
-              <nav className="sarkari-pagination" aria-label="Category Pagination">
-                {currentPage > 1 && (
-                  <Link
-                    href={`${basePath}?page=${currentPage - 1}${searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ''}`}
-                    className="sarkari-page-link"
-                  >
-                    ← Prev
-                  </Link>
-                )}
-                <span className="sarkari-page-info">
-                  Page {currentPage} of {totalPages}
-                </span>
-                {currentPage < totalPages && (
-                  <Link
-                    href={`${basePath}?page=${currentPage + 1}${searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ''}`}
-                    className="sarkari-page-link"
-                  >
-                    Next →
-                  </Link>
-                )}
-              </nav>
-            )}
-          </div>
-
-          <aside className="sidebar">
-            <div className="widget widget-calc">
-              <Link
-                href="/answerkey"
+          {/* Category Overview + Search Filter */}
+          <div
+            style={{
+              padding: '14px 18px',
+              background: '#fafafa',
+              borderBottom: '1px solid #e2e8f0',
+              fontSize: '13.5px',
+              lineHeight: 1.65,
+              color: '#334155',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '12px'
+            }}
+          >
+            <p style={{ margin: 0, flex: '1 1 360px' }}>{categoryMeta.introEn}</p>
+            <form action={categoryMeta.route} method="GET" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              <input
+                type="search"
+                name="q"
+                defaultValue={searchQuery}
+                placeholder={`Filter ${categoryMeta.name}...`}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  width: '100%',
-                  padding: '13px 18px',
-                  background: 'linear-gradient(135deg, #0066ff 0%, #0044cc 100%)',
-                  color: '#ffffff',
-                  fontSize: '0.94rem',
+                  padding: '6px 10px',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '4px',
+                  fontSize: '13px',
+                  minWidth: '185px'
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  background: 'var(--primary-red)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '6px 12px',
                   fontWeight: 700,
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(0, 102, 255, 0.22)'
+                  fontSize: '12.5px',
+                  cursor: 'pointer'
                 }}
               >
-                🎯 Answer Key &amp; Rank Calculator
-              </Link>
-            </div>
+                Filter
+              </button>
+              {searchQuery && (
+                <Link
+                  href={categoryMeta.route}
+                  style={{
+                    padding: '6px 10px',
+                    background: '#e2e8f0',
+                    color: '#1e293b',
+                    borderRadius: '4px',
+                    fontSize: '12.5px',
+                    fontWeight: 600
+                  }}
+                >
+                  Reset
+                </Link>
+              )}
+            </form>
+          </div>
 
-            <div className="widget sarkari-sidebar-card">
-              <h3 className="widget-title">Browse Sarkari Categories</h3>
-              <ul className="sarkari-cat-sidebar-list">
-                {SARKARI_CATEGORY_KEYS.map((key) => {
-                  const meta = SARKARI_CATEGORIES[key];
-                  return (
-                    <li key={key}>
-                      <Link
-                        href={meta.route}
-                        className={key === categoryMeta.slug ? 'active' : ''}
-                      >
-                        <span>{meta.name}</span>
-                        <span className="sarkari-cat-count">{categoryCounts[key] || 0}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
-            {recentPosts.length > 0 && (
-              <div className="widget sarkari-sidebar-card">
-                <h3 className="widget-title">Recent Notification Updates</h3>
-                <ul className="sarkari-recent-list">
-                  {recentPosts.map((rp) => (
-                    <li key={rp.id}>
-                      <Link href={`/post/${rp.slug}`}>{rp.title}</Link>
-                      <span>{rp.post_date || formatShortDate(rp.created_at)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <ul className="sarkari-box-list">
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <li key={post.id}>
+                  <span className="list-chevron">›</span>
+                  <div style={{ flex: 1 }}>
+                    <Link
+                      href={`/post/${post.slug}`}
+                      style={{ fontWeight: 'bold', color: 'var(--link-blue)', fontSize: '14.5px' }}
+                    >
+                      {post.title}
+                    </Link>
+                    {post.department && (
+                      <span style={{ color: '#666', fontSize: '12.5px' }}> ({post.department})</span>
+                    )}
+                    {post.total_vacancy && (
+                      <span className="tag-badge tag-blue" style={{ marginLeft: '6px' }}>
+                        {post.total_vacancy}
+                      </span>
+                    )}
+                    {post.last_date && (
+                      <span className="tag-badge tag-green" style={{ marginLeft: '6px' }}>
+                        Last Date: {post.last_date}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))
+            ) : (
+              <li style={{ padding: '24px', textAlign: 'center', color: '#666', justifyContent: 'center' }}>
+                No notifications found in this category{searchQuery ? ` matching "${searchQuery}"` : ' yet'}.
+              </li>
             )}
+          </ul>
 
-            <AdBanner slotId={ADSENSE_CONFIG.SLOTS.SIDEBAR_BANNER} />
-          </aside>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                gap: '6px',
+                padding: '15px',
+                borderTop: '1px solid #eee'
+              }}
+            >
+              {currentPage > 1 && (
+                <Link
+                  href={buildPageHref(currentPage - 1)}
+                  style={{ padding: '6px 12px', background: '#eee', borderRadius: '3px', fontWeight: 'bold', color: '#333' }}
+                >
+                  « Previous
+                </Link>
+              )}
+              {pageNumbers.map((num) => (
+                <Link
+                  key={num}
+                  href={buildPageHref(num)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '3px',
+                    fontWeight: 'bold',
+                    background: num === currentPage ? 'var(--primary-red)' : '#eee',
+                    color: num === currentPage ? '#fff' : '#333'
+                  }}
+                >
+                  {num}
+                </Link>
+              ))}
+              {currentPage < totalPages && (
+                <Link
+                  href={buildPageHref(currentPage + 1)}
+                  style={{ padding: '6px 12px', background: '#eee', borderRadius: '3px', fontWeight: 'bold', color: '#333' }}
+                >
+                  Next »
+                </Link>
+              )}
+            </div>
+          )}
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

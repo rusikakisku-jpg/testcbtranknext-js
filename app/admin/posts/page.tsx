@@ -1,28 +1,28 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import AdminConsoleShell from '../components/AdminConsoleShell';
 import { SARKARI_CATEGORIES, SARKARI_CATEGORY_KEYS, SarkariPost } from '../../lib/sarkariConstants';
 
 export default function AdminPostsListPage() {
   const router = useRouter();
   const [posts, setPosts] = useState<SarkariPost[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
-  const [status, setStatus] = useState('');
-  const [flash, setFlash] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [bannerMsg, setBannerMsg] = useState<{ type: 'success' | 'draft' | 'danger'; text: string } | null>(null);
 
-  const loadPosts = useCallback(async () => {
+  const loadPosts = useCallback(async (q = '', cat = '', st = '') => {
     setLoading(true);
     try {
       const qs = new URLSearchParams();
-      if (search) qs.set('search', search);
-      if (category) qs.set('category', category);
-      if (status) qs.set('status', status);
-
-      const res = await fetch(`/api/admin/posts?${qs.toString()}`);
+      if (q) qs.set('search', q);
+      if (cat) qs.set('category', cat);
+      if (st) qs.set('status', st);
+      const res = await fetch(`/api/admin/posts?${qs.toString()}`, { cache: 'no-store' });
       if (res.status === 401) {
         router.replace('/admin/login');
         return;
@@ -32,150 +32,237 @@ export default function AdminPostsListPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, category, status, router]);
+  }, [router]);
 
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
 
-  async function handlePublish(id: number) {
-    if (!confirm('Publish this draft live now?')) return;
+  const handleFilter = (e: FormEvent) => {
+    e.preventDefault();
+    loadPosts(search, categoryFilter, statusFilter);
+  };
+
+  const handleReset = () => {
+    setSearch('');
+    setCategoryFilter('');
+    setStatusFilter('');
+    loadPosts('', '', '');
+  };
+
+  const handlePublish = async (id: number) => {
+    if (!confirm('Publish this post live now?')) return;
     const res = await fetch(`/api/admin/posts/${id}/publish`, { method: 'POST' });
     if (res.ok) {
-      setFlash('🚀 Post published live!');
-      loadPosts();
+      setBannerMsg({ type: 'success', text: '🚀 Post published live successfully!' });
+      loadPosts(search, categoryFilter, statusFilter);
     }
-  }
+  };
 
-  async function handleDelete(id: number) {
-    if (!confirm('Permanently delete this post?')) return;
+  const handleDelete = async (id: number) => {
+    if (!confirm('Permanently delete this notification?')) return;
     const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
     if (res.ok) {
-      setFlash('🗑️ Post deleted.');
-      loadPosts();
+      setBannerMsg({ type: 'danger', text: '🗑️ Post deleted successfully!' });
+      loadPosts(search, categoryFilter, statusFilter);
     }
-  }
+  };
 
   return (
-    <main className="sarkari-container" style={{ padding: '20px 16px 48px' }}>
-      <div className="sarkari-admin-topbar">
-        <div>
-          <h1 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-            📋 Manage All Notifications &amp; Articles ({posts.length})
-          </h1>
-          <p style={{ fontSize: '0.84rem', color: '#64748b', marginTop: '2px' }}>
-            Review drafts via Preview, publish live, edit, or delete
-          </p>
+    <AdminConsoleShell pageTitle="All Notifications">
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <div>
+            <h2>All Examination &amp; Job Notifications ({posts.length})</h2>
+            <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px' }}>
+              Search, filter, update or delete notifications across all 8 Sarkari categories
+            </div>
+          </div>
+          <Link href="/admin/posts/new" className="btn btn-primary">➕ Create New Post</Link>
         </div>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <Link href="/admin" className="sarkari-btn-secondary">← Dashboard</Link>
-          <Link href="/admin/posts/new" className="sarkari-btn-primary">➕ New Post</Link>
-        </div>
-      </div>
 
-      {flash && (
-        <div style={{ background: '#dcfce7', border: '1px solid #86efac', color: '#166534', padding: '10px 14px', borderRadius: '6px', marginBottom: '16px', fontWeight: 600 }}>
-          {flash}
-        </div>
-      )}
+        {bannerMsg && (
+          <div
+            style={{
+              background: bannerMsg.type === 'danger' ? '#fee2e2' : bannerMsg.type === 'draft' ? '#fef3c7' : '#dcfce7',
+              border: `1px solid ${bannerMsg.type === 'danger' ? '#fca5a5' : bannerMsg.type === 'draft' ? '#fcd34d' : '#86efac'}`,
+              color: bannerMsg.type === 'danger' ? '#991b1b' : bannerMsg.type === 'draft' ? '#92400e' : '#166534',
+              padding: '12px 16px',
+              borderRadius: '6px',
+              marginBottom: '20px',
+              fontWeight: 600
+            }}
+          >
+            {bannerMsg.text}
+          </div>
+        )}
 
-      <div className="sarkari-admin-card" style={{ marginBottom: '16px' }}>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <form
+          onSubmit={handleFilter}
+          className="admin-filter-form"
+          style={{
+            display: 'flex',
+            gap: '10px',
+            marginBottom: '22px',
+            flexWrap: 'wrap',
+            background: '#f8fafc',
+            padding: '14px',
+            borderRadius: '8px',
+            border: '1px solid #e2e8f0',
+            alignItems: 'center'
+          }}
+        >
           <input
             type="text"
+            className="form-control"
+            style={{ maxWidth: '300px' }}
+            placeholder="🔍 Search title or department..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search title or department..."
-            className="sarkari-input"
-            style={{ flex: '1 1 240px' }}
           />
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className="sarkari-input" style={{ width: '200px' }}>
-            <option value="">All Categories</option>
-            {SARKARI_CATEGORY_KEYS.map((k) => (
-              <option key={k} value={k}>{SARKARI_CATEGORIES[k].name}</option>
+          <select
+            className="form-control"
+            style={{ maxWidth: '210px' }}
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              loadPosts(search, e.target.value, statusFilter);
+            }}
+          >
+            <option value="">All Categories (8)</option>
+            {SARKARI_CATEGORY_KEYS.map((key) => (
+              <option key={key} value={key}>{SARKARI_CATEGORIES[key].name}</option>
             ))}
           </select>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="sarkari-input" style={{ width: '160px' }}>
+          <select
+            className="form-control"
+            style={{ maxWidth: '170px' }}
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              loadPosts(search, categoryFilter, e.target.value);
+            }}
+          >
             <option value="">All Status</option>
-            <option value="active">Published</option>
+            <option value="active">Published (Active)</option>
             <option value="draft">Draft</option>
             <option value="archived">Archived</option>
           </select>
-          <button type="button" onClick={loadPosts} className="sarkari-btn-primary">Filter</button>
-        </div>
-      </div>
+          <button type="submit" className="btn btn-primary btn-sm" style={{ padding: '9px 16px' }}>
+            Filter Results
+          </button>
+          {(search || categoryFilter || statusFilter) && (
+            <button type="button" onClick={handleReset} className="btn btn-secondary btn-sm" style={{ padding: '8px 14px' }}>
+              Reset
+            </button>
+          )}
+        </form>
 
-      <div className="sarkari-admin-card">
-        {loading ? (
-          <p style={{ color: '#64748b', textAlign: 'center', padding: '24px' }}>Loading posts...</p>
-        ) : posts.length === 0 ? (
-          <p style={{ color: '#64748b', textAlign: 'center', padding: '24px' }}>No posts found.</p>
-        ) : (
-          <div className="table-responsive">
-            <table className="sarkari-table">
-              <thead>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th style={{ width: '50px' }}>ID</th>
+                <th>Notification Title</th>
+                <th style={{ width: '140px' }}>Category</th>
+                <th>Department</th>
+                <th style={{ width: '130px' }}>Last Date</th>
+                <th style={{ width: '100px' }}>Status</th>
+                <th style={{ width: '210px', textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th>ID</th>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Status</th>
-                  <th>Views</th>
-                  <th style={{ textAlign: 'right' }}>Actions</th>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>
+                    Loading notifications...
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {posts.map((p) => (
-                  <tr key={p.id}>
-                    <td>#{p.id}</td>
+              ) : posts.length > 0 ? (
+                posts.map((post) => (
+                  <tr key={post.id}>
+                    <td style={{ fontWeight: 600, color: '#64748b' }}>#{post.id}</td>
                     <td>
-                      <strong>{p.title}</strong>
-                      <div style={{ fontSize: '0.76rem', color: '#64748b' }}>
-                        {p.department || '—'} {p.last_date ? `• Last Date: ${p.last_date}` : ''}
-                      </div>
+                      <Link
+                        href={post.status === 'active' ? `/post/${post.slug}` : (post.previewUrl || `/post/${post.slug}`)}
+                        target="_blank"
+                        style={{ fontWeight: 600, color: '#0f172a', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}
+                      >
+                        <span>{post.title}</span>
+                        <span style={{ fontSize: '11px', color: '#94a3b8' }}>↗</span>
+                      </Link>
+                      {Boolean(post.is_featured) && (
+                        <span style={{ background: '#fef08a', color: '#854d0e', padding: '1px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 700, marginTop: '3px', display: 'inline-block' }}>
+                          ★ FEATURED
+                        </span>
+                      )}
                     </td>
-                    <td>{SARKARI_CATEGORIES[p.category]?.name || p.category}</td>
                     <td>
-                      <span className={`sarkari-status-pill ${p.status}`}>
-                        {p.status === 'active' ? 'Published' : p.status}
+                      <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '2px 8px', borderRadius: '12px', fontSize: '11.5px', fontWeight: 700, textTransform: 'capitalize', display: 'inline-block' }}>
+                        {post.category}
                       </span>
                     </td>
-                    <td>{p.views || 0}</td>
-                    <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <a
-                        href={p.previewUrl || `/post/${p.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="sarkari-btn-secondary sarkari-sm"
-                        style={p.status !== 'active' ? { background: '#e0f2fe', color: '#0369a1', borderColor: '#bae6fd' } : undefined}
+                    <td style={{ fontSize: '13px', color: '#475569' }}>{post.department || '-'}</td>
+                    <td style={{ fontSize: '12.5px', color: '#c62828', fontWeight: 600 }}>{post.last_date || '-'}</td>
+                    <td>
+                      <span
+                        style={{
+                          background: post.status === 'active' ? '#ecfdf5' : '#fffbeb',
+                          color: post.status === 'active' ? '#059669' : '#d97706',
+                          padding: '2px 8px',
+                          borderRadius: '12px',
+                          fontSize: '11px',
+                          fontWeight: 700
+                        }}
                       >
-                        {p.status === 'active' ? 'View' : '👁️ Preview'}
-                      </a>{' '}
-                      {p.status !== 'active' && (
+                        ● {post.status === 'active' ? 'Published' : post.status === 'draft' ? 'Draft' : post.status}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      {post.status !== 'active' ? (
                         <>
+                          <Link
+                            href={post.previewUrl || `/post/${post.slug}`}
+                            target="_blank"
+                            className="btn btn-secondary btn-sm"
+                            style={{ marginRight: '4px', background: '#e0f2fe', color: '#0369a1', borderColor: '#bae6fd' }}
+                          >
+                            👁️ Preview
+                          </Link>
                           <button
                             type="button"
-                            onClick={() => handlePublish(p.id)}
-                            className="sarkari-btn-primary sarkari-sm"
-                            style={{ background: '#16a34a' }}
+                            onClick={() => handlePublish(post.id)}
+                            className="btn btn-primary btn-sm"
+                            style={{ marginRight: '4px', background: '#16a34a', borderColor: '#15803d' }}
                           >
                             🚀 Publish
-                          </button>{' '}
+                          </button>
                         </>
+                      ) : (
+                        <Link href={`/post/${post.slug}`} target="_blank" className="btn btn-secondary btn-sm" style={{ marginRight: '4px' }}>
+                          View
+                        </Link>
                       )}
-                      <Link href={`/admin/posts/edit/${p.id}`} className="sarkari-btn-secondary sarkari-sm">
-                        ✏️ Edit
-                      </Link>{' '}
-                      <button type="button" onClick={() => handleDelete(p.id)} className="sarkari-btn-danger sarkari-sm">
-                        🗑️
+                      <Link href={`/admin/posts/edit/${post.id}`} className="btn btn-secondary btn-sm" style={{ marginRight: '4px' }}>
+                        Edit
+                      </Link>
+                      <button type="button" onClick={() => handleDelete(post.id)} className="btn btn-danger btn-sm">
+                        Delete
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '35px', color: '#64748b' }}>
+                    No notifications found matching your search criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </main>
+    </AdminConsoleShell>
   );
 }
