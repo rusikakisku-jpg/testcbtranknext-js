@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import AdminConsoleShell from '../../../components/AdminConsoleShell';
 import SarkariPostEditor from '../../../components/SarkariPostEditor';
 import { SarkariPost } from '../../../../lib/sarkariConstants';
 
@@ -33,17 +34,21 @@ export default function EditPostClient({ id }: { id: string }) {
 
   if (error) {
     return (
-      <main className="sarkari-container" style={{ padding: '40px 16px', textAlign: 'center', color: '#991b1b' }}>
-        {error}
-      </main>
+      <AdminConsoleShell pageTitle="Edit Notification">
+        <div className="admin-card" style={{ textAlign: 'center', color: '#991b1b', padding: '40px 16px', fontWeight: 600 }}>
+          {error}
+        </div>
+      </AdminConsoleShell>
     );
   }
 
   if (!post) {
     return (
-      <main className="sarkari-container" style={{ padding: '40px 16px', textAlign: 'center', color: '#64748b' }}>
-        Loading post editor...
-      </main>
+      <AdminConsoleShell pageTitle="Edit Notification">
+        <div className="admin-card" style={{ textAlign: 'center', color: '#64748b', padding: '40px 16px' }}>
+          Loading post editor...
+        </div>
+      </AdminConsoleShell>
     );
   }
 

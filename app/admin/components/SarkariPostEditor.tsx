@@ -153,11 +153,17 @@ export default function SarkariPostEditor({
     if ((window as any).tinymce) {
       initTiny();
     } else {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js';
-      script.referrerPolicy = 'origin';
-      script.onload = initTiny;
-      document.head.appendChild(script);
+      const existing = document.getElementById('gez-tinymce-cdn') as HTMLScriptElement | null;
+      if (existing) {
+        existing.addEventListener('load', initTiny, { once: true });
+      } else {
+        const script = document.createElement('script');
+        script.id = 'gez-tinymce-cdn';
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js';
+        script.referrerPolicy = 'origin';
+        script.onload = initTiny;
+        document.head.appendChild(script);
+      }
     }
 
     return () => {
