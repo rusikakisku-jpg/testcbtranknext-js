@@ -6249,6 +6249,27 @@ footer {
 /* ==========================================================================
    GOVT EXAM ZONE ADMIN CONSOLE PRO STYLES (SCOPED TO .gez-admin-root)
    ========================================================================== */
+html:has(.gez-admin-root),
+body:has(.gez-admin-root) {
+  overflow-x: clip !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #f8fafc;
+}
+
+.page-body:has(.gez-admin-root) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  overflow-x: clip !important;
+  min-height: 100vh;
+}
+
+.gez-admin-root,
+.gez-admin-root * {
+  box-sizing: border-box;
+}
+
 .gez-admin-root {
   --admin-primary: #ab183d;
   --admin-primary-hover: #8f0d2e;
@@ -6269,13 +6290,18 @@ footer {
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
   min-height: 100vh;
+  width: 100%;
   background-color: var(--admin-body-bg);
   color: var(--admin-text-main);
+  margin: 0;
+  padding: 0;
 }
 
 /* Dark Glassmorphism Admin Login Screen */
 .gez-login-screen {
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
   display: grid;
   place-items: center;
   padding: 16px;
@@ -6334,7 +6360,7 @@ footer {
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(15, 23, 42, 0.75);
   color: #f8fafc;
-  font-size: 14px;
+  font-size: 15px;
   outline: none;
 }
 
@@ -6365,14 +6391,20 @@ footer {
 
 .gez-login-footer a { color: #94a3b8; text-decoration: none; }
 
-/* Admin App Layout (Sidebar + Topbar + Content) */
-.gez-admin-root .admin-app-layout { display: flex; min-height: 100vh; width: 100%; }
+/* Admin App Layout: Fixed Non-Scrolling Left Sidebar + Independent Scrollable Content */
+.gez-admin-root .admin-app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
 
 .gez-admin-root .sidebar-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.6);
-  z-index: 990;
+  backdrop-filter: blur(4px);
+  z-index: 1050;
   display: none;
 }
 
@@ -6386,10 +6418,13 @@ footer {
   flex-direction: column;
   flex-shrink: 0;
   height: 100vh;
-  position: sticky;
+  height: 100dvh;
+  position: fixed;
   top: 0;
-  z-index: 1000;
-  transition: transform 0.25s ease;
+  left: 0;
+  bottom: 0;
+  z-index: 1100;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gez-admin-root .sidebar-brand {
@@ -6406,8 +6441,8 @@ footer {
 .gez-admin-root .brand-title { color: #ffffff; font-size: 15px; font-weight: 700; }
 .gez-admin-root .brand-subtitle { color: var(--admin-sidebar-text); font-size: 11.5px; display: flex; align-items: center; gap: 6px; margin-top: 3px; }
 .gez-admin-root .status-pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--admin-success); box-shadow: 0 0 8px var(--admin-success); display: inline-block; }
-.gez-admin-root .sidebar-close-btn { display: none; background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
-.gez-admin-root .sidebar-nav-container { flex: 1; overflow-y: auto; padding: 12px 10px; }
+.gez-admin-root .sidebar-close-btn { display: none; background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; padding: 4px; }
+.gez-admin-root .sidebar-nav-container { flex: 1; overflow-y: auto; padding: 12px 10px; overscroll-behavior: contain; }
 .gez-admin-root .nav-section-title { font-size: 10.5px; font-weight: 700; color: #64748b; letter-spacing: 0.08em; padding: 14px 12px 6px; text-transform: uppercase; }
 .gez-admin-root .sidebar-nav { display: flex; flex-direction: column; gap: 3px; }
 
@@ -6421,11 +6456,12 @@ footer {
   font-size: 13.5px;
   font-weight: 600;
   text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .gez-admin-root .nav-item:hover { background-color: var(--admin-sidebar-surface); color: #ffffff; }
 .gez-admin-root .nav-item.active {
-  background: linear-gradient(90deg, rgba(171, 24, 61, 0.3) 0%, rgba(171, 24, 61, 0.05) 100%);
+  background: linear-gradient(90deg, rgba(171, 24, 61, 0.32) 0%, rgba(171, 24, 61, 0.06) 100%);
   color: #ffffff;
   border-left: 3px solid var(--admin-primary);
 }
@@ -6437,7 +6473,7 @@ footer {
 .gez-admin-root .nav-badge.storage { background: var(--admin-info); color: #ffffff; }
 .gez-admin-root .nav-badge.db { background: var(--admin-success); color: #ffffff; }
 
-.gez-admin-root .sidebar-footer { padding: 14px; border-top: 1px solid #1e293b; background: rgba(15, 23, 42, 0.7); }
+.gez-admin-root .sidebar-footer { padding: 14px; border-top: 1px solid #1e293b; background: rgba(15, 23, 42, 0.75); }
 .gez-admin-root .system-status-chip { background: var(--admin-sidebar-surface); border: 1px solid #334155; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .gez-admin-root .status-indicator { position: relative; width: 10px; height: 10px; display: flex; align-items: center; justify-content: center; }
 .gez-admin-root .ping-core { width: 8px; height: 8px; border-radius: 50%; background: var(--admin-success); }
@@ -6445,16 +6481,25 @@ footer {
 .gez-admin-root .status-line { color: #ffffff; font-weight: 600; }
 .gez-admin-root .status-sub { color: #64748b; }
 .gez-admin-root .sidebar-user-row { display: flex; align-items: center; gap: 10px; padding: 4px 6px; }
-.gez-admin-root .user-avatar { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #ab183d 0%, #e11d48 100%); color: #fff; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; }
-.gez-admin-root .user-meta { flex: 1; display: flex; flex-direction: column; }
+.gez-admin-root .user-avatar { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #ab183d 0%, #e11d48 100%); color: #fff; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gez-admin-root .user-meta { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .gez-admin-root .user-name { color: #ffffff; font-size: 12.5px; font-weight: 600; }
 .gez-admin-root .user-role { color: #64748b; font-size: 11px; }
 
-.gez-admin-root .admin-main-viewport { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+.gez-admin-root .admin-main-viewport {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
 
 .gez-admin-root .admin-topbar {
   height: 64px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--admin-card-border);
   padding: 0 24px;
   display: flex;
@@ -6467,25 +6512,28 @@ footer {
 }
 
 .gez-admin-root .topbar-left, .gez-admin-root .topbar-right { display: flex; align-items: center; gap: 12px; }
-.gez-admin-root .mobile-toggle-btn { display: none; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; cursor: pointer; flex-direction: column; gap: 3px; }
-.gez-admin-root .toggle-bar { display: block; width: 18px; height: 2px; background: #334155; }
+.gez-admin-root .mobile-toggle-btn { display: none; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px 10px; cursor: pointer; flex-direction: column; gap: 3.5px; align-items: center; justify-content: center; }
+.gez-admin-root .toggle-bar { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
 .gez-admin-root .topbar-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
 .gez-admin-root .crumb-root { color: #64748b; }
 .gez-admin-root .crumb-separator { color: #cbd5e1; }
 .gez-admin-root .crumb-current { color: #0f172a; font-weight: 700; }
 .gez-admin-root .live-clock-pill { font-family: monospace; font-size: 12px; color: #475569; background: #f1f5f9; border: 1px solid #e2e8f0; padding: 5px 10px; border-radius: 20px; }
 
-.gez-admin-root .topbar-btn { padding: 7px 14px; font-size: 13px; font-weight: 600; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.gez-admin-root .topbar-btn { padding: 7px 14px; font-size: 13px; font-weight: 600; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .gez-admin-root .live-site-btn { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
 .gez-admin-root .logout-btn { background: #fee2e2; color: #991b1b; }
 
 .gez-admin-root .admin-container { flex: 1; padding: 24px; max-width: 1400px; width: 100%; margin: 0 auto; }
 
-.gez-admin-root .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 24px; }
-.gez-admin-root .stat-card { background: #fff; padding: 20px 22px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+.gez-admin-root .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px; }
+.gez-admin-root .stat-card { background: #fff; padding: 20px 22px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; min-width: 0; }
 .gez-admin-root .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #ab183d; }
+.gez-admin-root .stat-card:nth-child(2)::before { background: #0284c7; }
+.gez-admin-root .stat-card:nth-child(3)::before { background: #10b981; }
+.gez-admin-root .stat-card:nth-child(4)::before { background: #8b5cf6; }
 .gez-admin-root .stat-card h3 { font-size: 12.5px; font-weight: 700; color: #64748b; text-transform: uppercase; margin: 0 0 10px; }
-.gez-admin-root .stat-card .stat-val { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 8px; }
+.gez-admin-root .stat-card .stat-val { font-size: 30px; font-weight: 800; color: #0f172a; line-height: 1.1; margin-bottom: 8px; }
 .gez-admin-root .stat-card .stat-sub { font-size: 12px; }
 
 .gez-admin-root .admin-card,
@@ -6496,6 +6544,8 @@ footer {
   padding: 24px;
   margin-bottom: 24px;
   box-shadow: var(--shadow-sm);
+  max-width: 100%;
+  min-width: 0;
 }
 
 .gez-admin-root .admin-card-header {
@@ -6539,13 +6589,13 @@ footer {
 .gez-admin-root .admin-table th, .gez-admin-root .admin-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 13.5px; }
 .gez-admin-root .admin-table th { background: #f8fafc; font-weight: 700; color: #334155; font-size: 12px; text-transform: uppercase; }
 
-.gez-admin-root .form-group, .gez-admin-root .sarkari-form-group { margin-bottom: 16px; }
+.gez-admin-root .form-group, .gez-admin-root .sarkari-form-group { margin-bottom: 16px; min-width: 0; }
 .gez-admin-root .form-group label, .gez-admin-root .sarkari-form-group label { display: block; font-weight: 600; font-size: 13.5px; margin-bottom: 6px; color: #334155; }
 .gez-admin-root .form-control, .gez-admin-root .sarkari-input {
   width: 100%;
   padding: 9px 13px;
   font-size: 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   outline: none;
   font-family: inherit;
@@ -6562,7 +6612,7 @@ footer {
 /* Settings Group Cards & Layout Selector Wireframes */
 .gez-admin-root .settings-pill { padding: 6px 12px; border-radius: 999px; background: #f1f5f9; color: #334155; font-size: 12.5px; font-weight: 700; text-decoration: none; border: 1px solid #cbd5e1; }
 .gez-admin-root .settings-pill:hover { background: #fff1f2; color: #ab183d; border-color: #fda4af; }
-.gez-admin-root .settings-group-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 22px; background: #ffffff; }
+.gez-admin-root .settings-group-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 22px; background: #ffffff; min-width: 0; }
 .gez-admin-root .settings-group-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
 .gez-admin-root .settings-group-icon { font-size: 22px; line-height: 1; }
 .gez-admin-root .settings-group-title { margin: 0 0 4px; font-size: 16px; font-weight: 800; color: #0f172a; }
@@ -6577,8 +6627,8 @@ footer {
   display: block;
 }
 .gez-admin-root .layout-option-card.selected { border-color: #ab183d; background: #fff1f2; }
-.gez-admin-root .layout-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.gez-admin-root .layout-radio-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #94a3b8; display: inline-block; }
+.gez-admin-root .layout-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 6px; }
+.gez-admin-root .layout-radio-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #94a3b8; display: inline-block; flex-shrink: 0; }
 .gez-admin-root .layout-option-card.selected .layout-radio-dot { border-color: #ab183d; background: #ab183d; box-shadow: inset 0 0 0 3px #ffffff; }
 .gez-admin-root .layout-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
 .gez-admin-root .classic-badge { background: #fee2e2; color: #991b1b; }
@@ -6588,11 +6638,11 @@ footer {
 
 /* Admin Analytics KPI & Charts */
 .gez-admin-root .analytics-kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 22px; }
-.gez-admin-root .analytics-kpi-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; }
+.gez-admin-root .analytics-kpi-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 18px; min-width: 0; }
 .gez-admin-root .analytics-kpi-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .gez-admin-root .analytics-kpi-label { font-size: 11.5px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
 .gez-admin-root .analytics-kpi-value { font-size: 28px; font-weight: 800; color: #0f172a; }
-.gez-admin-root .analytics-kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.gez-admin-root .analytics-kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
 .gez-admin-root .analytics-kpi-meta { margin-top: 10px; font-size: 12px; font-weight: 600; color: #64748b; display: flex; gap: 6px; flex-wrap: wrap; }
 .gez-admin-root .analytics-delta-pill { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
 .gez-admin-root .analytics-delta-up { background: #dcfce7; color: #15803d; }
@@ -6601,7 +6651,7 @@ footer {
 .gez-admin-root .analytics-charts-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; margin-bottom: 24px; }
 .gez-admin-root .analytics-top-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 24px; }
 .gez-admin-root .chart-bars-stage { height: 215px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; padding: 28px 8px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; }
-.gez-admin-root .chart-bar-col { flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; }
+.gez-admin-root .chart-bar-col { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; }
 .gez-admin-root .chart-bar-count { font-size: 11px; font-weight: 700; color: #334155; }
 .gez-admin-root .chart-bar-track { width: 100%; max-width: 42px; flex: 1; display: flex; align-items: flex-end; }
 .gez-admin-root .chart-bar-fill { width: 100%; min-height: 6px; border-radius: 7px 7px 3px 3px; background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%); }
@@ -6618,7 +6668,7 @@ footer {
 .gez-admin-root .top-post-title-wrap { display: flex; gap: 8px; flex: 1; min-width: 0; }
 .gez-admin-root .top-rank-badge { width: 24px; height: 24px; border-radius: 6px; background: #e2e8f0; font-size: 11.5px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .gez-admin-root .top-rank-badge.rank-1 { background: #fef08a; color: #854d0e; }
-.gez-admin-root .top-post-title { font-size: 13px; font-weight: 700; color: #0f172a; text-decoration: none; }
+.gez-admin-root .top-post-title { font-size: 13px; font-weight: 700; color: #0f172a; text-decoration: none; overflow: hidden; text-overflow: ellipsis; }
 .gez-admin-root .top-post-views-pill { font-size: 11.5px; font-weight: 800; padding: 3px 8px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; white-space: nowrap; }
 .gez-admin-root .top-post-views-pill.today-hot { background: #ffe4e6; color: #be123c; }
 .gez-admin-root .top-post-foot { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #64748b; }
@@ -6628,34 +6678,93 @@ footer {
 
 .gez-admin-root .admin-mobile-bottom-nav { display: none; }
 
+/* ==========================================================================
+   FULL MOBILE RESPONSIVE SYSTEM FOR ADMIN CONSOLE
+   ========================================================================== */
 @media screen and (max-width: 992px) {
-  .gez-admin-root .admin-sidebar { position: fixed; top: 0; left: 0; bottom: 0; transform: translateX(-100%); }
+  .gez-admin-root .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 10px 0 25px rgba(0, 0, 0, 0.5);
+  }
   .gez-admin-root .admin-sidebar.open { transform: translateX(0); }
   .gez-admin-root .sidebar-close-btn { display: block; }
   .gez-admin-root .mobile-toggle-btn { display: flex; }
+
+  .gez-admin-root .admin-main-viewport {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .gez-admin-root .admin-container {
+    padding: 16px 14px;
+    max-width: 100%;
+  }
+
+  .gez-admin-root .form-row,
+  .gez-admin-root .sarkari-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  .gez-admin-root .form-row > *,
+  .gez-admin-root .sarkari-form-grid > *,
+  .gez-admin-root .admin-card .form-group,
+  .gez-admin-root .admin-card .sarkari-form-group {
+    grid-column: span 1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .gez-admin-root .admin-card [style*="min-width"] { min-width: 0 !important; }
+  .gez-admin-root .admin-card code,
+  .gez-admin-root .admin-card a { overflow-wrap: anywhere; word-break: break-word; }
+
   .gez-admin-root .analytics-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gez-admin-root .analytics-charts-grid,
   .gez-admin-root .analytics-top-grid { grid-template-columns: 1fr; }
-  .gez-admin-root .admin-main-viewport { padding-bottom: 76px; }
+
   .gez-admin-root .admin-mobile-bottom-nav {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: stretch;
     justify-content: space-around;
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 62px;
-    background: rgba(255, 255, 255, 0.98);
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding: 4px 6px env(safe-area-inset-bottom, 4px);
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
     border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
     z-index: 950;
   }
-  .gez-admin-root .bottom-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10.5px; font-weight: 600; color: #64748b; text-decoration: none; }
+
+  .gez-admin-root .bottom-nav-item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+  }
   .gez-admin-root .bottom-nav-item.active { color: #ab183d; }
-  .gez-admin-root .bottom-nav-icon { font-size: 18px; }
+  .gez-admin-root .bottom-nav-icon { font-size: 18px; line-height: 1.1; }
+  .gez-admin-root .bottom-nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .gez-admin-root .bottom-nav-fab-wrap { margin-top: -10px; }
   .gez-admin-root .bottom-nav-fab {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, #ab183d 0%, #e11d48 100%);
     color: #fff;
@@ -6664,12 +6773,101 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: -12px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 14px rgba(171, 24, 61, 0.35);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Transform Admin Tables into Zero-Scroll Mobile Cards */
+  .gez-admin-root .admin-table:not(.d1-sql-table),
+  .gez-admin-root .admin-table:not(.d1-sql-table) thead,
+  .gez-admin-root .admin-table:not(.d1-sql-table) tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .gez-admin-root .admin-table:not(.d1-sql-table) thead {
+    display: none;
+  }
+
+  .gez-admin-root .admin-table:not(.d1-sql-table) tr {
+    display: block;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  .gez-admin-root .admin-table:not(.d1-sql-table) td {
+    display: block;
+    width: 100%;
+    padding: 6px 0 !important;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left !important;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+
+  .gez-admin-root .admin-table:not(.d1-sql-table) td:last-child {
+    border-bottom: none;
+    padding-top: 10px !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
   }
 }
 
 @media screen and (max-width: 640px) {
+  .gez-admin-root .admin-topbar { padding: 0 12px; height: 56px; }
   .gez-admin-root .live-clock-pill, .gez-admin-root .topbar-btn-label { display: none; }
-  .gez-admin-root .admin-container { padding: 12px 10px; }
-  .gez-admin-root .analytics-kpi-grid { grid-template-columns: 1fr; }
+  .gez-admin-root .topbar-btn { padding: 6px 10px !important; font-size: 13px !important; }
+  .gez-admin-root .topbar-right { gap: 8px; }
+  .gez-admin-root .topbar-breadcrumb { font-size: 12.5px; max-width: 165px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .gez-admin-root .admin-container { padding: 12px 10px !important; }
+  .gez-admin-root .admin-card,
+  .gez-admin-root .sarkari-admin-card { padding: 15px 12px !important; border-radius: 10px !important; margin-bottom: 16px; }
+  .gez-admin-root .admin-card-header { flex-direction: column; align-items: stretch !important; gap: 10px; }
+  .gez-admin-root .admin-card-header h2 { font-size: 16px; line-height: 1.35; }
+
+  .gez-admin-root .admin-welcome-banner { padding: 16px !important; border-radius: 12px !important; margin-bottom: 16px !important; }
+  .gez-admin-root .admin-welcome-banner h1 { font-size: 18px !important; }
+  .gez-admin-root .admin-welcome-actions { width: 100%; }
+  .gez-admin-root .admin-welcome-actions .btn { flex: 1; justify-content: center; }
+
+  .gez-admin-root .stats-grid,
+  .gez-admin-root .analytics-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-bottom: 16px;
+  }
+  .gez-admin-root .stat-card,
+  .gez-admin-root .analytics-kpi-card { padding: 12px !important; }
+  .gez-admin-root .stat-card .stat-val,
+  .gez-admin-root .analytics-kpi-value { font-size: 22px !important; }
+
+  .gez-admin-root .form-control,
+  .gez-admin-root .sarkari-input { font-size: 16px; min-height: 42px; }
+
+  .gez-admin-root .admin-filter-form { padding: 12px !important; gap: 8px !important; }
+  .gez-admin-root .admin-filter-form .form-control,
+  .gez-admin-root .admin-filter-form .btn { width: 100%; max-width: 100% !important; }
+
+  .gez-admin-root .layout-selector-grid,
+  .gez-admin-root .badges-admin-grid { grid-template-columns: 1fr !important; }
+
+  .gez-admin-root .tox.tox-tinymce { max-width: 100% !important; width: 100% !important; }
+}
+
+@media screen and (max-width: 380px) {
+  .gez-admin-root .stats-grid,
+  .gez-admin-root .analytics-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
