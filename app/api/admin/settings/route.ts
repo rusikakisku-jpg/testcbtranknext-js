@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthenticatedFromCookies } from '../../../lib/sarkariAuth';
 import {
   fetchAllSarkariCategoryCounts,
+  getD1ConnectionStatus,
   getSarkariSettings,
-  saveSarkariSetting
+  saveSarkariSettingsBatch
 } from '../../../lib/sarkariDb';
 
 const ALLOWED_SETTING_KEYS = new Set([
@@ -38,11 +39,15 @@ export async function GET() {
   if (!(await isAdminAuthenticatedFromCookies())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const [settings, categoryCountMap] = await Promise.all([
+  const [dbStatus, settings, categoryCountMap] = await Promise.all([
+    getD1ConnectionStatus(),
     getSarkariSettings(),
     fetchAllSarkariCategoryCounts()
   ]);
-  return NextResponse.json({ settings, categoryCountMap });
+  return NextResponse.json(
+    { dbStatus, settings, categoryCountMap },
+    { headers: { 'Cache-Control': 'no-store' } }
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -50,22 +55,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   try {
+    const dbStatus = await getD1ConnectionStatus();
+    if (!dbStatus.connected) {
+      return NextResponse.json(
+        { success: false, error: dbStatus.message || 'Cloudflare D1 database is not connected yet.' },
+        { status: 500, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
     const body = (await req.json()) as Record<string, unknown>;
+    const entries: Array<[string, string]> = [];
     for (const [k, v] of Object.entries(body)) {
       if (!ALLOWED_SETTING_KEYS.has(k)) continue;
       if (k === 'post_detail_layout') {
-        const val = v === 'classic' ? 'classic' : 'blog_2col';
-        await saveSarkariSetting(k, val);
+        entries.push([k, v === 'classic' ? 'classic' : 'blog_2col']);
       } else if (k === 'hidden_categories') {
-        const val = Array.isArray(v) ? JSON.stringify(v) : String(v || '[]');
-        await saveSarkariSetting(k, val);
+        entries.push([k, Array.isArray(v) ? JSON.stringify(v) : String(v || '[]')]);
       } else {
-        await saveSarkariSetting(k, String(v ?? ''));
+        entries.push([k, String(v ?? '')]);
       }
     }
+
+    await saveSarkariSettingsBatch(entries);
     const settings = await getSarkariSettings();
-    return NextResponse.json({ success: true, settings });
+    return NextResponse.json(
+      { success: true, settings },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message || 'Failed to save settings' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: err?.message || 'Failed to save settings' },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
+    );
   }
 }

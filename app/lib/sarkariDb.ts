@@ -370,11 +370,38 @@ export async function getSarkariSettings(): Promise<Record<string, string>> {
 }
 
 export async function saveSarkariSetting(key: string, value: string): Promise<void> {
-  await ensureSarkariSchema();
+  const ok = await ensureSarkariSchema();
+  if (!ok) {
+    throw new Error('Cloudflare D1 Database (DB binding or CF_D1_TOKEN) is not attached in Cloudflare Pages.');
+  }
   await dbRun(
     'INSERT INTO sarkari_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
     [key, value]
   );
+}
+
+export async function saveSarkariSettingsBatch(entries: Array<[string, string]>): Promise<void> {
+  if (!entries.length) return;
+  const ok = await ensureSarkariSchema();
+  if (!ok) {
+    throw new Error('Cloudflare D1 Database (DB binding or CF_D1_TOKEN) is not attached in Cloudflare Pages.');
+  }
+
+  // Batch into compact multi-row upserts so Cloudflare Worker subrequest limits are never hit
+  const CHUNK_SIZE = 12;
+  for (let i = 0; i < entries.length; i += CHUNK_SIZE) {
+    const chunk = entries.slice(i, i + CHUNK_SIZE);
+    const placeholders = chunk.map(() => '(?, ?)').join(', ');
+    const params: unknown[] = [];
+    for (const [k, v] of chunk) {
+      params.push(k, v);
+    }
+    await dbRun(
+      `INSERT INTO sarkari_settings (key, value) VALUES ${placeholders}
+       ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+      params
+    );
+  }
 }
 
 export function getHiddenCategoriesSet(settings: Record<string, string>, countMap: Record<string, number>): Set<string> {

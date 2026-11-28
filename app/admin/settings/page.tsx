@@ -11,27 +11,40 @@ export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [countMap, setCountMap] = useState<Record<string, number>>({});
   const [hiddenSet, setHiddenSet] = useState<Set<string>>(new Set());
+  const [dbStatus, setDbStatus] = useState<{ connected: boolean; message: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const loadSettings = useCallback(async () => {
-    const res = await fetch('/api/admin/settings', { cache: 'no-store' });
-    if (res.status === 401) {
-      router.replace('/admin/login');
-      return;
-    }
-    const json = (await res.json()) as {
-      settings?: Record<string, string>;
-      categoryCountMap?: Record<string, number>;
-    };
-    const st = json.settings || {};
-    setSettings(st);
-    setCountMap(json.categoryCountMap || {});
     try {
-      const arr = JSON.parse(st.hidden_categories || '[]');
-      setHiddenSet(new Set(Array.isArray(arr) ? arr.map(String) : []));
+      const res = await fetch('/api/admin/settings', { cache: 'no-store' });
+      if (res.status === 401) {
+        router.replace('/admin/login');
+        return;
+      }
+      const json = (await res.json()) as {
+        dbStatus?: { connected: boolean; message: string };
+        settings?: Record<string, string>;
+        categoryCountMap?: Record<string, number>;
+        error?: string;
+      };
+      if (json.dbStatus) setDbStatus(json.dbStatus);
+      if (!res.ok) {
+        setErrorMsg(json.error || 'Failed to load settings');
+        return;
+      }
+      const st = json.settings || {};
+      setSettings(st);
+      setCountMap(json.categoryCountMap || {});
+      try {
+        const arr = JSON.parse(st.hidden_categories || '[]');
+        setHiddenSet(new Set(Array.isArray(arr) ? arr.map(String) : []));
+      } catch {
+        setHiddenSet(new Set());
+      }
     } catch {
-      setHiddenSet(new Set());
+      setErrorMsg('Network error loading settings');
     }
   }, [router]);
 
@@ -47,6 +60,7 @@ export default function AdminSettingsPage() {
     if (e) e.preventDefault();
     setSaving(true);
     setSavedMsg('');
+    setErrorMsg('');
     try {
       const payload = {
         ...settings,
@@ -57,10 +71,28 @@ export default function AdminSettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        setSavedMsg('✅ Portal settings successfully saved and synchronized across the website!');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (res.status === 401) {
+        router.replace('/admin/login');
+        return;
       }
+      const json = (await res.json().catch(() => null)) as {
+        success?: boolean;
+        settings?: Record<string, string>;
+        error?: string;
+      } | null;
+      if (!res.ok || !json?.success) {
+        setErrorMsg(json?.error || `Failed to save settings (HTTP ${res.status})`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      if (json.settings) {
+        setSettings(json.settings);
+      }
+      setSavedMsg('✅ Portal settings successfully saved and synchronized across the website!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      setErrorMsg('Network error while saving settings.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSaving(false);
     }
@@ -101,6 +133,18 @@ export default function AdminSettingsPage() {
             </button>
           </div>
         </div>
+
+        {dbStatus && !dbStatus.connected && (
+          <div className="alert alert-danger" style={{ fontWeight: 600 }}>
+            ⚠️ {dbStatus.message} — Cloudflare Pages Settings → Functions → D1 database bindings me variable <code>DB</code> ko <code>cbtrank_db</code> se bind karein.
+          </div>
+        )}
+
+        {errorMsg && (
+          <div className="alert alert-danger" style={{ fontWeight: 600 }}>
+            ⚠️ {errorMsg}
+          </div>
+        )}
 
         {savedMsg && (
           <div style={{ background: '#dcfce7', border: '1px solid #86efac', color: '#166534', padding: '14px 18px', borderRadius: '8px', marginBottom: '24px', fontWeight: 600 }}>
@@ -182,8 +226,10 @@ export default function AdminSettingsPage() {
             </div>
 
             <div className="layout-selector-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-              <label
+              <button
+                type="button"
                 className={`layout-option-card${activeLayout === 'classic' ? ' selected' : ''}`}
+                style={{ textAlign: 'left', width: '100%', fontFamily: 'inherit' }}
                 onClick={() => updateField('post_detail_layout', 'classic')}
               >
                 <div className="layout-card-top">
@@ -204,10 +250,12 @@ export default function AdminSettingsPage() {
                 <p className="layout-card-desc">
                   Traditional centered single-column Sarkari layout with Dates, Fees, Age Limit, Vacancy tables &amp; 60/40 Important Links table. (Hides Full Blog Article.)
                 </p>
-              </label>
+              </button>
 
-              <label
+              <button
+                type="button"
                 className={`layout-option-card${activeLayout === 'blog_2col' ? ' selected' : ''}`}
+                style={{ textAlign: 'left', width: '100%', fontFamily: 'inherit' }}
                 onClick={() => updateField('post_detail_layout', 'blog_2col')}
               >
                 <div className="layout-card-top">
@@ -232,7 +280,7 @@ export default function AdminSettingsPage() {
                 <p className="layout-card-desc">
                   Modern 2-column magazine layout: Full Rich Blog Article on left + Right sidebar with Search, Recent Posts, Popular Posts &amp; Share bar.
                 </p>
-              </label>
+              </button>
             </div>
           </div>
 
