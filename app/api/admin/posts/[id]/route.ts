@@ -69,7 +69,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
         short_desc = ?, total_vacancy = ?, important_dates = ?, application_fee = ?,
         age_limit = ?, vacancy_details = ?, category_details = ?, how_to_apply = ?, article_content = ?, thumbnail = ?,
         links = ?, notification_pdf = ?, admit_card_url = ?, result_url = ?,
-        apply_online_url = ?, official_website_url = ?, is_featured = ?, status = ?,
+        apply_online_url = ?, official_website_url = ?, is_featured = ?, status = ?, author_id = ?,
         updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
       [
@@ -97,6 +97,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
         body.official_website_url !== undefined ? (String(body.official_website_url).trim() || null) : (current.official_website_url || null),
         body.is_featured !== undefined ? (body.is_featured ? 1 : 0) : (current.is_featured || 0),
         status,
+        body.author_id !== undefined ? (Number(body.author_id) || 1) : (current.author_id || 1),
         postId
       ]
     );
