@@ -22,8 +22,12 @@ export default function AdminLoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
-      const json = (await res.json().catch(() => null)) as { authenticated?: boolean; error?: string } | null;
-      if (!res.ok || !json?.authenticated) {
+      const json = (await res.json().catch(() => null)) as {
+        success?: boolean;
+        authenticated?: boolean;
+        error?: string;
+      } | null;
+      if (!res.ok || (!json?.authenticated && !json?.success)) {
         setError(json?.error || 'Invalid Admin Username or Password');
         return;
       }

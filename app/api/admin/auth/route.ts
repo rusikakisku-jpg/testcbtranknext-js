@@ -27,11 +27,15 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await createAdminSessionToken(username);
-    const res = NextResponse.json({ success: true });
+    const res = NextResponse.json({ success: true, authenticated: true });
+    let isHttps = process.env.NODE_ENV === 'production';
+    try {
+      isHttps = new URL(req.url).protocol === 'https:';
+    } catch {}
     res.cookies.set(ADMIN_COOKIE_NAME, token, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       maxAge: 7 * 24 * 60 * 60,
       path: '/'
     });

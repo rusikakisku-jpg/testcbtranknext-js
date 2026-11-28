@@ -1,21 +1,33 @@
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { cookies } from 'next/headers';
 
 export const ADMIN_COOKIE_NAME = 'cbtrank_sarkari_admin';
 
+function readEnvVar(key: string): string {
+  try {
+    const ctx = getRequestContext();
+    const env = (ctx?.env || {}) as Record<string, unknown>;
+    if (env[key] !== undefined && env[key] !== null && String(env[key]).trim() !== '') {
+      return String(env[key]).trim();
+    }
+  } catch {}
+  return String(process.env[key] || '').trim();
+}
+
 function getAuthSecret(): string {
   return (
-    process.env.SESSION_SECRET ||
-    process.env.ADMIN_API_KEY ||
+    readEnvVar('SESSION_SECRET') ||
+    readEnvVar('ADMIN_API_KEY') ||
     'cbtrank_sarkari_session_secret_2026'
   );
 }
 
 export function getExpectedAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD || 'cbtrank@2026';
+  return readEnvVar('ADMIN_PASSWORD') || 'cbtrank@2026';
 }
 
 export function getExpectedAdminUsername(): string {
-  return (process.env.ADMIN_USERNAME || 'admin').toLowerCase();
+  return (readEnvVar('ADMIN_USERNAME') || 'admin').toLowerCase();
 }
 
 async function hmacHex(message: string, secret: string): Promise<string> {
